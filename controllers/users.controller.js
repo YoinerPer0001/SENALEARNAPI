@@ -207,7 +207,7 @@ export const ValidateEmail = async (req, res) => {
 
                         const fechaActual = Math.floor(Date.now() / 1000);
                         const fechaExp = resu[0].Fec_Caducidad;
-                        console.log(fechaActual, fechaExp);
+                      
                         // verificamos que no este expirado el codigo
                         if (fechaActual > fechaExp) {
                             return res.status(400).json({

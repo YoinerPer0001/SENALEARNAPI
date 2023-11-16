@@ -3,14 +3,14 @@ import {getUsers, loginUser, verifyToken, regUser,ValidateEmail} from "../contro
 
 const userRoutes = express();
 
-userRoutes.get('/users', verifyToken, getUsers);
+userRoutes.get('/api/users', verifyToken, getUsers);
 
-userRoutes.post('/login', loginUser);
+userRoutes.post('/api/login', loginUser);
 
-userRoutes.post('/refresh-token',verifyToken );
+userRoutes.post('/api/refresh-token',verifyToken );
 
-userRoutes.post('/register', regUser);
+userRoutes.post('/api/register', regUser);
 
-userRoutes.post('/emailvalidate', ValidateEmail);
+userRoutes.post('/api/emailvalidate', ValidateEmail);
 
 export default userRoutes;
