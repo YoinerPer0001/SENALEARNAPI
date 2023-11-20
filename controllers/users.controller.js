@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import { adminPermissions } from "../managePermissions/manage.permissions.js"
 import { mensajeEnviar } from "../mails/Emailmessages/verification.message.js";
+import { mensaje_Confirm_Login } from "../mails/Emailmessages/login_verification.message.js";
 import { v4 as uuidv4 } from "uuid";
 
 const dotenv = config();
@@ -122,7 +123,6 @@ export const regUser = async (req, res) => {
                         //generamos un codigo que se guardara en la base de datos
 
                         const { codigo, exp } = GenCodigosTemp(900);
-                        console.log(codigo, exp)
                         //const codigo = uuidv4();
                         //const tiempoExp = Math.floor((Date.now() / 1000) + 900000); //15mins
 
@@ -185,7 +185,6 @@ export const ValidateEmail = async (req, res) => {
 
         // verificamos que exista el usuario
         connection.query("SELECT * FROM USUARIOS WHERE Id_User = ?", [Id_User], (err, results) => {
-            console.log(results.length);
             if (err) {
                 return res.status(400).json({
                     result: 105,
@@ -207,7 +206,7 @@ export const ValidateEmail = async (req, res) => {
 
                         const fechaActual = Math.floor(Date.now() / 1000);
                         const fechaExp = resu[0].Fec_Caducidad;
-                      
+
                         // verificamos que no este expirado el codigo
                         if (fechaActual > fechaExp) {
                             return res.status(400).json({
@@ -233,17 +232,16 @@ export const ValidateEmail = async (req, res) => {
 
                     } else {
                         return res.status(400).json({
-                            result: 105,
-                            err: err
+                            result: 105
                         });
                     }
                 })
-               
 
-            }else{
-               
+
+            } else {
+
                 res.status(400).json({
-                    result:  103,
+                    result: 103,
                     message: "Something went wrong"
                 })
             }
@@ -319,18 +317,17 @@ export const loginUser = async (req, res) => {
     try {
 
         const datosUser = req.body;
-
         //this allow login whith user or email
         let userEmail = "";
         let valueUserEmail = "";
 
 
 
-        if (datosUser.Nom_User & datosUser.Pass_User & datosUser.Dir_Ip) {
+        if (datosUser.Nom_User && datosUser.Pass_User && datosUser.Dir_Ip) {
 
             userEmail = 'Nom_User'
             valueUserEmail = datosUser.Nom_User;
-        } else if (datosUser.Ema_User_User & datosUser.Pass_User & datosUser.Dir_Ip) {
+        } else if (datosUser.Ema_User && datosUser.Pass_User && datosUser.Dir_Ip) {
             userEmail = 'Ema_User';
             valueUserEmail = datosUser.Ema_User;
         } else {
@@ -355,7 +352,7 @@ export const loginUser = async (req, res) => {
                 if (passDecripted) {// if password true
 
                     //verificamos la direccion ip se encuentre registrada previamente
-                    connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ? ", [results[0].Id_User], (err, resul) => {
+                    connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ? AND Dir_Ip = ? ", [results[0].Id_User, datosUser.Dir_Ip], (err, resul) => {
                         if (err) {
                             return res.status(500).json({
                                 result: 104
@@ -363,34 +360,51 @@ export const loginUser = async (req, res) => {
 
                         } else {
 
-                            //comparamos
-                            resul.forEach(localizacion => {
-                                console.log(localizacion);
-                            })
+                            //VERIFICAMOS IP
+
+                            if (resul.length > 0) {
+
+                                // si existe generamos el token y lo guardamos en la db
+                                const userData = {
+                                    Id_User: results[0].Id_User,
+                                    Ema_User: results[0].Ema_User,
+                                    Id_Rol_FK: results[0].Id_Rol_FK,
+                                }
+
+                                //generamos token y save on db
+                                const datosToken = TokenDb(userData, 1, res);
+
+                                return res.status(200).json({
+                                    result: 200,
+                                    datosToken
+                                })
+                            } else {
+                                
+                                //enviamos codigo de verificacion para guardar la nueva ip
+                                const { codigo, exp } = GenCodigosTemp(900);
+                                //guardamos en la base de datos
+                                let guardo = 0;
+                                connection.query("INSERT INTO tokens (Token,Fec_Caducidad,User_Id_FK,Tipo_token) VALUES (?,?,?,?)", [codigo, exp, results[0].Id_User, 4], (err, resp) => {
+                                    if (err) {
+                                        return res.status(400).json({
+                                            result: 104,
+                                            message: "Something went wrong"
+                                        })
+                                    } else {
+
+                                        mensaje_Confirm_Login(results[0].Ema_User, results[0].Nom_User, codigo);
+                                        return res.status(200).json({
+                                            result: 108
+                                        })
+
+                                    }
+                                })
+                            }
+
+                           
                         }
 
                     });
-
-
-                    const userData = {
-                        Id_User: results[0].Id_User,
-                        Ema_User: results[0].Ema_User,
-                        Id_Rol_FK: results[0].Id_Rol_FK,
-                    }
-
-                    //si existe generamos el token
-                    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '1h' });
-                    const tokendecode = jwt.decode(token, process.env.SECRETWORD);
-                    const data1 = {
-                        sessionToken: token,
-                        exp1: tokendecode.exp,
-                    }
-
-
-                    res.status(200).json({
-                        result: 200,
-                        data1
-                    })
 
                 } else {
                     res.status(400).json({
@@ -419,19 +433,128 @@ export const loginUser = async (req, res) => {
 
 }
 
+
+//validate cods Ip new
+export const ValidateCod = async (req, res) => {
+
+    try {
+        const { Id_User, codigo, Dir_Ip } = req.body;
+
+        // verificamos que exista el usuario
+        connection.query("SELECT * FROM USUARIOS WHERE Id_User = ?", [Id_User], (err, results) => {
+            if (err) {
+                return res.status(400).json({
+                    result: 105,
+                    err: err
+                });
+
+            }
+
+            if (results.length > 0) {
+
+                connection.query("SELECT * FROM tokens WHERE User_Id_FK = ? AND Token = ?", [Id_User, codigo], (err, resu) => {
+                    if (err) {
+                        return res.status(400).json({
+                            result: 104,
+                            err: err
+                        });
+                    }
+                    if (resu.length > 0) {
+
+                        const fechaActual = Math.floor(Date.now() / 1000);
+                        const fechaExp = resu[0].Fec_Caducidad;
+
+                        // verificamos que no este expirado el codigo
+                        if (fechaActual > fechaExp) {
+                            return res.status(400).json({
+                                result: 106,
+                                message: "Expired token"
+                            })
+                        } else {
+
+                            // Insertar la nueva IP 
+                            connection.query("INSERT INTO localizacion (Dir_Ip, Id_User_FK) VALUES (?,?)", [Dir_Ip, results[0].Id_User], (err, results) => {
+                                if (err) {
+                                    return res.status(400).json({
+                                        result: 104,
+                                        err: err
+                                    });
+                                } else {
+                                    return res.status(200).json({
+                                        result: 200,
+                                        data: results
+                                    });
+                                }
+                            });
+                        }
+
+                    } else {
+                        return res.status(400).json({
+                            result: 105
+                        });
+                    }
+                })
+
+
+            } else {
+
+                res.status(400).json({
+                    result: 103,
+                    message: "Something went wrong"
+                })
+            }
+        })
+
+
+    } catch (error) {
+        res.status(400).json({
+            result: 102,
+            message: "Something went wrong"
+        })
+    }
+}
+
+
 //funtions
 
 function GenCodigosTemp(tiempo) {
     const codigo = uuidv4();
     const exp = Math.floor((Date.now() / 1000) + tiempo);
-    console.log(exp);
-
     const data = {
         codigo: codigo,
         exp: exp
     }
     return data
 }
+
+// create token and save en db
+function TokenDb(userData, tipo, res) {
+
+
+    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
+    const tokendecode = jwt.decode(token, process.env.SECRETWORD);
+    const data1 = {
+        sessionToken: token,
+        exp1: tokendecode.exp,
+    }
+
+    // guardamos en Db
+    connection.query("INSERT INTO tokens (Token,Fec_Caducidad,User_Id_FK,Tipo_token) VALUES (?,?,?,?)", [token, tokendecode.exp, userData.Id_User, tipo], (err, results) => {
+        if (err) {
+            res.status(400).json({
+                result: 104,
+                message: "Something went wrong"
+            })
+        }
+    })
+
+    return data1;
+
+}
+
+
+
+
 
 
 
