@@ -147,13 +147,16 @@ export const regUser = async (req, res) => {
                                             result: 200,
                                             data: results
                                         })
+
+                                        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+                                        // envio de correo
+                                        mensajeEnviar(Ema_User, Nom_User, codigo, Pass_User);
                                     }
                                 });
                             }
                         });
 
-                        // creamos token compuesto del id del usuario y del codigo
-                        mensajeEnviar(Ema_User, Nom_User, codigo, Pass_User);
+
 
                     }
 
@@ -379,7 +382,7 @@ export const loginUser = async (req, res) => {
                                     datosToken
                                 })
                             } else {
-                                
+
                                 //enviamos codigo de verificacion para guardar la nueva ip
                                 const { codigo, exp } = GenCodigosTemp(900);
                                 //guardamos en la base de datos
@@ -401,7 +404,7 @@ export const loginUser = async (req, res) => {
                                 })
                             }
 
-                           
+
                         }
 
                     });
