@@ -1,5 +1,4 @@
 import { transporter } from "../Email.connection.js";
-console.log(transporter);
 export const mensajeEnviar = async (email, nombre, codigo, pass) => {
 
     const info = await transporter.sendMail({

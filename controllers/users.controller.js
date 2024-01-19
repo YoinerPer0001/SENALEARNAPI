@@ -1,13 +1,12 @@
 import { connection } from "../db.js"
 import jsonwebtoken from "jsonwebtoken";
-import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import { adminPermissions } from "../managePermissions/manage.permissions.js"
 import { mensajeEnviar } from "../mails/Emailmessages/verification.message.js";
 import { mensaje_Confirm_Login } from "../mails/Emailmessages/login_verification.message.js";
 import { v4 as uuidv4 } from "uuid";
 
-const dotenv = config();
+
 const jwt = jsonwebtoken;
 
 export const getUsers = async (req, res) => {
@@ -87,11 +86,11 @@ export const regUser = async (req, res) => {
     try {
 
 
-        const { Nom_User, Ape_User, Tel_User, Ema_User, Pass_User, Id_Rol_FK, Dir_Ip } = req.body;
+        const { Nom_User, Ape_User, Ema_User, Pass_User, Id_Rol_FK, Dir_Ip } = req.body;
 
         //verificamos que los datos esten completos
 
-        if (!Nom_User || !Ape_User || !Tel_User || !Ema_User || !Pass_User || !Id_Rol_FK || !Dir_Ip) {
+        if (!Nom_User || !Ape_User || !Ema_User || !Pass_User || !Id_Rol_FK || !Dir_Ip) {
 
             return res.status(400).json({
                 result: 102,
@@ -100,7 +99,7 @@ export const regUser = async (req, res) => {
         }
 
         //verificamos que no exista EMAIL/TEL
-        connection.query("SELECT * FROM usuarios WHERE Ema_User = ? OR Tel_User = ?", [Ema_User, Tel_User], async (err, results) => {
+        connection.query("SELECT * FROM usuarios WHERE Ema_User = ?", [Ema_User], async (err, results) => {
             if (err) {
                 return res.status(500).json({
                     result: 104,
@@ -112,7 +111,7 @@ export const regUser = async (req, res) => {
                 // we encript password
                 const passEncripted = await bcrypt.hash(Pass_User, 10);
 
-                connection.query("INSERT INTO usuarios (Nom_User,Ape_User,Tel_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?,?)", [Nom_User, Ape_User, Tel_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
+                connection.query("INSERT INTO usuarios (Nom_User,Ape_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?)", [Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
                     if (err) {
                         return res.status(500).json({
                             result: 104,
@@ -519,7 +518,6 @@ export const ValidateCod = async (req, res) => {
 
 
 //funtions
-
 function GenCodigosTemp(tiempo) {
     const codigo = uuidv4();
     const exp = Math.floor((Date.now() / 1000) + tiempo);
