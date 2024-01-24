@@ -12,7 +12,7 @@ const jwt = jsonwebtoken;
 export const getUsers = async (req, res) => {
 
 
-    jwt.verify(req.token, process.env.SECRETWORD, (err, data) => {
+    jwt.verify(req.token, "juniorTupapa", (err, data) => {
 
         try {
 
@@ -532,7 +532,7 @@ function GenCodigosTemp(tiempo) {
 function TokenDb(userData, tipo, res) {
 
 
-    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
+    const token = jwt.sign({ user: userData }, "juniorTupapa", { expiresIn: '4h' });
     const tokendecode = jwt.decode(token, process.env.SECRETWORD);
     const data1 = {
         sessionToken: token,
