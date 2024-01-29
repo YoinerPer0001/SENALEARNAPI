@@ -5,6 +5,6 @@ const RoutesCursos = express();
 
 RoutesCursos.get("/api/cursos",getCursos);
 
-RoutesCursos.get("/api/cursos/categoria/:id",getCuCat);
+RoutesCursos.get("/api/cursos/:id",getCuCat);
 
 export default RoutesCursos;

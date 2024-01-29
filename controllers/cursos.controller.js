@@ -32,7 +32,6 @@ export const getCursos = async (req, res) => {
 }
 
 // get all courses by category
-
 export const getCuCat = async (req, res)=>{
 
     try{
@@ -60,3 +59,4 @@ export const getCuCat = async (req, res)=>{
     }
    
 }
+
