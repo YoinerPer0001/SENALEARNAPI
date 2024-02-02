@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const jwt = jsonwebtoken;
 
+// get all users
 export const getUsers = async (req, res) => {
 
 
