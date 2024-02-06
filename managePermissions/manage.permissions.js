@@ -17,3 +17,12 @@ export const UserPermissions = (rolId, res) => {
         return true
     }
 }
+
+export const InstPermissions = (rolId) => {
+    if (rolId != 3) {
+        return false
+        
+    }else{
+        return true
+    }
+}
