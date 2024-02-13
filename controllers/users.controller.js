@@ -5,7 +5,7 @@ import { adminPermissions } from "../managePermissions/manage.permissions.js"
 import { mensajeEnviar } from "../mails/Emailmessages/verification.message.js";
 import { mensaje_Confirm_Login } from "../mails/Emailmessages/login_verification.message.js";
 import { v4 as uuidv4 } from "uuid";
-
+import 'dotenv/config'
 
 const jwt = jsonwebtoken;
 
@@ -13,8 +13,8 @@ const jwt = jsonwebtoken;
 export const getUsers = async (req, res) => {
 
 
-    jwt.verify(req.token, "juniorTupapa", (err, data) => {
-
+    jwt.verify(req.token, process.env.SECRETWORD, (err, data) => {
+    
         try {
 
 
@@ -259,60 +259,7 @@ export const ValidateEmail = async (req, res) => {
     }
 }
 
-//Authorization: Bearer <token>
-export const verifyToken = async (req, res, next) => {
-    try {
-        let bearerHeader = req.headers['authorization'];
-        let token = req.params.id;
 
-        if (token) {
-
-            const bearerToken = token;
-
-            const decodetoken = jwt.decode(bearerToken, { complete: true })
-
-            const fechaActual = Math.floor(Date.now() / 1000);
-
-            if (fechaActual > decodetoken.payload.exp) {
-                return res.status(400).json({
-                    message: "Expired token"
-                })
-            }
-
-            req.token = bearerToken;
-            next();
-
-        } else if (typeof bearerHeader !== "undefined") {
-            const bearerToken = bearerHeader.split(' ')[1];
-
-
-            const decodetoken = jwt.decode(bearerToken, { complete: true })
-
-            const fechaActual = Math.floor(Date.now() / 1000);
-
-            if (fechaActual > decodetoken.payload.exp) {
-                return res.status(400).json({
-                    message: "Expired token"
-                })
-            }
-
-            req.token = bearerToken;
-            next();
-
-        } else {
-            res.status(400).json({
-                result: 101,
-                error: "invalid token"
-            });
-        }
-    } catch (error) {
-        res.status(400).json({
-            result: 101,
-            error: "invalid token",
-            errorMessage: error
-        })
-    }
-}
 
 //login user
 export const loginUser = async (req, res) => {
@@ -533,7 +480,7 @@ function GenCodigosTemp(tiempo) {
 function TokenDb(userData, tipo, res) {
 
 
-    const token = jwt.sign({ user: userData }, "juniorTupapa", { expiresIn: '4h' });
+    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
     const tokendecode = jwt.decode(token, process.env.SECRETWORD);
     const data1 = {
         sessionToken: token,

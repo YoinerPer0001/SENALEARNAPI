@@ -1,5 +1,6 @@
 import express from "express";
-import {getUsers, loginUser, verifyToken, regUser,ValidateEmail, ValidateCod} from "../controllers/users.controller.js"
+import {getUsers, loginUser, regUser,ValidateEmail, ValidateCod} from "../controllers/users.controller.js"
+import { verifyToken } from "../Resources/verifyToken.js";
 
 const userRoutes = express();
 
@@ -8,9 +9,6 @@ userRoutes.get('/api/users', verifyToken, getUsers);
 
 //login user
 userRoutes.post('/api/login', loginUser);
-
-//verify token bearer
-userRoutes.post('/api/verifyToken',verifyToken );
 
 //User Register
 userRoutes.post('/api/register', regUser);
