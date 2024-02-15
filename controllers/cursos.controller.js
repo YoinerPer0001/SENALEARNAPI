@@ -17,7 +17,7 @@ export const getCursos = async (req, res) => {
             if (err) {
                 return res.status(500).json({
                     result: 104,
-                    err: err
+                    message: "Something went wrong"
                 })
 
             } else {
@@ -238,6 +238,7 @@ export const UpdateCourse = async (req, res) => {
                     error: ex
                 })
             }
+
         }else{
             res.status(401).json({
                 result: 401,

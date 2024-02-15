@@ -1,6 +1,7 @@
 import express from "express"
 import userRoutes from "./routes/users.routes.js";
 import RoutesCursos from "./routes/cursos.routes.js";
+import routesCategorias from "./routes/categorias.routes.js";
 import cors from "cors"
 
 
@@ -12,7 +13,7 @@ app.use(express.json());
 //routes
 app.use(userRoutes);
 app.use(RoutesCursos);
-
+app.use(routesCategorias);
 
 
 

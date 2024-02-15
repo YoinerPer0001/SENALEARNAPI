@@ -1,5 +1,5 @@
 
-export const adminPermissions = (rolId, res) => {
+export const adminPermissions = (rolId) => {
     if (rolId != 2) {
         return false
         
@@ -9,7 +9,7 @@ export const adminPermissions = (rolId, res) => {
     }
 }
 
-export const UserPermissions = (rolId, res) => {
+export const UserPermissions = (rolId) => {
     if (rolId != 1) {
         return false
         

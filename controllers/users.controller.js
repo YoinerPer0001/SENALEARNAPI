@@ -27,7 +27,7 @@ export const getUsers = async (req, res) => {
             } else {
 
                 //we check permissions
-                const permissions = adminPermissions(data.user.Id_Rol_FK, res);
+                const permissions = adminPermissions(data.user.Id_Rol_FK);
 
                 if (permissions) {
 
