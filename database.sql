@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v11.11 (64 bit)
-MySQL - 5.5.5-10.4.28-MariaDB : Database - senalearn
+MySQL - 5.5.5-10.4.32-MariaDB : Database - senalearn
 *********************************************************************
 */
 
@@ -21,14 +21,14 @@ USE `senalearn`;
 DROP TABLE IF EXISTS `categorias`;
 
 CREATE TABLE `categorias` (
-  `Id_Cat` int(11) NOT NULL,
+  `Id_Cat` varchar(100) NOT NULL,
   `Nom_Cat` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id_Cat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `categorias` */
 
-insert  into `categorias`(`Id_Cat`,`Nom_Cat`) values (1,'Programación'),(2,'Diseño'),(3,'Marketing'),(4,'Idiomas'),(5,'Finanzas');
+insert  into `categorias`(`Id_Cat`,`Nom_Cat`) values ('1','Programación'),('2','Diseño'),('3','Marketing'),('4','Idiomas'),('5','SOFTWARE');
 
 /*Table structure for table `certificados` */
 
@@ -40,7 +40,7 @@ CREATE TABLE `certificados` (
   `Fec_Crea_Cert` date DEFAULT NULL,
   `Firm_Dig_Cert` blob DEFAULT NULL,
   `Id_User_FK` int(11) NOT NULL,
-  `Id_Cur_FK` int(11) NOT NULL,
+  `Id_Cur_FK` varchar(100) NOT NULL,
   PRIMARY KEY (`Id_User_FK`,`Id_Cur_FK`),
   KEY `Id_Cur_FK` (`Id_Cur_FK`),
   CONSTRAINT `certificados_ibfk_1` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`),
@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `comentarios`;
 CREATE TABLE `comentarios` (
   `Id_Com` int(255) NOT NULL,
   `Id_User_FK` int(11) DEFAULT NULL,
-  `Id_Cursos_FK` int(11) DEFAULT NULL,
+  `Id_Cursos_FK` varchar(100) DEFAULT NULL,
   `Fecha_Pub_Com` date DEFAULT NULL,
   `Desc_Comentario` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id_Com`),
@@ -68,7 +68,7 @@ CREATE TABLE `comentarios` (
 
 /*Data for the table `comentarios` */
 
-insert  into `comentarios`(`Id_Com`,`Id_User_FK`,`Id_Cursos_FK`,`Fecha_Pub_Com`,`Desc_Comentario`) values (1,1,1,'2023-01-03','¡Excelente curso!'),(2,2,2,'2023-02-04','Me encantaron las lecciones de diseño.'),(3,3,3,'2023-03-05','Muy informativo. Recomiendo este curso.'),(4,4,4,'2023-04-06','Aprendí mucho sobre vocabulario en inglés.'),(5,5,5,'2023-05-07','Este curso me ayudó a mejorar mis finanzas.');
+insert  into `comentarios`(`Id_Com`,`Id_User_FK`,`Id_Cursos_FK`,`Fecha_Pub_Com`,`Desc_Comentario`) values (1,1,'1','2023-01-03','¡Excelente curso!'),(2,2,'2','2023-02-04','Me encantaron las lecciones de diseño.'),(3,3,'3','2023-03-05','Muy informativo. Recomiendo este curso.'),(4,4,'4','2023-04-06','Aprendí mucho sobre vocabulario en inglés.'),(5,5,'5','2023-05-07','Este curso me ayudó a mejorar mis finanzas.');
 
 /*Table structure for table `contenido_modulo` */
 
@@ -94,12 +94,14 @@ insert  into `contenido_modulo`(`Id_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Id_M
 DROP TABLE IF EXISTS `cursos`;
 
 CREATE TABLE `cursos` (
-  `Id_Cur` int(11) NOT NULL,
+  `Id_Cur` varchar(100) NOT NULL,
   `Nom_Cur` varchar(255) DEFAULT NULL,
   `Des_Cur` varchar(255) DEFAULT NULL,
   `Hor_Cont_Total` int(11) DEFAULT NULL,
   `Fech_Crea_Cur` date DEFAULT NULL,
-  `Id_Cat_FK` int(11) DEFAULT NULL,
+  `Id_Cat_FK` varchar(100) DEFAULT NULL,
+  `Fot_Cur` varchar(200) DEFAULT NULL,
+  `Est_Cur` int(1) DEFAULT NULL COMMENT '1:CREADO, 2: PUBLICADO, 3:ELIMINADO',
   PRIMARY KEY (`Id_Cur`),
   KEY `Id_Cat_FK` (`Id_Cat_FK`),
   CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`Id_Cat_FK`) REFERENCES `categorias` (`Id_Cat`)
@@ -107,7 +109,7 @@ CREATE TABLE `cursos` (
 
 /*Data for the table `cursos` */
 
-insert  into `cursos`(`Id_Cur`,`Nom_Cur`,`Des_Cur`,`Hor_Cont_Total`,`Fech_Crea_Cur`,`Id_Cat_FK`) values (1,'Introducción a la Programación','Aprende los conceptos básicos de la programación',30,'2023-01-01',1),(2,'Fundamentos del Diseño Gráfico','Domina los elementos esenciales del diseño gráfico',20,'2023-02-01',2),(3,'Estrategias de Marketing Digital','Explora estrategias efectivas de marketing digital',25,'2023-03-01',3),(4,'Inglés Intermedio','Desarrolla habilidades en el idioma inglés',15,'2023-04-01',4),(5,'Gestión Financiera Personal','Aprende a manejar tus finanzas personales',18,'2023-05-01',5);
+insert  into `cursos`(`Id_Cur`,`Nom_Cur`,`Des_Cur`,`Hor_Cont_Total`,`Fech_Crea_Cur`,`Id_Cat_FK`,`Fot_Cur`,`Est_Cur`) values ('1','Curso de Programación Avanzada','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-07','1','https://ejemplo.com/imagen_curso.jpg',2),('2','Fundamentos del Diseño Gráfico','Domina los elementos esenciales del diseño gráfico',20,'2023-02-01','2',NULL,2),('3','Estrategias de Marketing Digital','Explora estrategias efectivas de marketing digital',25,'2023-03-01','3',NULL,2),('4','Inglés Intermedio','Desarrolla habilidades en el idioma inglés',15,'2023-04-01','4',NULL,2),('5','Gestión Financiera Personal','Aprende a manejar tus finanzas personales',18,'2023-05-01','5',NULL,2);
 
 /*Table structure for table `evaluacion` */
 
@@ -139,7 +141,7 @@ DROP TABLE IF EXISTS `inscripciones`;
 
 CREATE TABLE `inscripciones` (
   `Id_User_FK` int(11) NOT NULL,
-  `Id_Cur_FK` int(11) NOT NULL,
+  `Id_Cur_FK` varchar(100) NOT NULL,
   `Est_Curso` varchar(50) DEFAULT NULL,
   `fecha_insc` date DEFAULT NULL,
   PRIMARY KEY (`Id_User_FK`,`Id_Cur_FK`),
@@ -150,7 +152,7 @@ CREATE TABLE `inscripciones` (
 
 /*Data for the table `inscripciones` */
 
-insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Est_Curso`,`fecha_insc`) values (1,1,'Inscrito','2023-01-02'),(2,2,'Inscrito','2023-02-03'),(3,3,'Inscrito','2023-03-04'),(4,4,'Inscrito','2023-04-05'),(5,5,'Inscrito','2023-05-06');
+insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Est_Curso`,`fecha_insc`) values (1,'1','Inscrito','2023-01-02'),(2,'2','Inscrito','2023-02-03'),(3,'3','Inscrito','2023-03-04'),(4,'4','Inscrito','2023-04-05'),(5,'5','Inscrito','2023-05-06');
 
 /*Table structure for table `localizacion` */
 
@@ -177,7 +179,7 @@ CREATE TABLE `modulocurso` (
   `Id_Mod` int(11) NOT NULL,
   `Tit_Mod` varchar(255) DEFAULT NULL,
   `Est_Mod` varchar(50) DEFAULT NULL,
-  `Id_Cur_FK` int(11) DEFAULT NULL,
+  `Id_Cur_FK` varchar(100) DEFAULT NULL,
   `Horas_Cont_Mod` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id_Mod`),
   KEY `Id_Cur_FK` (`Id_Cur_FK`),
@@ -186,7 +188,7 @@ CREATE TABLE `modulocurso` (
 
 /*Data for the table `modulocurso` */
 
-insert  into `modulocurso`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Horas_Cont_Mod`) values (1,'Conceptos Básicos de Programación','Activo',1,10),(2,'Color y Composición en Diseño','Activo',2,8),(3,'Publicidad en Redes Sociales','Activo',3,12),(4,'Vocabulario en Inglés','Activo',4,6),(5,'Planificación Financiera','Activo',5,9);
+insert  into `modulocurso`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Horas_Cont_Mod`) values (1,'Conceptos Básicos de Programación','Activo','1',10),(2,'Color y Composición en Diseño','Activo','2',8),(3,'Publicidad en Redes Sociales','Activo','3',12),(4,'Vocabulario en Inglés','Activo','4',6),(5,'Planificación Financiera','Activo','5',9);
 
 /*Table structure for table `objetivos_cursos` */
 
@@ -195,7 +197,7 @@ DROP TABLE IF EXISTS `objetivos_cursos`;
 CREATE TABLE `objetivos_cursos` (
   `Id_Objetivo` int(11) NOT NULL,
   `Desc_Objetivo` varchar(255) DEFAULT NULL,
-  `Id_Cur_FK` int(11) DEFAULT NULL,
+  `Id_Cur_FK` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`Id_Objetivo`),
   KEY `Id_Cur_FK` (`Id_Cur_FK`),
   CONSTRAINT `objetivos_cursos_ibfk_1` FOREIGN KEY (`Id_Cur_FK`) REFERENCES `cursos` (`Id_Cur`)
@@ -203,7 +205,7 @@ CREATE TABLE `objetivos_cursos` (
 
 /*Data for the table `objetivos_cursos` */
 
-insert  into `objetivos_cursos`(`Id_Objetivo`,`Desc_Objetivo`,`Id_Cur_FK`) values (1,'Comprender los fundamentos de la programación',1),(2,'Aplicar principios de diseño en proyectos gráficos',2),(3,'Implementar estrategias efectivas de marketing digital',3),(4,'Mejorar habilidades de comunicación en inglés',4),(5,'Lograr estabilidad financiera personal',5);
+insert  into `objetivos_cursos`(`Id_Objetivo`,`Desc_Objetivo`,`Id_Cur_FK`) values (1,'Comprender los fundamentos de la programación','1'),(2,'Aplicar principios de diseño en proyectos gráficos','2'),(3,'Implementar estrategias efectivas de marketing digital','3'),(4,'Mejorar habilidades de comunicación en inglés','4'),(5,'Lograr estabilidad financiera personal','5');
 
 /*Table structure for table `opciones` */
 
@@ -287,7 +289,7 @@ CREATE TABLE `roles` (
 
 /*Data for the table `roles` */
 
-insert  into `roles`(`Id_Rol`,`Nom_Rol`) values (1,'ADMIN'),(2,'ADMIN');
+insert  into `roles`(`Id_Rol`,`Nom_Rol`) values (1,'ESTUDIANTE'),(2,'ADMIN'),(3,'INSTRUCTOR');
 
 /*Table structure for table `roles_opciones` */
 
@@ -319,11 +321,11 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
-insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_token`) values (45,'09ee5bba-ee0d-446a-a31b-8236283a35b9','1700504424',30,'4');
+insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_token`) values (45,'09ee5bba-ee0d-446a-a31b-8236283a35b9','1700504424',30,'4'),(46,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjN9LCJpYXQiOjE3MDc2NjU5ODMsImV4cCI6MTcwNzY4MDM4M30.oYo3faNo6A-cQgAK1QpPZROJawXxOdEJjmVaxHYYzC4','1707680383',30,'1'),(47,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjN9LCJpYXQiOjE3MDc2Njg2OTQsImV4cCI6MTcwNzY4MzA5NH0.ZyxbG1pz3OdXLl8QfOU0xjhOJ5FY_wMsXjSJzbKm99Q','1707683094',30,'1'),(48,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjN9LCJpYXQiOjE3MDc3NTAwMDIsImV4cCI6MTcwNzc2NDQwMn0.BrRZ6j5wiMJAEl1z4HVta7K-uI8Jf8rOaiZWOGYUldg','1707764402',30,'1'),(49,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjJ9LCJpYXQiOjE3MDc3NTAyNzgsImV4cCI6MTcwNzc2NDY3OH0.NzqWdioLbOaMUpSczJwYu3cgCwSJAn1aTCmFkWNzkAA','1707764678',30,'1'),(50,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjN9LCJpYXQiOjE3MDc3NTI0NzksImV4cCI6MTcwNzc2Njg3OX0.H_HOM_5GBIdxX-f0crao8KWnrgaWpGWQL8HoXEL3Leo','1707766879',30,'1'),(51,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjN9LCJpYXQiOjE3MDc4NTYzNTAsImV4cCI6MTcwNzg3MDc1MH0.VtUrisMDkjFxLV5pN3isp-40LVqIQIbUz42vNu8b_-g','1707870750',30,'1'),(52,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjN9LCJpYXQiOjE3MDgwMzUzMjEsImV4cCI6MTcwODA0OTcyMX0.2L7LGbdDXRbQvDc4i09JuZtQs5b0qkP3yAYAKKD61nA','1708049721',30,'1'),(53,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOjMwLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjJ9LCJpYXQiOjE3MDgwMzYzOTAsImV4cCI6MTcwODA1MDc5MH0.pUiQeFHEavptrmmVzmFm_3fYIrXUiu0LS1oyxjZCmAk','1708050790',30,'1');
 
 /*Table structure for table `usuarios` */
 
