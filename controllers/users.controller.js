@@ -1,10 +1,15 @@
-import { connection } from "../db.js"
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { adminPermissions } from "../managePermissions/manage.permissions.js"
 import { mensajeEnviar } from "../mails/Emailmessages/verification.message.js";
 import { mensaje_Confirm_Login } from "../mails/Emailmessages/login_verification.message.js";
-import { v4 as uuidv4 } from "uuid";
+import { response } from "../Resources/responses.js";
+import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, getUserByEmailUser } from "../models/users.model.js";
+import { GenCodigosTemp } from "../Resources/GenCodTemp.js";
+import { InserTokens, VerEmailToken } from "../models/tokens.model.js";
+import { InsertLocation, VerifyUserIp } from "../models/localizacion.model.js";
+import { getRolById } from "../models/roles.model.js";
+
 import 'dotenv/config'
 
 const jwt = jsonwebtoken;
@@ -14,15 +19,12 @@ export const getUsers = async (req, res) => {
 
 
     jwt.verify(req.token, process.env.SECRETWORD, (err, data) => {
-    
+
         try {
 
 
             if (err) {
-                return res.status(400).json({
-                    result: 105,
-                    err: err
-                });
+                response(res, 500, 105, "Something went wrong");
 
             } else {
 
@@ -31,43 +33,17 @@ export const getUsers = async (req, res) => {
 
                 if (permissions) {
 
-                    connection.query('SELECT * FROM usuarios', (err, results, fields) => {
-                        if (err) {
-                            return res.status(500).json({
-                                result: 104,
-                                err: err
-                            })
-
-                        } else {
-
-                            res.status(200).json({
-                                result: 200,
-                                data: results
-                            })
-                        }
-
-                    })
+                    //mostramos datos de usuarios
+                    getAllUsers(res);
 
                 } else {
-
-                    res.status(403).json({
-                        result: 403,
-                        message: "you dont have permissions"
-                    });
+                    response(res, 403, 403, "you dont have permissions");
                 }
 
             }
 
-
-
-
-
-
         } catch (error) {
-            res.status(400).json({
-                result: 102,
-                message: "Something went wrong"
-            });
+            response(res, 400, 102, "Something went wrong");
         }
 
 
@@ -86,97 +62,84 @@ export const regUser = async (req, res) => {
 
     try {
 
-
-        const { Nom_User, Ape_User, Ema_User, Pass_User, Id_Rol_FK, Dir_Ip } = req.body;
+        const datos = req.body;
 
         //verificamos que los datos esten completos
 
-        if (!Nom_User || !Ape_User || !Ema_User || !Pass_User || !Id_Rol_FK || !Dir_Ip) {
+        if (!datos.Nom_User || !datos.Ape_User || !datos.Ema_User || !datos.Pass_User || !datos.Dir_Ip) {
 
-            return res.status(400).json({
-                result: 102,
-                error: "something went wrong"
-            })
+            response(res, 400, 102, "Something went wrong");
+        } else {
+
+            const passEncripted = await bcrypt.hash(datos.Pass_User, 10);
+
+
+            //verificamos que no exista EMAIL/TEL
+            UserByEmail(res, datos.Ema_User)
+                .then(ExistUser => {
+
+                    if (ExistUser.length < 1) {
+
+                                // we encript password
+
+                                const DataEnv = {
+                                    Nom_User: datos.Nom_User,
+                                    Ape_User: datos.Ape_User,
+                                    Ema_User: datos.Ema_User,
+                                    passEncripted: passEncripted,
+                                    Id_Rol_FK: 1,
+                                }
+
+                                //insert data in database
+                                InsertUsers(res, DataEnv)
+                                    .then(DataInsert => {
+
+                                        //generamos un codigo que se guardara en la base de datos
+                                        const { codigo, exp } = GenCodigosTemp(900);
+                                        const DataToken = {
+                                            codigo: codigo,
+                                            exp: exp,
+                                            Id_User: DataInsert.insertId
+                                        }
+                                        //guardamos el token en la base de datos
+                                        InserTokens(res, DataToken)
+                                            .then(token => {
+                                                //guardamos localizacion del usuario
+                                                const objLoc = {
+                                                    Dir_Ip: datos.Dir_Ip,
+                                                    Id_User: DataInsert.insertId
+                                                }
+
+                                                InsertLocation(res, objLoc)
+                                                    .then(locate => {
+                                                        const IdInserted = {
+                                                            InsertId: DataInsert.insertId
+                                                        }
+                                                        response(res, 200, 200, IdInserted);
+
+
+                                                        // envio de correo
+                                                        mensajeEnviar(datos.Ema_User, datos.Nom_User, codigo, datos.Pass_User);
+                                                    })
+                                            })
+                                    })
+                            
+
+                    } else {
+                        response(res, 400, 107, "Email is registered");
+                    }
+                })
+
         }
 
-        //verificamos que no exista EMAIL/TEL
-        connection.query("SELECT * FROM usuarios WHERE Ema_User = ?", [Ema_User], async (err, results) => {
-            if (err) {
-                return res.status(500).json({
-                    result: 104,
-                    err: err
-                })
-            }
-            if (results.length < 1) {
-
-                // we encript password
-                const passEncripted = await bcrypt.hash(Pass_User, 10);
-
-                connection.query("INSERT INTO usuarios (Nom_User,Ape_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?)", [Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
-                    if (err) {
-                        return res.status(500).json({
-                            result: 104,
-                            err: err
-                        })
-                    } else {
-
-                        //generamos un codigo que se guardara en la base de datos
-
-                        const { codigo, exp } = GenCodigosTemp(900);
-                        //const codigo = uuidv4();
-                        //const tiempoExp = Math.floor((Date.now() / 1000) + 900000); //15mins
-
-                        connection.query("INSERT INTO tokens (Token,Fec_Caducidad, User_Id_FK, Tipo_token) VALUES (?,?,?,?)", [codigo, exp, results.insertId, 2], (err, resul) => {
-                            if (err) {
-                                return res.status(500).json({
-                                    result: 104,
-                                    err: err
-                                })
-                            } else {
-
-                                //guardamos los datos de localizacion del usuario
-                                connection.query("INSERT INTO localizacion (Dir_Ip,Id_User_FK) VALUES (?,?)", [Dir_Ip, results.insertId], (err, resul) => {
-                                    if (err) {
-                                        return res.status(500).json({
-                                            result: 104,
-                                            err: err
-                                        })
-                                    }
-                                    else {
-                                        res.status(200).json({
-                                            result: 200,
-                                            data: results
-                                        })
-
-                                        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-                                        // envio de correo
-                                        mensajeEnviar(Ema_User, Nom_User, codigo, Pass_User);
-                                    }
-                                });
-                            }
-                        });
 
 
-
-                    }
-
-                })
-            } else {
-                res.status(400).json({
-                    result: 107,
-                    err: "Email or phone is registered"
-                })
-            }
-        })
 
 
 
     } catch (error) {
 
-        res.status(400).json({
-            result: 102,
-            message: "Something went wrong"
-        })
+        response(res, 400, 102, "Something went wrong");
     }
 }
 
@@ -184,78 +147,61 @@ export const regUser = async (req, res) => {
 export const ValidateEmail = async (req, res) => {
 
     try {
-        const { Id_User, codigo } = req.body;
+        const datos = req.body;
 
-        // verificamos que exista el usuario
-        connection.query("SELECT * FROM USUARIOS WHERE Id_User = ?", [Id_User], (err, results) => {
-            if (err) {
-                return res.status(400).json({
-                    result: 105,
-                    err: err
-                });
+        if (!datos.Id_User || !datos.codigo) {
+            response(res, 400, 102, "Something went wrong");
+        } else {
 
-            }
+            // verificamos que exista el usuario
+            GetUserbyId(res, datos.Id_User)
+                .then(user => {
+                    if (user.length > 0) {
 
-            if (results.length > 0) {
+                        //verificamos que el codigo sea valido
+                        VerEmailToken(res, datos)
+                            .then(token => {
+                                if (token.length > 0) {
 
-                connection.query("SELECT * FROM tokens WHERE User_Id_FK = ? AND Token = ?", [Id_User, codigo], (err, resu) => {
-                    if (err) {
-                        return res.status(400).json({
-                            result: 104,
-                            err: err
-                        });
-                    }
-                    if (resu.length > 0) {
+                                    const fechaActual = Math.floor(Date.now() / 1000);
+                                    const fechaExp = token[0].Fec_Caducidad;
 
-                        const fechaActual = Math.floor(Date.now() / 1000);
-                        const fechaExp = resu[0].Fec_Caducidad;
+                                    // verificamos que no este expirado el codigo
+                                    if (fechaActual > fechaExp) {
+                                        response(res, 400, 106, "Expired token");
+                                    } else {
+                                        // actualizamos el estado del Email a verificado
+                                        UpdateEstEmail(res, datos.Id_User)
+                                            .then(user => {
+                                                if (user) {
+                                                    response(res, 200, 200, user);
+                                                }
+                                            })
 
-                        // verificamos que no este expirado el codigo
-                        if (fechaActual > fechaExp) {
-                            return res.status(400).json({
-                                result: 106,
-                                message: "Expired token"
-                            })
-                        } else {
-                            // actualizamos el estado del Email a verificado
-                            connection.query("UPDATE usuarios SET Est_Email_User = ? WHERE Id_User = ?", [1, Id_User], (err, results) => {
-                                if (err) {
-                                    return res.status(400).json({
-                                        result: 104,
-                                        err: err
-                                    });
+                                    }
+
                                 } else {
-                                    return res.status(200).json({
-                                        result: 200,
-                                        data: results
-                                    });
+                                    reFsponse(res, 400, 105, "Something went wrong");
                                 }
-                            });
-                        }
+                            })
+
+
+
 
                     } else {
-                        return res.status(400).json({
-                            result: 105
-                        });
+
+                        response(res, 400, 103, "Something went wrong");
                     }
                 })
 
+        }
 
-            } else {
 
-                res.status(400).json({
-                    result: 103,
-                    message: "Something went wrong"
-                })
-            }
-        })
+
 
 
     } catch (error) {
-        res.status(400).json({
-            result: 102,
-            message: "Something went wrong"
-        })
+        response(res, 400, 102, "Something went wrong");
     }
 }
 
@@ -271,7 +217,7 @@ export const loginUser = async (req, res) => {
         let userEmail = "";
         let valueUserEmail = "";
 
-
+        let errorDatosEnv = false;
 
         if (datosUser.Nom_User && datosUser.Pass_User && datosUser.Dir_Ip) {
 
@@ -281,103 +227,95 @@ export const loginUser = async (req, res) => {
             userEmail = 'Ema_User';
             valueUserEmail = datosUser.Ema_User;
         } else {
-            return res.status(400).json({
-                result: 102,
-                message: "something went wrong"
-            })
+            errorDatosEnv = true;
         }
 
         // verificamos que exista el usuario
-        connection.query(`SELECT * FROM usuarios WHERE ${userEmail} = ?`, [valueUserEmail], async (err, results, fields) => {
-            if (err) {
-                return res.status(500).json({
-                    result: 104
-                });
-            }
+        if (errorDatosEnv) {
 
-            if (results[0]) {
+            response(res, 400, 102, "Something went wrong");
 
-                const passDecripted = await bcrypt.compare(datosUser.Pass_User, results[0].Pass_User);
-                //verificamos la password
-                if (passDecripted) {// if password true
+        } else {
+            getUserByEmailUser(res, userEmail, valueUserEmail)
+                .then(user => {
+                    if (user.length > 0) {
+                        //verificamos la password
+                        bcrypt.compare(datosUser.Pass_User, user[0].Pass_User)
+                            .then(passDecripted => {
+                                if (passDecripted) {// if password true
 
-                    //verificamos la direccion ip se encuentre registrada previamente
-                    connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ? AND Dir_Ip = ? ", [results[0].Id_User, datosUser.Dir_Ip], (err, resul) => {
-                        if (err) {
-                            return res.status(500).json({
-                                result: 104
-                            });
-
-                        } else {
-
-                            //VERIFICAMOS IP
-
-                            if (resul.length > 0) {
-
-                                // si existe generamos el token y lo guardamos en la db
-                                const userData = {
-                                    Id_User: results[0].Id_User,
-                                    Ema_User: results[0].Ema_User,
-                                    Id_Rol_FK: results[0].Id_Rol_FK,
-                                }
-
-                                //generamos token y save on db
-                                const datosToken = TokenDb(userData, 1, res);
-
-                                return res.status(200).json({
-                                    result: 200,
-                                    datosToken
-                                })
-                            } else {
-
-                                //enviamos codigo de verificacion para guardar la nueva ip
-                                const { codigo, exp } = GenCodigosTemp(900);
-                                //guardamos en la base de datos
-                                let guardo = 0;
-                                connection.query("INSERT INTO tokens (Token,Fec_Caducidad,User_Id_FK,Tipo_token) VALUES (?,?,?,?)", [codigo, exp, results[0].Id_User, 4], (err, resp) => {
-                                    if (err) {
-                                        return res.status(400).json({
-                                            result: 104,
-                                            message: "Something went wrong"
-                                        })
-                                    } else {
-
-                                        mensaje_Confirm_Login(results[0].Ema_User, results[0].Nom_User, codigo);
-                                        return res.status(200).json({
-                                            result: 108
-                                        })
-
+                                    //verificamos la direccion ip se encuentre registrada previamente
+                                    const objLoc = {
+                                        Id_User: user[0].Id_User,
+                                        Dir_Ip: datosUser.Dir_Ip
                                     }
-                                })
-                            }
+                                    VerifyUserIp(res, objLoc)
+                                        .then(loc => {
+
+                                            //VERIFICAMOS IP
+
+                                            if (loc.length) {
+
+                                                // si existe generamos el token y lo guardamos en la db
+                                                const userData = {
+                                                    Id_User: user[0].Id_User,
+                                                    Ema_User: user[0].Ema_User,
+                                                    Id_Rol_FK: user[0].Id_Rol_FK,
+                                                }
+
+                                                //generamos token y save on db
+                                                const datosToken = TokenDb(userData);
+
+                                                if (datosToken) {
+                                                    // guardamos en Db
+                                                    InserTokens(res, datosToken, 1)
+                                                        .then(resp => {
+                                                            response(res, 200, 200, datosToken);
+                                                        })
+                                                }
 
 
-                        }
 
-                    });
+                                            } else {
 
-                } else {
-                    res.status(400).json({
-                        result: 103,
-                        message: "User or password incorrect"
-                    })
-                }
+                                                //enviamos codigo de verificacion para guardar la nueva ip
+                                                const { codigo, exp } = GenCodigosTemp(900);
+                                                //guardamos en la base de datos
+                                                const objTok = {
+                                                    codigo: codigo,
+                                                    exp: exp,
+                                                    Id_User: user[0].Id_User
+                                                }
+                                            
+                                                //guardamos el token en la db
+                                                InserTokens(res, objTok, 4)
+                                                    .then(token => {
+                                                        if (token) {
+                                                            mensaje_Confirm_Login(user[0].Ema_User, user[0].Nom_User, codigo);
+
+                                                            response(res, 200, 108, "Verification code send success (update new ip)");
+                                                        }
+                                                    })
+                                            }
+                                        })
+                                } else {
+
+                                    response(res, 400, 103, "User or password incorrect");
+                                }
+                            })
 
 
 
-            } else {
-                res.status(400).json({
-                    result: 103,
-                    message: "User or password incorrect"
+
+                    } else {
+                        response(res, 400, 103, "User or password incorrect");
+                    }
                 })
-            }
 
-        })
+        }
+
     } catch (error) {
-        res.status(400).json({
-            result: 102,
-            message: "Something went wrong"
-        })
+        response(res, 400, 102, "Something went wrong");
     }
 
 
@@ -388,114 +326,73 @@ export const loginUser = async (req, res) => {
 export const ValidateCod = async (req, res) => {
 
     try {
+
         const { Id_User, codigo, Dir_Ip } = req.body;
 
         // verificamos que exista el usuario
-        connection.query("SELECT * FROM USUARIOS WHERE Id_User = ?", [Id_User], (err, results) => {
-            if (err) {
-                return res.status(400).json({
-                    result: 105,
-                    err: err
-                });
-
-            }
-
-            if (results.length > 0) {
-
-                connection.query("SELECT * FROM tokens WHERE User_Id_FK = ? AND Token = ?", [Id_User, codigo], (err, resu) => {
-                    if (err) {
-                        return res.status(400).json({
-                            result: 104,
-                            err: err
-                        });
+        GetUserbyId(res,Id_User)
+            .then(user => {
+                if (user.length > 0) {
+                    //verificamos que el token coincida
+                    const datos = {
+                        Id_User:Id_User,
+                        codigo:codigo,
+                        Dir_Ip: Dir_Ip
                     }
-                    if (resu.length > 0) {
+                    VerEmailToken(res,datos)
+                        .then(token => {
+                            if (token.length) {
 
-                        const fechaActual = Math.floor(Date.now() / 1000);
-                        const fechaExp = resu[0].Fec_Caducidad;
+                                const fechaActual = Math.floor(Date.now() / 1000);
+                                const fechaExp = token[0].Fec_Caducidad;
 
-                        // verificamos que no este expirado el codigo
-                        if (fechaActual > fechaExp) {
-                            return res.status(400).json({
-                                result: 106,
-                                message: "Expired token"
-                            })
-                        } else {
-
-                            // Insertar la nueva IP 
-                            connection.query("INSERT INTO localizacion (Dir_Ip, Id_User_FK) VALUES (?,?)", [Dir_Ip, results[0].Id_User], (err, results) => {
-                                if (err) {
-                                    return res.status(400).json({
-                                        result: 104,
-                                        err: err
-                                    });
+                                // verificamos que no este expirado el codigo
+                                if (fechaActual > fechaExp) {
+                                    response(res, 400, 106, "Expired token");
                                 } else {
-                                    return res.status(200).json({
-                                        result: 200,
-                                        data: results
-                                    });
+
+                                    // Insertar la nueva IP
+                                    InsertLocation(res,datos)
+                                        .then(location => {
+                                            if (location) {
+                                                response(res, 200, 200, "location Success added");
+                                            }
+                                        })
+
                                 }
-                            });
-                        }
 
-                    } else {
-                        return res.status(400).json({
-                            result: 105
-                        });
-                    }
-                })
+                            } else {
+                                response(res, 400, 105, "Something went wrong");
+                            }
 
+                        })
 
-            } else {
+                } else {
 
-                res.status(400).json({
-                    result: 103,
-                    message: "Something went wrong"
-                })
-            }
-        })
+                    response(res, 400, 103, "Something went wrong");
+                }
+            })
+
 
 
     } catch (error) {
-        res.status(400).json({
-            result: 102,
-            message: "Something went wrong"
-        })
+        response(res, 400, 102, "Something went wrong");
     }
 }
 
 
 //funtions
-function GenCodigosTemp(tiempo) {
-    const codigo = uuidv4();
-    const exp = Math.floor((Date.now() / 1000) + tiempo);
-    const data = {
-        codigo: codigo,
-        exp: exp
-    }
-    return data
-}
 
-// create token and save en db
-function TokenDb(userData, tipo, res) {
+// create token
+function TokenDb(userData) {
 
 
     const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
     const tokendecode = jwt.decode(token, process.env.SECRETWORD);
     const data1 = {
-        sessionToken: token,
-        exp1: tokendecode.exp,
+        codigo: token,
+        exp: tokendecode.exp,
     }
-
-    // guardamos en Db
-    connection.query("INSERT INTO tokens (Token,Fec_Caducidad,User_Id_FK,Tipo_token) VALUES (?,?,?,?)", [token, tokendecode.exp, userData.Id_User, tipo], (err, results) => {
-        if (err) {
-            res.status(400).json({
-                result: 104,
-                message: "Something went wrong"
-            })
-        }
-    })
 
     return data1;
 

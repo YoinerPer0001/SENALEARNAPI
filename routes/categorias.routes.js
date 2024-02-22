@@ -1,13 +1,17 @@
 import express from "express"
-import {GetCategories, createCategories,UpdateCategories} from "../controllers/categorias.controller.js"
+import {GetCategories, createCategories,GetCategoriesxId,UpdateCategories, DeleteCategories} from "../controllers/categorias.controller.js"
 import { verifyToken  } from "../Resources/verifyToken.js";
 
 const routesCategorias = express();
 
-routesCategorias.get("/api/categorias", GetCategories);
+routesCategorias.get("/api/categories", GetCategories);
 
-routesCategorias.post("/api/categorias/create",verifyToken, createCategories);
+routesCategorias.get("/api/categories/:id", GetCategoriesxId);
 
-routesCategorias.put("/api/categorias/update/:id", verifyToken, UpdateCategories);
+routesCategorias.post("/api/categories/create",verifyToken, createCategories);
+
+routesCategorias.put("/api/categories/update/:id", verifyToken, UpdateCategories);
+
+routesCategorias.delete("/api/categories/delete/:id", verifyToken, DeleteCategories)
 
 export default routesCategorias;

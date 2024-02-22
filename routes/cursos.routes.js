@@ -6,7 +6,7 @@ const RoutesCursos = express();
 
 RoutesCursos.get("/api/cursos", getCursos);
 
-RoutesCursos.get("/api/cursos/:id",getCuCat);
+RoutesCursos.get("/api/cursos/categoria/:id",getCuCat);
 
 RoutesCursos.post("/api/cursos/new",verifyToken, CreateCourse);
 
