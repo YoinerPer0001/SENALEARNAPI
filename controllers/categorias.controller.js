@@ -12,13 +12,21 @@ export const GetCategories = async (req, res) => {
 
     try {
 
-        getAllCat(res)
-            .then(categories => {
-                response(res, 200, 200, categories);
-            })
+        const categorias = await getAllCat();
 
-    } catch (ex) {
-        response(res, 400, 102, "Something went wrong");
+        response(res, 200, 200, categorias);
+
+
+    } catch (error) {
+
+        if(error.errno){
+                
+            response(res, 500, 500, "something went wrong");
+
+        }else{
+
+            response(res, 400, 104, "something went wrong");
+        }
     }
 
 }
@@ -27,14 +35,13 @@ export const GetCategories = async (req, res) => {
 export const GetCategoriesxId = async (req, res) => {
 
     try {
-        const {id} = req.params;
-        
+        const { id } = req.params;
+
         if (id) {
-         
-            GetCatxId(res, id)
-                .then(categories => {
-                    response(res, 200, 200, categories);
-                })
+
+            const categoria = await GetCatxId(res, id)
+
+            response(res, 200, 200, categoria);
 
         } else {
             response(res, 400, 102, "Something went wrong");
@@ -42,8 +49,15 @@ export const GetCategoriesxId = async (req, res) => {
 
 
 
-    } catch (ex) {
-        response(res, 400, 102, "Something went wrong");
+    } catch (err) {
+        if(err.errno){
+                
+            response(res, 500, 500, "something went wrong");
+
+        }else{
+
+            response(res, 400, 104, "something went wrong");
+        }
     }
 
 }
@@ -51,7 +65,7 @@ export const GetCategoriesxId = async (req, res) => {
 // create categories
 export const createCategories = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, (err, data) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
         if (err) {
             response(res, 500, 105, "Something went wrong");
@@ -64,50 +78,53 @@ export const createCategories = async (req, res) => {
             const { Nom_Cat } = req.body;
 
             //verificamos que no exista una categoria con el mismo nombre
-            GetCatxName(res, Nom_Cat)
-                .then(category => {
-
-                    if (category.length > 0) {
-
-                        response(res, 500, 107, "category already exist");
-
-                    } else {
-
-                        const userData = jwt.decode(req.token, process.env.SECRETWORD);
-
-                        //verify user permissions
-                        const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
-
-                        if (!adminPermiso) {
-
-                            response(res, 403, 403, "you dont have permissions");
-                        } else {
-
-                            //create category
-                            const datos = {
-                                Id_Cat: Id_Cat,
-                                Nom_Cat: Nom_Cat.toLowerCase()
-                            }
-
-                            CreateCat(res, datos)
-                                .then(responses => {
-
-                                    if (responses) {
-                                        response(res, 200, 200, "success created");
-                                    }
-                                })
-                        }
+            const categoriaExists = await GetCatxName(res, Nom_Cat)
 
 
+            if (categoriaExists.length > 0) {
 
+                response(res, 500, 107, "category already exist");
+
+            } else {
+
+                const userData = jwt.decode(req.token, process.env.SECRETWORD);
+
+                //verify user permissions
+                const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
+
+                if (!adminPermiso) {
+
+                    response(res, 403, 403, "you dont have permissions");
+                } else {
+
+                    //create category
+                    const datos = {
+                        Id_Cat: Id_Cat,
+                        Nom_Cat: Nom_Cat.toLowerCase()
                     }
-                })
+
+                    const newCategory = await CreateCat(res, datos);
+
+                    response(res, 200, 200, "success created");
 
 
+                }
+
+
+
+            }
 
         } catch (err) {
 
-            response(res, 400, 102, "Something went wrong");
+            if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
+            
 
         }
 
@@ -167,8 +184,16 @@ export const UpdateCategories = async (req, res) => {
                 response(res, 401, 401, "You don't have permissions");
             }
 
-        } catch (ex) {
-            response(res, 400, 102, "Something went wrong");
+        } catch (err) {
+
+            if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
         }
 
 
@@ -200,25 +225,32 @@ export const DeleteCategories = async (req, res) => {
 
             GetCatxId(res, id)
                 .then(category => {
-                  
+
                     if (category.length > 0) {
 
-                        deleteCat(res,id)
+                        deleteCat(res, id)
                             .then(responses => {
                                 if (responses) {
                                     response(res, 200, 200, responses);
                                 }
                             })
 
-                    }else{
+                    } else {
                         response(res, 200, 204, category);
                     }
                 })
 
 
-        } catch (ex) {
+        } catch (err) {
 
-            response(res, 400, 102, "something went wrong");
+             if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
 
         }
 

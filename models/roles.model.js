@@ -8,7 +8,10 @@ export const getRolById = (res, id)=>{
         connection.query("SELECT * FROM roles WHERE Id_Rol = ?", [id],(err, results)=>{
             if(err){
                
-                response(res, 500, 104, "Something went wrong");
+                 const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
             }else{
     
                 resolve(results);

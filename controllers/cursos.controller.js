@@ -20,8 +20,15 @@ export const getCursos = async (req, res) => {
             })
 
 
-    } catch (error) {
-        response(res, 400, 102, "Something went wrong");
+    } catch(err) {
+         if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 
 
@@ -39,9 +46,16 @@ export const getCuCat = async (req, res) => {
                 response(res, 200, 200, category);
             })
 
-    } catch (error) {
+    } catch(err) {
 
-        response(res, 400, 102, "Something went wrong");
+         if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 
 }
@@ -103,9 +117,16 @@ export const CreateCourse = async (req, res) => {
         });
 
 
-    } catch (ex) {
+    } catch(err) {
 
-        response(res, 400, 102, "Something went wrong");
+         if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 }
 
@@ -154,8 +175,15 @@ export const UpdateCourse = async (req, res) => {
                         })
                     })
 
-            } catch (ex) {
-                response(res, 400, 102, "Something went wrong");
+            } catch(err) {
+                 if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
             }
 
         } else {

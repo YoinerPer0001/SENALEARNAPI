@@ -18,7 +18,7 @@ const jwt = jsonwebtoken;
 export const getUsers = async (req, res) => {
 
 
-    jwt.verify(req.token, process.env.SECRETWORD, (err, data) => {
+    jwt.verify(req.token, process.env.SECRETWORD,async (err, data) => {
 
         try {
 
@@ -34,7 +34,8 @@ export const getUsers = async (req, res) => {
                 if (permissions) {
 
                     //mostramos datos de usuarios
-                    getAllUsers(res);
+                   const users = await getAllUsers(res);
+                   response(res, 200, 200, users);
 
                 } else {
                     response(res, 403, 403, "you dont have permissions");
@@ -42,8 +43,15 @@ export const getUsers = async (req, res) => {
 
             }
 
-        } catch (error) {
-            response(res, 400, 102, "Something went wrong");
+        } catch (err) {
+            if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
         }
 
 
@@ -68,7 +76,14 @@ export const regUser = async (req, res) => {
 
         if (!datos.Nom_User || !datos.Ape_User || !datos.Ema_User || !datos.Pass_User || !datos.Dir_Ip) {
 
-            response(res, 400, 102, "Something went wrong");
+            if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
         } else {
 
             const passEncripted = await bcrypt.hash(datos.Pass_User, 10);
@@ -137,9 +152,16 @@ export const regUser = async (req, res) => {
 
 
 
-    } catch (error) {
+    } catch (err) {
 
-        response(res, 400, 102, "Something went wrong");
+        if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 }
 
@@ -150,7 +172,14 @@ export const ValidateEmail = async (req, res) => {
         const datos = req.body;
 
         if (!datos.Id_User || !datos.codigo) {
-            response(res, 400, 102, "Something went wrong");
+            if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
         } else {
 
             // verificamos que exista el usuario
@@ -200,8 +229,15 @@ export const ValidateEmail = async (req, res) => {
 
 
 
-    } catch (error) {
-        response(res, 400, 102, "Something went wrong");
+    } catch (err) {
+        if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 }
 
@@ -233,7 +269,14 @@ export const loginUser = async (req, res) => {
         // verificamos que exista el usuario
         if (errorDatosEnv) {
 
-            response(res, 400, 102, "Something went wrong");
+            if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
 
         } else {
             getUserByEmailUser(res, userEmail, valueUserEmail)
@@ -314,8 +357,15 @@ export const loginUser = async (req, res) => {
 
         }
 
-    } catch (error) {
-        response(res, 400, 102, "Something went wrong");
+    } catch (err) {
+        if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 
 
@@ -375,8 +425,15 @@ export const ValidateCod = async (req, res) => {
 
 
 
-    } catch (error) {
-        response(res, 400, 102, "Something went wrong");
+    } catch(err) {
+        if(err.errno){
+                
+                response(res, 500, 500, "something went wrong");
+
+            }else{
+
+                response(res, 400, 104, "something went wrong");
+            }
     }
 }
 

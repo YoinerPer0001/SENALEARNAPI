@@ -2,12 +2,12 @@ import { connection } from "../db.js";
 import { response } from "../Resources/responses.js";
 
 //obtener todas las categorias
-export const getAllCat = (res) => {
+export const getAllCat = () => {
     return new Promise((resolve, reject) => {
 
         connection.query("SELECT * FROM categorias", (err, result) => {
             if (err) {
-                response(res, 500, 104, "Something went wrong");
+                reject(500);
             } else {
 
                 resolve(result)
@@ -22,7 +22,7 @@ export const GetCatxName = (res, Nom_Cat) => {
         connection.query("SELECT * FROM categorias WHERE Nom_Cat = ?", [Nom_Cat], (err, result) => {
 
             if (err) {
-                response(res, 500, 104, "Something went wrong");
+                reject(err);
             } else {
                 resolve(result);
             }
@@ -37,7 +37,10 @@ export const GetCatxId = (res, id) => {
         connection.query("SELECT * FROM categorias WHERE Id_Cat = ?", [id], (err, result) => {
 
             if (err) {
-                response(res, 500, 104, "Something went wrong");
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
             } else {
                 resolve(result);
             }
@@ -52,8 +55,10 @@ export const CreateCat = (res, datos) => {
         connection.query("INSERT INTO categorias (Id_Cat, Nom_Cat) VALUES (?,?)", [datos.Id_Cat, datos.Nom_Cat], (err, results) => {
 
             if (err) {
-
-                response(res, 500, 104, "Something went wrong");
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
 
             } else {
                 resolve(results);
@@ -64,13 +69,16 @@ export const CreateCat = (res, datos) => {
 }
 
 //actualizar categorias
-export const UpdateCat = (res,datos) => {
+export const UpdateCat = (res, datos) => {
     return new Promise((resolve, reject) => {
 
         connection.query("UPDATE categorias SET Nom_Cat= ? WHERE Id_Cat = ?",
             [datos.Nom_Cat, datos.id], (err, result) => {
                 if (err) {
-                    response(res, 500, 104, "Something went wrong");
+                    const objError = {
+                        errno: err.errno
+                    }
+                    reject(objError);
 
                 } else {
                     resolve(result);
@@ -81,16 +89,19 @@ export const UpdateCat = (res,datos) => {
 }
 
 //eliminar categorias
-export const deleteCat = (res,id) => {
+export const deleteCat = (res, id) => {
     return new Promise((resolve, reject) => {
         connection.query("DELETE FROM categorias WHERE Id_Cat = ?", [id], (err, result) => {
             if (err) {
 
-                response(res, 500, 104, err);
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
 
             } else {
                 resolve(result);
-               
+
             }
         })
     })
