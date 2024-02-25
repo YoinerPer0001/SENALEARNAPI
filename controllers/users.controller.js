@@ -8,7 +8,6 @@ import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, get
 import { GenCodigosTemp } from "../Resources/GenCodTemp.js";
 import { InserTokens, VerEmailToken } from "../models/tokens.model.js";
 import { InsertLocation, VerifyUserIp } from "../models/localizacion.model.js";
-import { getRolById } from "../models/roles.model.js";
 
 import 'dotenv/config'
 
@@ -18,7 +17,7 @@ const jwt = jsonwebtoken;
 export const getUsers = async (req, res) => {
 
 
-    jwt.verify(req.token, process.env.SECRETWORD,async (err, data) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
         try {
 
@@ -34,8 +33,8 @@ export const getUsers = async (req, res) => {
                 if (permissions) {
 
                     //mostramos datos de usuarios
-                   const users = await getAllUsers(res);
-                   response(res, 200, 200, users);
+                    const users = await getAllUsers(res);
+                    response(res, 200, 200, users);
 
                 } else {
                     response(res, 403, 403, "you dont have permissions");
@@ -44,11 +43,11 @@ export const getUsers = async (req, res) => {
             }
 
         } catch (err) {
-            if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
@@ -76,11 +75,11 @@ export const regUser = async (req, res) => {
 
         if (!datos.Nom_User || !datos.Ape_User || !datos.Ema_User || !datos.Pass_User || !datos.Dir_Ip) {
 
-            if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
@@ -90,60 +89,57 @@ export const regUser = async (req, res) => {
 
 
             //verificamos que no exista EMAIL/TEL
-            UserByEmail(res, datos.Ema_User)
-                .then(ExistUser => {
-
-                    if (ExistUser.length < 1) {
-
-                                // we encript password
-
-                                const DataEnv = {
-                                    Nom_User: datos.Nom_User,
-                                    Ape_User: datos.Ape_User,
-                                    Ema_User: datos.Ema_User,
-                                    passEncripted: passEncripted,
-                                    Id_Rol_FK: 1,
-                                }
-
-                                //insert data in database
-                                InsertUsers(res, DataEnv)
-                                    .then(DataInsert => {
-
-                                        //generamos un codigo que se guardara en la base de datos
-                                        const { codigo, exp } = GenCodigosTemp(900);
-                                        const DataToken = {
-                                            codigo: codigo,
-                                            exp: exp,
-                                            Id_User: DataInsert.insertId
-                                        }
-                                        //guardamos el token en la base de datos
-                                        InserTokens(res, DataToken)
-                                            .then(token => {
-                                                //guardamos localizacion del usuario
-                                                const objLoc = {
-                                                    Dir_Ip: datos.Dir_Ip,
-                                                    Id_User: DataInsert.insertId
-                                                }
-
-                                                InsertLocation(res, objLoc)
-                                                    .then(locate => {
-                                                        const IdInserted = {
-                                                            InsertId: DataInsert.insertId
-                                                        }
-                                                        response(res, 200, 200, IdInserted);
+            const user = await UserByEmail(res, datos.Ema_User);
 
 
-                                                        // envio de correo
-                                                        mensajeEnviar(datos.Ema_User, datos.Nom_User, codigo, datos.Pass_User);
-                                                    })
-                                            })
-                                    })
-                            
+            if (user.length < 1) {
 
-                    } else {
-                        response(res, 400, 107, "Email is registered");
-                    }
-                })
+                // we encript password
+
+                const DataEnv = {
+                    Nom_User: datos.Nom_User,
+                    Ape_User: datos.Ape_User,
+                    Ema_User: datos.Ema_User,
+                    passEncripted: passEncripted,
+                    Id_Rol_FK: 1,
+                }
+
+                //insert data in database
+                const DataInsert = await InsertUsers(res, DataEnv);
+
+
+                //generamos un codigo que se guardara en la base de datos
+                const { codigo, exp } = GenCodigosTemp(900);
+                const DataToken = {
+                    codigo: codigo,
+                    exp: exp,
+                    Id_User: DataInsert.insertId
+                }
+                //guardamos el token en la base de datos
+                const token = await InserTokens(res, DataToken);
+
+                //guardamos localizacion del usuario
+                const objLoc = {
+                    Dir_Ip: datos.Dir_Ip,
+                    Id_User: DataInsert.insertId
+                }
+
+                const locate = await InsertLocation(res, objLoc);
+
+                const IdInserted = {
+                    InsertId: DataInsert.insertId
+                }
+                response(res, 200, 200, IdInserted);
+
+
+                // envio de correo
+                mensajeEnviar(datos.Ema_User, datos.Nom_User, codigo, datos.Pass_User);
+
+
+            } else {
+                response(res, 400, 107, "Email is registered");
+            }
+
 
         }
 
@@ -154,14 +150,14 @@ export const regUser = async (req, res) => {
 
     } catch (err) {
 
-        if(err.errno){
-                
-                response(res, 500, 500, "something went wrong");
+        if (err.errno) {
 
-            }else{
+            response(res, 500, 500, "something went wrong");
 
-                response(res, 400, 104, "something went wrong");
-            }
+        } else {
+
+            response(res, 400, 104, "something went wrong");
+        }
     }
 }
 
@@ -172,56 +168,55 @@ export const ValidateEmail = async (req, res) => {
         const datos = req.body;
 
         if (!datos.Id_User || !datos.codigo) {
-            if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
         } else {
 
             // verificamos que exista el usuario
-            GetUserbyId(res, datos.Id_User)
-                .then(user => {
-                    if (user.length > 0) {
+            const user = await GetUserbyId(res, datos.Id_User)
 
-                        //verificamos que el codigo sea valido
-                        VerEmailToken(res, datos)
-                            .then(token => {
-                                if (token.length > 0) {
+            if (user.length > 0) {
 
-                                    const fechaActual = Math.floor(Date.now() / 1000);
-                                    const fechaExp = token[0].Fec_Caducidad;
+                //verificamos que el codigo sea valido
+                const token = await VerEmailToken(res, datos)
 
-                                    // verificamos que no este expirado el codigo
-                                    if (fechaActual > fechaExp) {
-                                        response(res, 400, 106, "Expired token");
-                                    } else {
-                                        // actualizamos el estado del Email a verificado
-                                        UpdateEstEmail(res, datos.Id_User)
-                                            .then(user => {
-                                                if (user) {
-                                                    response(res, 200, 200, user);
-                                                }
-                                            })
+                if (token.length > 0) {
 
-                                    }
+                    const fechaActual = Math.floor(Date.now() / 1000);
+                    const fechaExp = token[0].Fec_Caducidad;
 
-                                } else {
-                                    reFsponse(res, 400, 105, "Something went wrong");
-                                }
-                            })
-
-
-
-
+                    // verificamos que no este expirado el codigo
+                    if (fechaActual > fechaExp) {
+                        response(res, 400, 106, "Expired token");
                     } else {
+                        // actualizamos el estado del Email a verificado
+                        const updatedUser = await UpdateEstEmail(res, datos.Id_User)
 
-                        response(res, 400, 103, "Something went wrong");
+                        if (updatedUser) {
+                            response(res, 200, 200, updatedUser);
+                        }
+
                     }
-                })
+
+                } else {
+                    response(res, 400, 105, "Something went wrong");
+                }
+
+
+
+
+
+            } else {
+
+                response(res, 400, 103, "Something went wrong");
+            }
+
 
         }
 
@@ -230,14 +225,14 @@ export const ValidateEmail = async (req, res) => {
 
 
     } catch (err) {
-        if(err.errno){
-                
-                response(res, 500, 500, "something went wrong");
+        if (err.errno) {
 
-            }else{
+            response(res, 500, 500, "something went wrong");
 
-                response(res, 400, 104, "something went wrong");
-            }
+        } else {
+
+            response(res, 400, 104, "something went wrong");
+        }
     }
 }
 
@@ -269,103 +264,97 @@ export const loginUser = async (req, res) => {
         // verificamos que exista el usuario
         if (errorDatosEnv) {
 
-            if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
 
         } else {
-            getUserByEmailUser(res, userEmail, valueUserEmail)
-                .then(user => {
-                    if (user.length > 0) {
-                        //verificamos la password
-                        bcrypt.compare(datosUser.Pass_User, user[0].Pass_User)
-                            .then(passDecripted => {
-                                if (passDecripted) {// if password true
+            const user = await getUserByEmailUser(res, userEmail, valueUserEmail);
 
-                                    //verificamos la direccion ip se encuentre registrada previamente
-                                    const objLoc = {
-                                        Id_User: user[0].Id_User,
-                                        Dir_Ip: datosUser.Dir_Ip
-                                    }
-                                    VerifyUserIp(res, objLoc)
-                                        .then(loc => {
+            if (user.length > 0) {
+                //verificamos la password
+                const passDecripted = await bcrypt.compare(datosUser.Pass_User, user[0].Pass_User);
 
-                                            //VERIFICAMOS IP
+                if (passDecripted) {// if password true
 
-                                            if (loc.length) {
-
-                                                // si existe generamos el token y lo guardamos en la db
-                                                const userData = {
-                                                    Id_User: user[0].Id_User,
-                                                    Ema_User: user[0].Ema_User,
-                                                    Id_Rol_FK: user[0].Id_Rol_FK,
-                                                }
-
-                                                //generamos token y save on db
-                                                const datosToken = TokenDb(userData);
-
-                                                if (datosToken) {
-                                                    // guardamos en Db
-                                                    InserTokens(res, datosToken, 1)
-                                                        .then(resp => {
-                                                            response(res, 200, 200, datosToken);
-                                                        })
-                                                }
+                    //verificamos la direccion ip se encuentre registrada previamente
+                    const objLoc = {
+                        Id_User: user[0].Id_User,
+                        Dir_Ip: datosUser.Dir_Ip
+                    }
+                    const loc = await VerifyUserIp(res, objLoc)
 
 
+                    //VERIFICAMOS IP
 
-                                            } else {
+                    if (loc.length) {
 
-                                                //enviamos codigo de verificacion para guardar la nueva ip
-                                                const { codigo, exp } = GenCodigosTemp(900);
-                                                //guardamos en la base de datos
-                                                const objTok = {
-                                                    codigo: codigo,
-                                                    exp: exp,
-                                                    Id_User: user[0].Id_User
-                                                }
-                                            
-                                                //guardamos el token en la db
-                                                InserTokens(res, objTok, 4)
-                                                    .then(token => {
-                                                        if (token) {
-                                                            mensaje_Confirm_Login(user[0].Ema_User, user[0].Nom_User, codigo);
+                        // si existe generamos el token y lo guardamos en la db
+                        const userData = {
+                            Id_User: user[0].Id_User,
+                            Ema_User: user[0].Ema_User,
+                            Id_Rol_FK: user[0].Id_Rol_FK,
+                        }
 
-                                                            response(res, 200, 108, "Verification code send success (update new ip)");
-                                                        }
-                                                    })
-                                            }
-                                        })
-                                } else {
+                        //generamos token y save on db
+                        const datosToken = TokenDb(userData);
 
-                                    response(res, 400, 103, "User or password incorrect");
-                                }
-                            })
+                        if (datosToken) {
+                            // guardamos en Db
+                            const resp = await InserTokens(res, datosToken, 1)
+                            response(res, 200, 200, datosToken);
 
+                        }
 
 
 
                     } else {
-                        response(res, 400, 103, "User or password incorrect");
+
+                        //enviamos codigo de verificacion para guardar la nueva ip
+                        const { codigo, exp } = GenCodigosTemp(900);
+                        //guardamos en la base de datos
+                        const objTok = {
+                            codigo: codigo,
+                            exp: exp,
+                            Id_User: user[0].Id_User
+                        }
+
+                        //guardamos el token en la db
+                        const token = await InserTokens(res, objTok, 4)
+
+                        if (token) {
+                            mensaje_Confirm_Login(user[0].Ema_User, user[0].Nom_User, codigo);
+
+                            response(res, 200, 108, "Verification code send success (update new ip)");
+                        }
+
                     }
-                })
+
+                } else {
+
+                    response(res, 400, 103, "User or password incorrect");
+                }
+
+            } else {
+                response(res, 400, 103, "User or password incorrect");
+            }
 
         }
 
     } catch (err) {
-        if(err.errno){
-                
-                response(res, 500, 500, "something went wrong");
+        if (err.errno) {
 
-            }else{
+            response(res, 500, 500, "something went wrong");
 
-                response(res, 400, 104, "something went wrong");
-            }
+        } else {
+
+            response(res, 400, 104, "something went wrong");
+        }
     }
 
 
@@ -380,60 +369,60 @@ export const ValidateCod = async (req, res) => {
         const { Id_User, codigo, Dir_Ip } = req.body;
 
         // verificamos que exista el usuario
-        GetUserbyId(res,Id_User)
-            .then(user => {
-                if (user.length > 0) {
-                    //verificamos que el token coincida
-                    const datos = {
-                        Id_User:Id_User,
-                        codigo:codigo,
-                        Dir_Ip: Dir_Ip
-                    }
-                    VerEmailToken(res,datos)
-                        .then(token => {
-                            if (token.length) {
+        const user = await GetUserbyId(res, Id_User)
 
-                                const fechaActual = Math.floor(Date.now() / 1000);
-                                const fechaExp = token[0].Fec_Caducidad;
+        if (user.length > 0) {
+            //verificamos que el token coincida
+            const datos = {
+                Id_User: Id_User,
+                codigo: codigo,
+                Dir_Ip: Dir_Ip
+            }
+            const token = await VerEmailToken(res, datos)
 
-                                // verificamos que no este expirado el codigo
-                                if (fechaActual > fechaExp) {
-                                    response(res, 400, 106, "Expired token");
-                                } else {
+            if (token.length) {
 
-                                    // Insertar la nueva IP
-                                    InsertLocation(res,datos)
-                                        .then(location => {
-                                            if (location) {
-                                                response(res, 200, 200, "location Success added");
-                                            }
-                                        })
+                const fechaActual = Math.floor(Date.now() / 1000);
+                const fechaExp = token[0].Fec_Caducidad;
 
-                                }
-
-                            } else {
-                                response(res, 400, 105, "Something went wrong");
-                            }
-
-                        })
-
+                // verificamos que no este expirado el codigo
+                if (fechaActual > fechaExp) {
+                    response(res, 400, 106, "Expired token");
                 } else {
 
-                    response(res, 400, 103, "Something went wrong");
+                    // Insertar la nueva IP
+                    const location = await InsertLocation(res, datos)
+
+                    if (location) {
+                        response(res, 200, 200, "location Success added");
+                    }
+
+
                 }
-            })
 
-
-
-    } catch(err) {
-        if(err.errno){
-                
-                response(res, 500, 500, "something went wrong");
-
-            }else{
-
-                response(res, 400, 104, "something went wrong");
+            } else {
+                response(res, 400, 105, "Something went wrong");
             }
+
+
+
+        } else {
+
+            response(res, 400, 103, "Something went wrong");
+        }
+
+
+
+
+    } catch (err) {
+        if (err.errno) {
+
+            response(res, 500, 500, "something went wrong");
+
+        } else {
+
+            response(res, 400, 104, "something went wrong");
+        }
     }
 }
 

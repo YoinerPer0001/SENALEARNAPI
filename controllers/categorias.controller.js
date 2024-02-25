@@ -19,11 +19,11 @@ export const GetCategories = async (req, res) => {
 
     } catch (error) {
 
-        if(error.errno){
-                
+        if (error.errno) {
+
             response(res, 500, 500, "something went wrong");
 
-        }else{
+        } else {
 
             response(res, 400, 104, "something went wrong");
         }
@@ -50,11 +50,11 @@ export const GetCategoriesxId = async (req, res) => {
 
 
     } catch (err) {
-        if(err.errno){
-                
+        if (err.errno) {
+
             response(res, 500, 500, "something went wrong");
 
-        }else{
+        } else {
 
             response(res, 400, 104, "something went wrong");
         }
@@ -116,15 +116,15 @@ export const createCategories = async (req, res) => {
 
         } catch (err) {
 
-            if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
-            
+
 
         }
 
@@ -156,25 +156,25 @@ export const UpdateCategories = async (req, res) => {
 
                 //verify exist category
 
-                GetCatxId(res, id)
-                    .then(category => {
-                        if (category.length < 1) {
+                const category = await GetCatxId(res, id)
 
-                            response(res, 500, 103, "Something went wrong");
+                if (category.length < 1) {
 
-                        } else {
+                    response(res, 500, 103, "Something went wrong");
 
-                            const datos = {
-                                id: id,
-                                Nom_Cat: Nom_Cat
-                            }
+                } else {
 
-                            UpdateCat(res, datos)
-                                .then(responses => {
-                                    response(res, 200, 200, responses);
-                                })
-                        }
-                    })
+                    const datos = {
+                        id: id,
+                        Nom_Cat: Nom_Cat
+                    }
+
+                    const responses = await UpdateCat(res, datos)
+
+                    response(res, 200, 200, responses);
+
+                }
+
 
 
 
@@ -186,11 +186,11 @@ export const UpdateCategories = async (req, res) => {
 
         } catch (err) {
 
-            if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
@@ -204,7 +204,7 @@ export const UpdateCategories = async (req, res) => {
 //delete categories
 export const DeleteCategories = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, (err, datos) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, datos) => {
         if (err) {
 
             response(res, 400, 105, "Something went wrong");
@@ -223,31 +223,30 @@ export const DeleteCategories = async (req, res) => {
 
             //verify category exist
 
-            GetCatxId(res, id)
-                .then(category => {
+            const category = await GetCatxId(res, id)
 
-                    if (category.length > 0) {
+            if (category.length > 0) {
 
-                        deleteCat(res, id)
-                            .then(responses => {
-                                if (responses) {
-                                    response(res, 200, 200, responses);
-                                }
-                            })
+                const responses = await deleteCat(res, id)
 
-                    } else {
-                        response(res, 200, 204, category);
-                    }
-                })
+                if (responses) {
+                    response(res, 200, 200, "Success deleted");
+                }
+
+
+            } else {
+                response(res, 200, 204, category);
+            }
+
 
 
         } catch (err) {
 
-             if(err.errno){
-                
+            if (err.errno) {
+
                 response(res, 500, 500, "something went wrong");
 
-            }else{
+            } else {
 
                 response(res, 400, 104, "something went wrong");
             }
