@@ -96,3 +96,20 @@ export const verifyExistCurso = (res,id) => {
     })
 
 }
+
+// get all courses published by id
+export const getCoursesxId = (id)=>{
+    return new Promise((resolve,reject)=>{
+        connection.query("SELECT * FROM CURSOS WHERE Id_Cur = ? ", [id], (err, result) => {
+            if (err) {
+                 const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
+            } else {
+                resolve(result);
+            }
+
+        });
+    })
+}
