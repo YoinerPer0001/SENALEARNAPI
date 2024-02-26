@@ -14,7 +14,13 @@ export const GetCategories = async (req, res) => {
 
         const categorias = await getAllCat();
 
-        response(res, 200, 200, categorias);
+        if(categorias.length > 0){
+            response(res, 200, 200, categorias);
+        }else{
+            response(res, 204, 204, categorias);
+        }
+
+       
 
 
     } catch (error) {

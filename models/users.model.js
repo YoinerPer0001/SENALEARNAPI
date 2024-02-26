@@ -6,7 +6,7 @@ export const getAllUsers = () => {
 
     return new Promise((resolve, reject) => {
 
-        connection.query('SELECT * FROM usuarios', (err, results, fields) => {
+        connection.query('SELECT Id_User,Nom_User,Ape_User,Tel_User,Ema_User,Id_Rol_FK,Fot_User,Est_Email_User FROM usuarios', (err, results, fields) => {
             if (err) {
                 console.log(err)
                 const objError = {

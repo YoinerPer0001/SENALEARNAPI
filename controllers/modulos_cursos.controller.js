@@ -3,8 +3,8 @@ import { adminPermissions, InstPermissions } from "../managePermissions/manage.p
 import 'dotenv/config'
 import uniqid from 'uniqid';
 import { response } from "../Resources/responses.js";
-import { getModulexCourse , createModule} from "../models/modulos_cursos.model.js";
-import { verifyExistCurso } from "../models/cursos.model.js";
+import { getModulexCourse, createModule, getModulexId, UpdateCurModules } from "../models/modulos_cursos.model.js";
+import { getCoursesxId } from "../models/cursos.model.js";
 
 const jwt = jsonwebtoken;
 
@@ -14,9 +14,17 @@ export const GetModulesxId = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const module = await getModulexCourse(id)
+        //verificams que exista el curso
+        const course = getCoursesxId(id);
+        if (course.length > 0) {
+            const module = await getModulexCourse(id)
 
-        response(res, 200, 200, module);
+            response(res, 200, 200, module);
+
+        } else {
+            response(res, 500, 103, "Something went wrong");
+        }
+
 
     } catch (err) {
         if (err.errno) {
@@ -45,10 +53,10 @@ export const createModules = async (req, res) => {
             const Id_Mod = uniqid();
 
             const { Tit_Mod, Est_Mod, Id_Cur, Horas_Cont_Mod } = req.body;
-            
+
             //verificamos que no exista una categoria con el mismo nombre
-            const courseExists = await verifyExistCurso(Id_Cur)
-         
+            const courseExists = await getCoursesxId(Id_Cur)
+
 
             if (courseExists.length < 1) {
 
@@ -65,10 +73,10 @@ export const createModules = async (req, res) => {
                 if (adminPermiso || InstrucPermissions) {
                     //create category
                     const datos = {
-                        Id_Mod : Id_Mod,
-                        Tit_Mod : Tit_Mod,
-                        Est_Mod : Est_Mod,
-                        Id_Cur_FK : Id_Cur,
+                        Id_Mod: Id_Mod,
+                        Tit_Mod: Tit_Mod,
+                        Est_Mod: Est_Mod,
+                        Id_Cur_FK: Id_Cur,
                         Horas_Cont_Mod: Horas_Cont_Mod
                     }
 
@@ -105,7 +113,7 @@ export const createModules = async (req, res) => {
 }
 
 //update categorias
-export const UpdateCategories = async (req, res) => {
+export const UpdateModules = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
         if (err) {
@@ -115,31 +123,60 @@ export const UpdateCategories = async (req, res) => {
         try {
             const { Id_Rol_FK } = dat.user;
 
-            let adPermision = adminPermissions(Id_Rol_FK);
+            const adPermision = adminPermissions(Id_Rol_FK);
+            const InstrucPermissions = InstPermissions(Id_Rol_FK);
 
 
-            if (adPermision) {
+            if (adPermision || InstrucPermissions) {
 
                 //Data
 
 
                 const { id } = req.params;
-                const { Nom_Cat } = req.body;
+                const modData = req.body;
 
-                //verify exist category
+                //verify exist module
+                const module = await getModulexId(modData.Id_Mod);
 
-                const category = await GetCatxId(id)
-
-                if (category.length < 1) {
+                if (module.length < 1) {
 
                     response(res, 500, 103, "Something went wrong");
 
                 } else {
 
                     const datos = {
-                        id: id,
-                        Nom_Cat: Nom_Cat
+                        Id_Mod: id,
+                        Tit_Mod: modData.Tit_Mod || module[0].Tit_Mod,
+                        Est_Mod: modData.Est_Mod || module[0].Est_Mod,
+                        Id_Cur_FK:modData.Id_Cur || module[0].Id_Cur_FK,
+                        Horas_Cont_Mod:modData.Horas_Cont_Mod || module[0].Horas_Cont_Mod
                     }
+
+                    // si se quiere actualizar el curso al que pertenece verificamos que exista el curso
+                    if (modData.Id_Cur) {
+                        const course = await getCoursesxId(modData.Id_Cur);
+
+                        if (course.length < 1) {
+                            response(res, 500, 103, "Something went wrong");
+
+                        } else {
+
+                            const modUpdated = UpdateCurModules(datos);
+                            const objRes = {
+                                affectedRows : modUpdated.affectedRows
+                            }
+                            response(res,200,200,objRes);
+                        }
+                    }else{
+
+                        const modUpdated = UpdateCurModules(datos);
+                            const objRes = {
+                                affectedRows : modUpdated.affectedRows
+                            }
+                            response(res,200,200,objRes);
+                    }
+
+                    
 
                     const responses = await UpdateCat(datos)
                     const objRes = {
@@ -175,57 +212,3 @@ export const UpdateCategories = async (req, res) => {
     })
 }
 
-//delete categories
-export const DeleteCategories = async (req, res) => {
-
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, datos) => {
-        if (err) {
-
-            response(res, 400, 105, "Something went wrong");
-        }
-
-        try {
-
-            const { id } = req.params;
-            const { Id_Rol_FK } = datos.user;
-
-            const permiso = adminPermissions(Id_Rol_FK);
-
-            if (!permiso) {
-                response(res, 401, 401, "You don't have permissions");
-            }
-
-            //verify category exist
-
-            const category = await GetCatxId(id)
-
-            if (category.length > 0) {
-
-                const responses = await deleteCat(id)
-
-
-                response(res, 200, 200, responses);
-
-
-
-            } else {
-                response(res, 200, 204, category);
-            }
-
-
-
-        } catch (err) {
-
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
-                response(res, 500, 500, "something went wrong");
-
-            }
-
-        }
-
-    })
-}

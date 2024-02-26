@@ -89,21 +89,3 @@ export const UpdateObjCourses = (datos) => {
     })
 }
 
-//eliminar categorias
-export const deleteCat = ( id) => {
-    return new Promise((resolve, reject) => {
-        connection.query("DELETE FROM categorias WHERE Id_Cat = ?", [id], (err, results) => {
-            if (err) {
-            
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-        })
-    })
-}

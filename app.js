@@ -4,6 +4,7 @@ import RoutesCursos from "./routes/cursos.routes.js";
 import routesCategorias from "./routes/categorias.routes.js";
 import routesObjCourses from "./routes/objetivos_cursos.routes.js";
 import routesModCur from "./routes/modulos_cursos.routes.js";
+import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
 
@@ -23,4 +24,5 @@ app.use(routesModCur);
 
 app.listen(3000,()=>{
     console.log("Server run in port 3000");
+    swaggerDocs(app,3000)
 });
