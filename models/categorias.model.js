@@ -7,22 +7,27 @@ export const getAllCat = () => {
 
         connection.query("SELECT * FROM categorias", (err, result) => {
             if (err) {
-                reject(500);
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
             } else {
-
-                resolve(result)
+                resolve(result);
             }
         });
     })
 }
 
 //obtener categorias por nombre
-export const GetCatxName = (res, Nom_Cat) => {
+export const GetCatxName = (Nom_Cat) => {
     return new Promise((resolve, reject) => {
         connection.query("SELECT * FROM categorias WHERE Nom_Cat = ?", [Nom_Cat], (err, result) => {
 
             if (err) {
-                reject(err);
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
             } else {
                 resolve(result);
             }
@@ -32,7 +37,7 @@ export const GetCatxName = (res, Nom_Cat) => {
 }
 
 //obtener categorias por ID
-export const GetCatxId = (res, id) => {
+export const GetCatxId = (id) => {
     return new Promise((resolve, reject) => {
         connection.query("SELECT * FROM categorias WHERE Id_Cat = ?", [id], (err, result) => {
 
@@ -50,7 +55,7 @@ export const GetCatxId = (res, id) => {
 }
 
 //crear categorias
-export const CreateCat = (res, datos) => {
+export const CreateCat = (datos) => {
     return new Promise((resolve, reject) => {
         connection.query("INSERT INTO categorias (Id_Cat, Nom_Cat) VALUES (?,?)", [datos.Id_Cat, datos.Nom_Cat], (err, results) => {
 
@@ -69,7 +74,7 @@ export const CreateCat = (res, datos) => {
 }
 
 //actualizar categorias
-export const UpdateCat = (res, datos) => {
+export const UpdateCat = (datos) => {
     return new Promise((resolve, reject) => {
 
         connection.query("UPDATE categorias SET Nom_Cat= ? WHERE Id_Cat = ?",
@@ -89,13 +94,14 @@ export const UpdateCat = (res, datos) => {
 }
 
 //eliminar categorias
-export const deleteCat = (res, id) => {
+export const deleteCat = (id) => {
     return new Promise((resolve, reject) => {
         connection.query("DELETE FROM categorias WHERE Id_Cat = ?", [id], (err, result) => {
             if (err) {
-
+                console.log(err);
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
 

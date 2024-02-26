@@ -4,7 +4,7 @@ import { adminPermissions } from "../managePermissions/manage.permissions.js"
 import { mensajeEnviar } from "../mails/Emailmessages/verification.message.js";
 import { mensaje_Confirm_Login } from "../mails/Emailmessages/login_verification.message.js";
 import { response } from "../Resources/responses.js";
-import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, getUserByEmailUser } from "../models/users.model.js";
+import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, getUserByEmailUser, UserDataUpdate } from "../models/users.model.js";
 import { GenCodigosTemp } from "../Resources/GenCodTemp.js";
 import { InserTokens, VerEmailToken } from "../models/tokens.model.js";
 import { InsertLocation, VerifyUserIp } from "../models/localizacion.model.js";
@@ -33,7 +33,7 @@ export const getUsers = async (req, res) => {
                 if (permissions) {
 
                     //mostramos datos de usuarios
-                    const users = await getAllUsers(res);
+                    const users = await getAllUsers();
                     response(res, 200, 200, users);
 
                 } else {
@@ -45,11 +45,11 @@ export const getUsers = async (req, res) => {
         } catch (err) {
             if (err.errno) {
 
-                response(res, 500, 500, "something went wrong");
+                response(res, 400, err.errno, err.code);
 
             } else {
+                response(res, 500, 500, "something went wrong");
 
-                response(res, 400, 104, "something went wrong");
             }
         }
 
@@ -77,11 +77,11 @@ export const regUser = async (req, res) => {
 
             if (err.errno) {
 
-                response(res, 500, 500, "something went wrong");
+                response(res, 400, err.errno, err.code);
 
             } else {
+                response(res, 500, 500, "something went wrong");
 
-                response(res, 400, 104, "something went wrong");
             }
         } else {
 
@@ -89,7 +89,7 @@ export const regUser = async (req, res) => {
 
 
             //verificamos que no exista EMAIL/TEL
-            const user = await UserByEmail(res, datos.Ema_User);
+            const user = await UserByEmail(datos.Ema_User);
 
 
             if (user.length < 1) {
@@ -105,7 +105,7 @@ export const regUser = async (req, res) => {
                 }
 
                 //insert data in database
-                const DataInsert = await InsertUsers(res, DataEnv);
+                const DataInsert = await InsertUsers(DataEnv);
 
 
                 //generamos un codigo que se guardara en la base de datos
@@ -116,7 +116,7 @@ export const regUser = async (req, res) => {
                     Id_User: DataInsert.insertId
                 }
                 //guardamos el token en la base de datos
-                const token = await InserTokens(res, DataToken);
+                const token = await InserTokens(DataToken);
 
                 //guardamos localizacion del usuario
                 const objLoc = {
@@ -124,7 +124,7 @@ export const regUser = async (req, res) => {
                     Id_User: DataInsert.insertId
                 }
 
-                const locate = await InsertLocation(res, objLoc);
+                const locate = await InsertLocation(objLoc);
 
                 const IdInserted = {
                     InsertId: DataInsert.insertId
@@ -152,13 +152,60 @@ export const regUser = async (req, res) => {
 
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
+}
+
+//UPDATE USERS data (only rol users)
+export const UpdateUserData = async (req, res) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, jwtdata) => {
+
+        try {
+
+            const { Id_User } = jwtdata.user;
+
+            const UserData = req.body;
+         
+            //get actual data
+            const actualData = await GetUserbyId(Id_User);
+            
+            const objUpdate = {
+                Id_User: Id_User,
+                Nom_User: UserData.Nom_User || actualData[0].Nom_User,
+                Ape_User: UserData.Ape_User || actualData[0].Ape_User,
+                Tel_User: UserData.Tel_User || actualData[0].Tel_User,
+                Ema_User: UserData.Ema_User || actualData[0].Ema_User,
+                Fot_User: UserData.Fot_User || actualData[0].Tel_User
+            }
+            
+            //update data
+
+            const updatedData = await UserDataUpdate(objUpdate);
+
+            const objRes = {
+                affectedRows: updatedData.affectedRows
+            }
+
+            response(res, 200, 200, objRes)
+
+        } catch (err) {
+            if (err.errno) {
+
+                response(res, 400, err.errno, err.code);
+
+            } else {
+                response(res, 500, 500,err);
+
+            }
+        }
+
+
+    })
 }
 
 //Validate Email ==== OK
@@ -168,23 +215,18 @@ export const ValidateEmail = async (req, res) => {
         const datos = req.body;
 
         if (!datos.Id_User || !datos.codigo) {
-            if (err.errno) {
 
-                response(res, 500, 500, "something went wrong");
+            response(res, 500, 500, "something went wrong");
 
-            } else {
-
-                response(res, 400, 104, "something went wrong");
-            }
         } else {
 
             // verificamos que exista el usuario
-            const user = await GetUserbyId(res, datos.Id_User)
+            const user = await GetUserbyId(datos.Id_User)
 
             if (user.length > 0) {
 
                 //verificamos que el codigo sea valido
-                const token = await VerEmailToken(res, datos)
+                const token = await VerEmailToken(datos)
 
                 if (token.length > 0) {
 
@@ -196,11 +238,12 @@ export const ValidateEmail = async (req, res) => {
                         response(res, 400, 106, "Expired token");
                     } else {
                         // actualizamos el estado del Email a verificado
-                        const updatedUser = await UpdateEstEmail(res, datos.Id_User)
-
-                        if (updatedUser) {
-                            response(res, 200, 200, updatedUser);
+                        const updatedUser = await UpdateEstEmail(datos.Id_User)
+                        const objResp = {
+                            affectedRows: updatedUser.affectedRows
                         }
+
+                        response(res, 200, 200, objResp);
 
                     }
 
@@ -227,11 +270,11 @@ export const ValidateEmail = async (req, res) => {
     } catch (err) {
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
 }
@@ -264,17 +307,11 @@ export const loginUser = async (req, res) => {
         // verificamos que exista el usuario
         if (errorDatosEnv) {
 
-            if (err.errno) {
+            response(res, 400, 103, "something went wrong");
 
-                response(res, 500, 500, "something went wrong");
-
-            } else {
-
-                response(res, 400, 104, "something went wrong");
-            }
 
         } else {
-            const user = await getUserByEmailUser(res, userEmail, valueUserEmail);
+            const user = await getUserByEmailUser(userEmail, valueUserEmail);
 
             if (user.length > 0) {
                 //verificamos la password
@@ -287,7 +324,7 @@ export const loginUser = async (req, res) => {
                         Id_User: user[0].Id_User,
                         Dir_Ip: datosUser.Dir_Ip
                     }
-                    const loc = await VerifyUserIp(res, objLoc)
+                    const loc = await VerifyUserIp(objLoc)
 
 
                     //VERIFICAMOS IP
@@ -306,7 +343,7 @@ export const loginUser = async (req, res) => {
 
                         if (datosToken) {
                             // guardamos en Db
-                            const resp = await InserTokens(res, datosToken, 1)
+                            const resp = await InserTokens(datosToken, 1)
                             response(res, 200, 200, datosToken);
 
                         }
@@ -325,7 +362,7 @@ export const loginUser = async (req, res) => {
                         }
 
                         //guardamos el token en la db
-                        const token = await InserTokens(res, objTok, 4)
+                        const token = await InserTokens(objTok, 4)
 
                         if (token) {
                             mensaje_Confirm_Login(user[0].Ema_User, user[0].Nom_User, codigo);
@@ -349,11 +386,11 @@ export const loginUser = async (req, res) => {
     } catch (err) {
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
 
@@ -369,7 +406,7 @@ export const ValidateCod = async (req, res) => {
         const { Id_User, codigo, Dir_Ip } = req.body;
 
         // verificamos que exista el usuario
-        const user = await GetUserbyId(res, Id_User)
+        const user = await GetUserbyId(Id_User)
 
         if (user.length > 0) {
             //verificamos que el token coincida
@@ -378,7 +415,7 @@ export const ValidateCod = async (req, res) => {
                 codigo: codigo,
                 Dir_Ip: Dir_Ip
             }
-            const token = await VerEmailToken(res, datos)
+            const token = await VerEmailToken(datos)
 
             if (token.length) {
 
@@ -391,11 +428,13 @@ export const ValidateCod = async (req, res) => {
                 } else {
 
                     // Insertar la nueva IP
-                    const location = await InsertLocation(res, datos)
-
-                    if (location) {
-                        response(res, 200, 200, "location Success added");
+                    const location = await InsertLocation(datos)
+                    const objRes = {
+                        insertId: location.insertId
                     }
+
+                    response(res, 200, 200, objRes);
+
 
 
                 }
@@ -417,11 +456,11 @@ export const ValidateCod = async (req, res) => {
     } catch (err) {
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
 }

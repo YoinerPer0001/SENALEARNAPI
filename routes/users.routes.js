@@ -1,5 +1,5 @@
 import express from "express";
-import {getUsers, loginUser, regUser,ValidateEmail, ValidateCod} from "../controllers/users.controller.js"
+import {getUsers, loginUser, regUser,ValidateEmail, ValidateCod, UpdateUserData} from "../controllers/users.controller.js"
 import { verifyToken } from "../Resources/verifyToken.js";
 
 const userRoutes = express();
@@ -14,9 +14,12 @@ userRoutes.post('/api/login', loginUser);
 userRoutes.post('/api/register', regUser);
 
 //validate Email to Register
-userRoutes.post('/api/emailvalidate', ValidateEmail);
+userRoutes.post('/api/email_validate', ValidateEmail);
 
 //validate codes to login Ip new
-userRoutes.post('/api/codevalidate', ValidateCod);
+userRoutes.post('/api/code_validate', ValidateCod);
+
+//update user data
+userRoutes.put('/api/users/update',verifyToken, UpdateUserData)
 
 export default userRoutes;

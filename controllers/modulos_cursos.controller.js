@@ -1,53 +1,22 @@
 import jsonwebtoken from "jsonwebtoken"
-import { adminPermissions } from "../managePermissions/manage.permissions.js";
+import { adminPermissions, InstPermissions } from "../managePermissions/manage.permissions.js";
 import 'dotenv/config'
 import uniqid from 'uniqid';
 import { response } from "../Resources/responses.js";
-import { getAllCat, GetCatxName, CreateCat, GetCatxId, UpdateCat, deleteCat } from "../models/categorias.model.js";
+import { getModulexCourse , createModule} from "../models/modulos_cursos.model.js";
+import { verifyExistCurso } from "../models/cursos.model.js";
 
 const jwt = jsonwebtoken;
 
-//get all categories
-export const GetCategories = async (req, res) => {
-
-    try {
-
-        const categorias = await getAllCat();
-
-        response(res, 200, 200, categorias);
-
-
-    } catch (error) {
-
-        if (err.errno) {
-
-            response(res, 400, err.errno, err.code);
-
-        } else {
-            response(res, 500, 500, "something went wrong");
-
-        }
-    }
-
-}
-
-//get  category by id
-export const GetCategoriesxId = async (req, res) => {
+//get  modules by course's id -- OK
+export const GetModulesxId = async (req, res) => {
 
     try {
         const { id } = req.params;
 
-        if (id) {
+        const module = await getModulexCourse(id)
 
-            const categoria = await GetCatxId(id)
-
-            response(res, 200, 200, categoria);
-
-        } else {
-            response(res, 400, 102, "Something went wrong");
-        }
-
-
+        response(res, 200, 200, module);
 
     } catch (err) {
         if (err.errno) {
@@ -62,8 +31,8 @@ export const GetCategoriesxId = async (req, res) => {
 
 }
 
-// create categories
-export const createCategories = async (req, res) => {
+// create new modules
+export const createModules = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
@@ -73,51 +42,52 @@ export const createCategories = async (req, res) => {
 
         try {
 
-            const Id_Cat = uniqid();
+            const Id_Mod = uniqid();
 
-            const { Nom_Cat } = req.body;
-
+            const { Tit_Mod, Est_Mod, Id_Cur, Horas_Cont_Mod } = req.body;
+            
             //verificamos que no exista una categoria con el mismo nombre
-            const categoriaExists = await GetCatxName(Nom_Cat)
+            const courseExists = await verifyExistCurso(Id_Cur)
+         
 
+            if (courseExists.length < 1) {
 
-            if (categoriaExists.length > 0) {
-
-                response(res, 500, 107, "category already exist");
+                response(res, 500, 103, "course don't exist");
 
             } else {
 
-                const userData = jwt.decode(req.token, process.env.SECRETWORD);
+                const { Id_Rol_FK } = data.user;
 
                 //verify user permissions
-                const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
+                const adminPermiso = adminPermissions(Id_Rol_FK);
+                const InstrucPermissions = InstPermissions(Id_Rol_FK);
 
-                if (!adminPermiso) {
-
-                    response(res, 403, 403, "you dont have permissions");
-                } else {
-
+                if (adminPermiso || InstrucPermissions) {
                     //create category
                     const datos = {
-                        Id_Cat: Id_Cat,
-                        Nom_Cat: Nom_Cat.toLowerCase()
+                        Id_Mod : Id_Mod,
+                        Tit_Mod : Tit_Mod,
+                        Est_Mod : Est_Mod,
+                        Id_Cur_FK : Id_Cur,
+                        Horas_Cont_Mod: Horas_Cont_Mod
                     }
 
-                    const newCategory = await CreateCat(datos);
+                    const newModule = await createModule(datos);
                     const objResp = {
-                        insertId: Id_Cat
+                        insertId: Id_Mod
                     }
                     response(res, 200, 200, objResp);
 
+                } else {
+
+                    response(res, 403, 403, "you dont have permissions");
 
                 }
-
-
 
             }
 
         } catch (err) {
-
+            console.log(err)
             if (err.errno) {
 
                 response(res, 400, err.errno, err.code);
@@ -228,7 +198,7 @@ export const DeleteCategories = async (req, res) => {
             //verify category exist
 
             const category = await GetCatxId(id)
-           
+
             if (category.length > 0) {
 
                 const responses = await deleteCat(id)

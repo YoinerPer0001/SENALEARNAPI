@@ -5,12 +5,18 @@ import { response } from "../Resources/responses.js";
 
 export const GetObjxCourses = (id) => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM objetivos_cursos WHERE Id_Cur_FK = ?", [id], (err, result) => {
+        connection.query("SELECT * FROM objetivos_cursos WHERE Id_Cur_FK = ?", [id], (err, results) => {
 
             if (err) {
-                reject(err);
-            } else {
-                resolve(result);
+            
+                const objError = {
+                    errno: err.errno,
+                    code: err.code
+                }
+                reject(objError);
+            }
+            else {
+                resolve(results)
             }
 
         })
@@ -24,15 +30,15 @@ export const CreateObjCourse = ( datos) => {
         connection.query("INSERT INTO objetivos_cursos (Id_Objetivo, Desc_Objetivo, Id_Cur_FK) VALUES (?,?,?)", [datos.Id_Objetivo, datos.Desc_Objetivo,datos.Id_Cur_FK], (err, results) => {
 
             if (err) {
-               
+            
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
-
-            } else {
-               
-                resolve(results);
+            }
+            else {
+                resolve(results)
             }
 
         })
@@ -42,15 +48,18 @@ export const CreateObjCourse = ( datos) => {
 //obtener objetivos por ID
 export const GetObjxId= ( id) => {
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM objetivos_cursos WHERE Id_Objetivo = ?", [id], (err, result) => {
+        connection.query("SELECT * FROM objetivos_cursos WHERE Id_Objetivo = ?", [id], (err, results) => {
 
             if (err) {
+            
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
-            } else {
-                resolve(result);
+            }
+            else {
+                resolve(results)
             }
 
         })
@@ -63,16 +72,17 @@ export const UpdateObjCourses = (datos) => {
     return new Promise((resolve, reject) => {
 
         connection.query("UPDATE objetivos_cursos SET Desc_Objetivo= ?, Id_Cur_FK = ? WHERE Id_Objetivo = ?",
-            [datos.Desc_Objetivo, datos.Id_Cur_FK, datos.Id_Objetivo], (err, result) => {
+            [datos.Desc_Objetivo, datos.Id_Cur_FK, datos.Id_Objetivo], (err, results) => {
                 if (err) {
+            
                     const objError = {
-                        errno: err.errno
+                        errno: err.errno,
+                        code: err.code
                     }
                     reject(objError);
-
-                } else {
-                    
-                    resolve(result);
+                }
+                else {
+                    resolve(results)
                 }
 
             });
@@ -80,19 +90,19 @@ export const UpdateObjCourses = (datos) => {
 }
 
 //eliminar categorias
-export const deleteCat = (res, id) => {
+export const deleteCat = ( id) => {
     return new Promise((resolve, reject) => {
-        connection.query("DELETE FROM categorias WHERE Id_Cat = ?", [id], (err, result) => {
+        connection.query("DELETE FROM categorias WHERE Id_Cat = ?", [id], (err, results) => {
             if (err) {
-
+            
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
-
-            } else {
-                resolve(result);
-
+            }
+            else {
+                resolve(results)
             }
         })
     })

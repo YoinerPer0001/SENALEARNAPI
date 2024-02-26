@@ -17,9 +17,9 @@ export const GetAllObjxCourse = async (req, res) => {
 
         if (id) {
 
-            const categoria = await GetObjxCourses(res, id)
+            const courses = await GetObjxCourses(id)
 
-            response(res, 200, 200, categoria);
+            response(res, 200, 200, courses);
 
         } else {
             response(res, 400, 102, "Something went wrong");
@@ -32,7 +32,7 @@ export const GetAllObjxCourse = async (req, res) => {
 
         } else {
 
-            response(res, 400, 104, "something went wrong");
+            response(res, 400, err.errno, err.code);
         }
     }
 
@@ -72,7 +72,7 @@ export const createObjCour = async (req, res) => {
                     response(res, 404, 404, "course not found");
                 } else {
                     //verificamos que no exista una un objetivo con el mismo id
-                    const objetivoExists = await GetObjxId(res, Id_Objetivo)
+                    const objetivoExists = await GetObjxId( Id_Objetivo)
 
 
                     if (objetivoExists.length > 0) {
@@ -88,7 +88,7 @@ export const createObjCour = async (req, res) => {
                             Id_Cur_FK: Id_Cur
                         }
 
-                        const newObjetive = await CreateObjCourse(res, datos);
+                        const newObjetive = await CreateObjCourse( datos);
 
                         response(res, 200, 200, "success created");
 
@@ -107,7 +107,7 @@ export const createObjCour = async (req, res) => {
 
             } else {
 
-                response(res, 400, 104, "something went wrong");
+                response(res, 400, err.errno, err.code);
             }
 
 
@@ -158,8 +158,10 @@ export const UpdateObjetivesCour = async (req, res) => {
                         }
                        
                         const responses = await UpdateObjCourses(datos)
-                        console.log(responses)
-                        response(res, 200, 200, "success updated");
+                        const objResp ={
+                            affectedRows: responses.affectedRows
+                        }
+                        response(res, 200, 200, objResp);
                     }else{
                         response(res, 204, 204, "course don't exist");
                     }
@@ -172,7 +174,7 @@ export const UpdateObjetivesCour = async (req, res) => {
         } catch (err) {
 
             if (err.errno) {
-                response(res, 400, 104, "something went wrong");
+                response(res, 400, err.errno, err.code);
 
             } else {
 
@@ -233,7 +235,7 @@ export const DeleteCategories = async (req, res) => {
 
             } else {
 
-                response(res, 400, 104, "something went wrong");
+                response(res, 400, err.errno, err.code);
             }
 
         }

@@ -13,7 +13,7 @@ export const getCursos = async (req, res) => {
     try {
 
         //lista de cursos publicados
-        const courses = await getAllCourses(res)
+        const courses = await getAllCourses()
 
         response(res, 200, 200, courses);
 
@@ -22,11 +22,11 @@ export const getCursos = async (req, res) => {
     } catch (err) {
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
 
@@ -40,20 +40,20 @@ export const getCuCat = async (req, res) => {
 
         const { id } = req.params;
 
-        const category = getAllCoursesxCat(res, id)
+        const course = await getAllCoursesxCat(id)
 
-        response(res, 200, 200, category);
+        response(res, 200, 200, course);
 
 
     } catch (err) {
 
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
 
@@ -100,9 +100,11 @@ export const CreateCourse = async (req, res) => {
                         Est_Cur: Est_Cur
                     }
 
-                    const resp = await createNewCourse(res, datosCurso);
-
-                    response(res, 200, 200, resp);
+                    const resp = await createNewCourse(datosCurso);
+                    const objResp = {
+                        insertId: Id_Cur,
+                    }
+                    response(res, 200, 200, objResp );
 
 
 
@@ -120,11 +122,11 @@ export const CreateCourse = async (req, res) => {
 
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
+            response(res, 500, 500, "something went wrong");
 
-            response(res, 400, 104, "something went wrong");
         }
     }
 }
@@ -155,7 +157,7 @@ export const UpdateCourse = async (req, res) => {
 
                 let objDatos;
 
-                const curso = await verifyExistCurso(res, id);
+                const curso = await verifyExistCurso(id);
 
                 objDatos = {
                     id: id,
@@ -167,20 +169,22 @@ export const UpdateCourse = async (req, res) => {
                     Fot_Cur: InfoCur.Fot_Cur || curso.Fot_Cur
                 }
 
-                const resp = await CoursesUpdate(res, objDatos)
-
-                response(res, 200, 200, resp);
+                const resp = await CoursesUpdate(objDatos)
+                const objResp ={
+                    affectedRows: resp.affectedRows
+                }
+                response(res, 200, 200, objResp);
 
 
 
             } catch (err) {
                 if (err.errno) {
 
-                    response(res, 500, 500, "something went wrong");
+                    response(res, 400, err.errno, err.code);
 
                 } else {
+                    response(res, 500, 500, "something went wrong");
 
-                    response(res, 400, 104, "something went wrong");
                 }
             }
 

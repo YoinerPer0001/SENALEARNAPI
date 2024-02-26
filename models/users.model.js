@@ -1,39 +1,44 @@
 import { connection } from "../db.js"
-import { response } from "../Resources/responses.js";
 
 
 //Obtener todos los usuario
-export const getAllUsers = (res) => {
+export const getAllUsers = () => {
 
     return new Promise((resolve, reject) => {
 
         connection.query('SELECT * FROM usuarios', (err, results, fields) => {
             if (err) {
+                console.log(err)
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
             }
-
-            resolve(results);
+            else {
+                resolve(results)
+            }
 
         })
     })
 }
 
 //Obtener usuario por Email
-export const UserByEmail = async (res, Ema_User) => {
+export const UserByEmail = async (Ema_User) => {
     return new Promise((resolve, reject) => {
 
         connection.query("SELECT * FROM usuarios WHERE Ema_User = ?", [Ema_User], (err, results) => {
             if (err) {
+                console.log(err)
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
             }
-
-            resolve(results);
+            else {
+                resolve(results)
+            }
 
         })
 
@@ -41,7 +46,7 @@ export const UserByEmail = async (res, Ema_User) => {
 }
 
 //Regitrar Usuarios
-export const InsertUsers = (res, datos) => {
+export const InsertUsers = ( datos) => {
 
     const { Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK } = datos;
 
@@ -49,15 +54,15 @@ export const InsertUsers = (res, datos) => {
 
         connection.query("INSERT INTO usuarios (Nom_User,Ape_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?)", [Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
             if (err) {
-
+                console.log(err)
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
-
-            } else {
-
-                resolve(results);
+            }
+            else {
+                resolve(results)
             }
         })
     })
@@ -65,7 +70,7 @@ export const InsertUsers = (res, datos) => {
 
 
 //seleccionar usuarios por id
-export const GetUserbyId = (res, id) => {
+export const GetUserbyId = ( id) => {
 
     return new Promise((resolve, reject) => {
         connection.query("SELECT * FROM USUARIOS WHERE Id_User = ?", [id], (err, results) => {
@@ -82,13 +87,35 @@ export const GetUserbyId = (res, id) => {
     })
 }
 
+//actualizar estado usuarios
+export const UserDataUpdate = (datos) => {
+    
+    return new Promise((resolve, reject) => {
+        connection.query("UPDATE usuarios SET Nom_User = ?,Ape_User=?,Tel_User=?,Ema_User=?,Fot_User=? WHERE Id_User = ?", [datos.Nom_User,datos.Ape_User,datos.Tel_User,datos.Ema_User,datos.Fot_User,datos.Id_User], (err, results) => {
+            if (err) {
+                console.log(err)
+                const objError = {
+                    errno: err.errno,
+                    code: err.code
+                }
+                reject(objError);
+            }
+            else {
+                resolve(results)
+            }
+        })
+    })
+}
+
 //actualizar estado email a verificado
-export const UpdateEstEmail = (res, id) => {
+export const UpdateEstEmail = (id) => {
     return new Promise((resolve, reject) => {
         connection.query("UPDATE usuarios SET Est_Email_User = ? WHERE Id_User = ?", [1, id], (err, results) => {
             if (err) {
+                console.log(err)
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
             }
@@ -100,17 +127,20 @@ export const UpdateEstEmail = (res, id) => {
 }
 
 //verificar existencia tanto por email o por nombre de usuario
-export const getUserByEmailUser = (res, campoV, valor) => {
+export const getUserByEmailUser = (campoV, valor) => {
     return new Promise((resolve, reject) => {
 
         connection.query(`SELECT * FROM usuarios WHERE ${campoV} = ?`, [valor], async (err, results, fields) => {
             if (err) {
+                console.log(err)
                 const objError = {
-                    errno: err.errno
+                    errno: err.errno,
+                    code: err.code
                 }
                 reject(objError);
-            } else {
-                resolve(results);
+            }
+            else {
+                resolve(results)
             }
         })
     })
