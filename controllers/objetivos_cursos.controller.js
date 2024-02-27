@@ -15,24 +15,24 @@ export const GetAllObjxCourse = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (id) {
+        const courses = await GetObjxCourses(id)
 
-            const courses = await GetObjxCourses(id)
-
+        if(courses.length > 0){
             response(res, 200, 200, courses);
-
-        } else {
-            response(res, 400, 102, "Something went wrong");
+        }else{
+            response(res, 204, 204, courses);
         }
+
+
 
     } catch (err) {
         if (err.errno) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
         } else {
 
-            response(res, 400, err.errno, err.code);
+            response(res, 500, 500, "something went wrong");
         }
     }
 
@@ -72,7 +72,7 @@ export const createObjCour = async (req, res) => {
                     response(res, 404, 404, "course not found");
                 } else {
                     //verificamos que no exista una un objetivo con el mismo id
-                    const objetivoExists = await GetObjxId( Id_Objetivo)
+                    const objetivoExists = await GetObjxId(Id_Objetivo)
 
 
                     if (objetivoExists.length > 0) {
@@ -88,9 +88,11 @@ export const createObjCour = async (req, res) => {
                             Id_Cur_FK: Id_Cur
                         }
 
-                        const newObjetive = await CreateObjCourse( datos);
-
-                        response(res, 200, 200, "success created");
+                        const newObjetive = await CreateObjCourse(datos);
+                        const objRes ={
+                            insertId :Id_Objetivo
+                        }
+                        response(res, 200, 200, objRes);
 
                     }
 
@@ -149,20 +151,20 @@ export const UpdateObjetivesCour = async (req, res) => {
 
                     //verify course exist
                     const course = await getCoursesxId(Id_Cur);
-                   
+
                     if (course.length > 0) {
                         const datos = {
                             Id_Objetivo: id,
                             Desc_Objetivo: Desc_Objetivo,
                             Id_Cur_FK: Id_Cur
                         }
-                       
+
                         const responses = await UpdateObjCourses(datos)
-                        const objResp ={
+                        const objResp = {
                             affectedRows: responses.affectedRows
                         }
                         response(res, 200, 200, objResp);
-                    }else{
+                    } else {
                         response(res, 204, 204, "course don't exist");
                     }
                 }

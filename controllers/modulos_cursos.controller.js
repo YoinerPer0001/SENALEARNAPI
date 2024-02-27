@@ -15,7 +15,8 @@ export const GetModulesxId = async (req, res) => {
         const { id } = req.params;
 
         //verificams que exista el curso
-        const course = getCoursesxId(id);
+        const course = await getCoursesxId(id);
+       
         if (course.length > 0) {
             const module = await getModulexCourse(id)
 
@@ -52,7 +53,7 @@ export const createModules = async (req, res) => {
 
             const Id_Mod = uniqid();
 
-            const { Tit_Mod, Est_Mod, Id_Cur, Horas_Cont_Mod } = req.body;
+            const { Tit_Mod, Id_Cur, Horas_Cont_Mod } = req.body;
 
             //verificamos que no exista una categoria con el mismo nombre
             const courseExists = await getCoursesxId(Id_Cur)
@@ -75,7 +76,7 @@ export const createModules = async (req, res) => {
                     const datos = {
                         Id_Mod: Id_Mod,
                         Tit_Mod: Tit_Mod,
-                        Est_Mod: Est_Mod,
+                        Est_Mod: 0,
                         Id_Cur_FK: Id_Cur,
                         Horas_Cont_Mod: Horas_Cont_Mod
                     }
@@ -112,7 +113,7 @@ export const createModules = async (req, res) => {
     })
 }
 
-//update categorias
+//update modules
 export const UpdateModules = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
@@ -126,18 +127,17 @@ export const UpdateModules = async (req, res) => {
             const adPermision = adminPermissions(Id_Rol_FK);
             const InstrucPermissions = InstPermissions(Id_Rol_FK);
 
+            
 
             if (adPermision || InstrucPermissions) {
-
+                
                 //Data
-
-
                 const { id } = req.params;
                 const modData = req.body;
-
+                
                 //verify exist module
-                const module = await getModulexId(modData.Id_Mod);
-
+                const module = await getModulexId(id);
+                
                 if (module.length < 1) {
 
                     response(res, 500, 103, "Something went wrong");
@@ -153,36 +153,32 @@ export const UpdateModules = async (req, res) => {
                     }
 
                     // si se quiere actualizar el curso al que pertenece verificamos que exista el curso
+                    let course = "";
+
                     if (modData.Id_Cur) {
-                        const course = await getCoursesxId(modData.Id_Cur);
+                         course = await getCoursesxId(modData.Id_Cur);
 
                         if (course.length < 1) {
                             response(res, 500, 103, "Something went wrong");
 
                         } else {
 
-                            const modUpdated = UpdateCurModules(datos);
+                            const modUpdated = await UpdateCurModules(datos);
                             const objRes = {
                                 affectedRows : modUpdated.affectedRows
                             }
                             response(res,200,200,objRes);
                         }
+
                     }else{
 
-                        const modUpdated = UpdateCurModules(datos);
+                        const modUpdated = await UpdateCurModules(datos);
                             const objRes = {
                                 affectedRows : modUpdated.affectedRows
                             }
                             response(res,200,200,objRes);
                     }
 
-                    
-
-                    const responses = await UpdateCat(datos)
-                    const objRes = {
-                        affectedRows: responses.affectedRows
-                    }
-                    response(res, 200, 200, objRes);
 
                 }
 

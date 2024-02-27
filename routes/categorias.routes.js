@@ -14,8 +14,8 @@ const routesCategorias = express();
  * @swagger
  * /api/categories/:
  *   get:
- *     summary: Returns a list of categories.
- *     description: Retrieves a list of categories from the database.
+ *     summary: Retorna la lista de todas las categorias.
+ *     description: Retorna la lista de todas las categorias desde la base de datos.
  *     tags:
  *      - Categorias
  *     responses:
@@ -89,7 +89,7 @@ routesCategorias.get("/api/categories", GetCategories);
  *   get:
  *     tags:
  *      - Categorias
- *     summary: Returns a user by ID.
+ *     summary: Retorna una categoria segun el id ingresado.
  *     parameters:
  *       - name: id
  *         in: path
@@ -159,6 +159,7 @@ routesCategorias.get("/api/categories", GetCategories);
  *                 type: error
  *                 code: 400
  *                 message: algo salio mal
+ *       
  */
 
 routesCategorias.get("/api/categories/:id", GetCategoriesxId);
@@ -195,7 +196,7 @@ routesCategorias.get("/api/categories/:id", GetCategoriesxId);
  *             example:
  *               type: success
  *               code: 200
- *               data: {"result": {"type": "success","code": 200,"data": {"insertId": "2fquk73olt36rfar"}}}
+ *               data: {"insertId": "1"}
  *       '204':
  *         description: La operación se realizó correctamente, pero no hubo datos que devolver
  *         content:
@@ -288,7 +289,7 @@ routesCategorias.post("/api/categories/create", verifyToken, createCategories);
  *             example:
  *               type: success
  *               code: 200
- *               data: {"result": {"type": "success","code": 200,"data": {"affectedRows": 1}}}
+ *               data: {"affectedRows": 1}
  *       '204':
  *         description: La operación se realizó correctamente, pero no hubo datos que devolver
  *         content:

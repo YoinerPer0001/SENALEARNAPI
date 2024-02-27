@@ -50,7 +50,7 @@ export const getModulexId = async (Id_Mod) => {
     const url = "SELECT * FROM modulocurso WHERE Id_Mod = ?";
     return new Promise((resolve, reject) => {
 
-        connection.query(url, [id_course], (err, results) => {
+        connection.query(url, [Id_Mod], (err, results) => {
             if (err) {
                 const objError = {
                     errno: err.errno,
