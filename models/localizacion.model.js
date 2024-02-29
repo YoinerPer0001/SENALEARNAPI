@@ -41,3 +41,37 @@ export const VerifyUserIp = (datos)=>{
     })
 }
 
+//obtener todas las localizaciones
+export const getAllLoc = () => {
+    return new Promise((resolve, reject) => {
+
+        connection.query("SELECT * FROM localizacion", (err, result) => {
+            if (err) {
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
+            } else {
+                resolve(result);
+            }
+        });
+    })
+}
+
+
+//obtener todas las localizaciones de usuarios
+export const getAllLocUsers = (id) => {
+    return new Promise((resolve, reject) => {
+
+        connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ?",[id], (err, result) => {
+            if (err) {
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
+            } else {
+                resolve(result);
+            }
+        });
+    })
+}

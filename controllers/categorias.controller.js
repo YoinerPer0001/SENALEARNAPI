@@ -14,13 +14,13 @@ export const GetCategories = async (req, res) => {
 
         const categorias = await getAllCat();
 
-        if(categorias.length > 0){
+        if (categorias.length > 0) {
             response(res, 200, 200, categorias);
-        }else{
+        } else {
             response(res, 204, 204, categorias);
         }
 
-       
+
 
 
     } catch (error) {
@@ -83,43 +83,50 @@ export const createCategories = async (req, res) => {
 
             const { Nom_Cat } = req.body;
 
-            //verificamos que no exista una categoria con el mismo nombre
-            const categoriaExists = await GetCatxName(Nom_Cat)
+            if (!Nom_Cat) {
 
-
-            if (categoriaExists.length > 0) {
-
-                response(res, 500, 107, "category already exist");
+                response(res, 400, 102, "Something went wrong");
 
             } else {
 
-                const userData = jwt.decode(req.token, process.env.SECRETWORD);
+                //verificamos que no exista una categoria con el mismo nombre
+                const categoriaExists = await GetCatxName(Nom_Cat)
 
-                //verify user permissions
-                const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
 
-                if (!adminPermiso) {
+                if (categoriaExists.length > 0) {
 
-                    response(res, 403, 403, "you dont have permissions");
+                    response(res, 500, 107, "category already exist");
+
                 } else {
 
-                    //create category
-                    const datos = {
-                        Id_Cat: Id_Cat,
-                        Nom_Cat: Nom_Cat.toLowerCase()
+                    const userData = jwt.decode(req.token, process.env.SECRETWORD);
+
+                    //verify user permissions
+                    const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
+
+                    if (!adminPermiso) {
+
+                        response(res, 403, 403, "you dont have permissions");
+                    } else {
+
+                        //create category
+                        const datos = {
+                            Id_Cat: Id_Cat,
+                            Nom_Cat: Nom_Cat.toLowerCase()
+                        }
+
+                        const newCategory = await CreateCat(datos);
+                        const objResp = {
+                            insertId: Id_Cat
+                        }
+                        response(res, 200, 200, objResp);
+
+
                     }
 
-                    const newCategory = await CreateCat(datos);
-                    const objResp = {
-                        insertId: Id_Cat
-                    }
-                    response(res, 200, 200, objResp);
 
 
                 }
-
-
-
             }
 
         } catch (err) {
@@ -234,7 +241,7 @@ export const DeleteCategories = async (req, res) => {
             //verify category exist
 
             const category = await GetCatxId(id)
-           
+
             if (category.length > 0) {
 
                 const responses = await deleteCat(id)

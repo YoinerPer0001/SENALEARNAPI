@@ -48,13 +48,13 @@ export const UserByEmail = async (Ema_User) => {
 //Regitrar Usuarios
 export const InsertUsers = ( datos) => {
 
-    const { Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK } = datos;
+    const { Id_User, Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK } = datos;
 
     return new Promise((resolve, reject) => {
 
-        connection.query("INSERT INTO usuarios (Nom_User,Ape_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?)", [Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
+        connection.query("INSERT INTO usuarios (Id_User,Nom_User,Ape_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?,?)", [Id_User, Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
             if (err) {
-                console.log(err)
+             
                 const objError = {
                     errno: err.errno,
                     code: err.code

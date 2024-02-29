@@ -23,10 +23,10 @@ export const InserTokens = (datos, tipo = 2) =>{
 }
 
 //verificar tokens de usuario
-export const VerEmailToken = ( datos)=>{
+export const VerEmailToken = ( datos, tipo)=>{
     
     return new Promise((resolve, reject)=>{
-        connection.query("SELECT * FROM tokens WHERE User_Id_FK = ? AND Token = ?", [datos.Id_User, datos.codigo], (err, results) => {
+        connection.query("SELECT * FROM tokens WHERE User_Id_FK = ? AND Token = ? AND tipo_token = ?", [datos.Id_User, datos.codigo, tipo], (err, results) => {
             if (err) {
                  const objError = {
                     errno: err.errno

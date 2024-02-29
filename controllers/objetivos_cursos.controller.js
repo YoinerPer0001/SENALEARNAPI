@@ -17,9 +17,9 @@ export const GetAllObjxCourse = async (req, res) => {
 
         const courses = await GetObjxCourses(id)
 
-        if(courses.length > 0){
+        if (courses.length > 0) {
             response(res, 200, 200, courses);
-        }else{
+        } else {
             response(res, 204, 204, courses);
         }
 
@@ -56,67 +56,77 @@ export const createObjCour = async (req, res) => {
 
             const { Desc_Objetivo, Id_Cur } = req.body;
 
-            //verify user permissions
-            const adminPermiso = adminPermissions(data.user.Id_Rol_FK);
-
-            if (!adminPermiso) {
-                response(res, 403, 403, "you dont have permissions");
+            if (!Desc_Objetivo || !Id_Cur ) {
+                
+                response(res, 400, 102, "Something went wrong");
 
             } else {
 
-                //verificamos que exista el curso
-                const courseExist = await getCoursesxId(Id_Cur);
 
-                if (courseExist.length < 1) {
 
-                    response(res, 404, 404, "course not found");
+                //verify user permissions
+                const adminPermiso = adminPermissions(data.user.Id_Rol_FK);
+
+                if (!adminPermiso) {
+                    response(res, 403, 403, "you dont have permissions");
+
                 } else {
-                    //verificamos que no exista una un objetivo con el mismo id
-                    const objetivoExists = await GetObjxId(Id_Objetivo)
 
+                    //verificamos que exista el curso
+                    const courseExist = await getCoursesxId(Id_Cur);
 
-                    if (objetivoExists.length > 0) {
+                    if (courseExist.length < 1) {
 
-                        response(res, 500, 107, "objetive already exist");
-
+                        response(res, 404, 404, "course not found");
                     } else {
+                        //verificamos que no exista una un objetivo con el mismo id
+                        const objetivoExists = await GetObjxId(Id_Objetivo)
 
-                        //create objetive
-                        const datos = {
-                            Id_Objetivo: Id_Objetivo,
-                            Desc_Objetivo: Desc_Objetivo.toLowerCase(),
-                            Id_Cur_FK: Id_Cur
-                        }
 
-                        const newObjetive = await CreateObjCourse(datos);
-                        const objRes ={
-                            insertId :Id_Objetivo
+                        if (objetivoExists.length > 0) {
+
+                            response(res, 500, 107, "objetive already exist");
+
+                        } else {
+
+                            //create objetive
+                            const datos = {
+                                Id_Objetivo: Id_Objetivo,
+                                Desc_Objetivo: Desc_Objetivo.toLowerCase(),
+                                Id_Cur_FK: Id_Cur
+                            }
+
+                            const newObjetive = await CreateObjCourse(datos);
+                            const objRes = {
+                                insertId: Id_Objetivo
+                            }
+                            response(res, 200, 200, objRes);
+
                         }
-                        response(res, 200, 200, objRes);
 
                     }
 
+
+                }
+
+            }
+
+            } catch (err) {
+
+                if (err.errno) {
+
+                    response(res, 500, 500, "something went wrong");
+
+                } else {
+
+                    response(res, 400, err.errno, err.code);
                 }
 
 
             }
 
-        } catch (err) {
 
-            if (err.errno) {
-
-                response(res, 500, 500, "something went wrong");
-
-            } else {
-
-                response(res, 400, err.errno, err.code);
-            }
-
-
-        }
-
-
-    })
+        })
 }
 
 //update categorias

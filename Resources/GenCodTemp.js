@@ -1,11 +1,21 @@
-import { v4 as uuidv4 } from "uuid";
+import speakeasy from 'speakeasy'
 
 export const GenCodigosTemp = (tiempo)=> {
-    const codigo = uuidv4();
+
+    const secret = speakeasy.generateSecret({ length: 6 });
+    
+    const token = speakeasy.totp({
+        secret: secret.ascii,
+        encoding: 'ascii',
+        step: tiempo // mins duracion
+    });
+
+
     const exp = Math.floor((Date.now() / 1000) + tiempo);
     const data = {
-        codigo: codigo,
+        codigo: token,
         exp: exp
     }
+
     return data
 }

@@ -8,6 +8,7 @@ import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, get
 import { GenCodigosTemp } from "../Resources/GenCodTemp.js";
 import { InserTokens, VerEmailToken } from "../models/tokens.model.js";
 import { InsertLocation, VerifyUserIp } from "../models/localizacion.model.js";
+import uniqid from 'uniqid';
 
 import 'dotenv/config'
 
@@ -95,8 +96,10 @@ export const regUser = async (req, res) => {
             if (user.length < 1) {
 
                 // we encript password
+                const Id_User = uniqid();
 
                 const DataEnv = {
+                    Id_User: Id_User,
                     Nom_User: datos.Nom_User,
                     Ape_User: datos.Ape_User,
                     Ema_User: datos.Ema_User,
@@ -109,25 +112,27 @@ export const regUser = async (req, res) => {
 
 
                 //generamos un codigo que se guardara en la base de datos
-                const { codigo, exp } = GenCodigosTemp(900);
+                const { codigo, exp } = GenCodigosTemp(600);
+
                 const DataToken = {
                     codigo: codigo,
                     exp: exp,
-                    Id_User: DataInsert.insertId
+                    Id_User: Id_User
                 }
+                console.log(DataToken)
                 //guardamos el token en la base de datos
                 const token = await InserTokens(DataToken);
 
                 //guardamos localizacion del usuario
                 const objLoc = {
                     Dir_Ip: datos.Dir_Ip,
-                    Id_User: DataInsert.insertId
+                    Id_User: Id_User
                 }
 
                 const locate = await InsertLocation(objLoc);
 
                 const IdInserted = {
-                    InsertId: DataInsert.insertId
+                    InsertId: Id_User
                 }
                 response(res, 200, 200, IdInserted);
 
@@ -226,7 +231,7 @@ export const ValidateEmail = async (req, res) => {
             if (user.length > 0) {
 
                 //verificamos que el codigo sea valido
-                const token = await VerEmailToken(datos)
+                const token = await VerEmailToken(datos,2)
 
                 if (token.length > 0) {
 
