@@ -24,7 +24,9 @@ const options ={
             }
         }
     },
-    apis:['routes/categorias.routes.js', 'routes/users.routes.js', 'routes/cursos.routes.js', 'routes/objetivos_cursos.routes.js', 'routes/modulos_cursos.routes.js'],
+    apis:['routes/categorias.routes.js', 'routes/users.routes.js',
+     'routes/cursos.routes.js', 'routes/objetivos_cursos.routes.js',
+      'routes/modulos_cursos.routes.js', 'routes/contenido_modulo.routes.js'],
 }
 
 //documentation in format json
