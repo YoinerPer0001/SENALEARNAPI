@@ -2,12 +2,12 @@ import { connection } from "../db.js"
 import { response } from "../Resources/responses.js";
 
 //insertar localizacion
-export const InsertLocation = (datos)=>{
-    return new Promise ((resolve,reject)=>{
+export const InsertLocation = (datos) => {
+    return new Promise((resolve, reject) => {
 
         connection.query("INSERT INTO localizacion (Dir_Ip,Id_User_FK) VALUES (?,?)", [datos.Dir_Ip, datos.Id_User], (err, results) => {
             if (err) {
-            
+
                 const objError = {
                     errno: err.errno,
                     code: err.code
@@ -19,15 +19,15 @@ export const InsertLocation = (datos)=>{
             }
         })
     })
-   
+
 }
 
 //verificar ip de usuario
-export const VerifyUserIp = (datos)=>{
-    return new Promise((resolve,reject)=>{
+export const VerifyUserIp = (datos) => {
+    return new Promise((resolve, reject) => {
         connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ? AND Dir_Ip = ? ", [datos.Id_User, datos.Dir_Ip], (err, results) => {
             if (err) {
-            
+
                 const objError = {
                     errno: err.errno,
                     code: err.code
@@ -58,12 +58,11 @@ export const getAllLoc = () => {
     })
 }
 
-
-//obtener todas las localizaciones de usuarios
-export const getAllLocUsers = (id) => {
+//obtener localizaciones por id
+export const getLocxId = (id) => {
     return new Promise((resolve, reject) => {
 
-        connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ?",[id], (err, result) => {
+        connection.query("SELECT * FROM localizacion WHERE Id_Loc = ?", [id], (err, result) => {
             if (err) {
                 const objError = {
                     errno: err.errno
@@ -75,3 +74,48 @@ export const getAllLocUsers = (id) => {
         });
     })
 }
+
+
+//obtener todas las localizaciones de usuarios
+export const getAllLocUsers = (id) => {
+    return new Promise((resolve, reject) => {
+
+        connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ?", [id], (err, result) => {
+            if (err) {
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
+            } else {
+                resolve(result);
+            }
+        });
+    })
+}
+
+//actualizar locations
+export const updateLocation = (datos) => {
+
+    return new Promise((resolve, reject) => {
+
+        connection.query("UPDATE localizacion SET Dir_Ip = ?, Id_User_FK=? WHERE Id_Loc = ?",
+            [datos.Dir_Ip, datos.Id_User, datos.Id_Loc], (err, result) => {
+
+                if (err) {
+                    const objError = {
+                        errno: err.errno
+                    }
+
+                    reject(objError);
+
+                } else {
+
+                    resolve(result);
+                    
+                }
+
+            });
+    })
+
+}
+

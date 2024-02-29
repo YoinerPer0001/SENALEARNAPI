@@ -1,9 +1,9 @@
-import { getAllLoc ,getAllLocUsers} from '../models/localizacion.model.js'
+import { getAllLoc, getAllLocUsers, InsertLocation, getLocxId, updateLocation } from '../models/localizacion.model.js'
 import { adminPermissions } from '../managePermissions/manage.permissions.js';
 import jsonwebtoken from 'jsonwebtoken'
 import 'dotenv/config'
 import { response } from '../Resources/responses.js';
-import {GetUserbyId} from '../models/users.model.js'
+import { GetUserbyId } from '../models/users.model.js'
 const jwt = jsonwebtoken;
 
 
@@ -58,11 +58,11 @@ export const GetLocationsxUser = async (req, res) => {
             //verify exist user
             const user = await GetUserbyId(id)
 
-            if(user.length < 1){
+            if (user.length < 1) {
 
                 response(res, 400, 103, "user don't exist");
 
-            }else{
+            } else {
 
                 const locations = await getAllLocUsers(id);
 
@@ -72,7 +72,7 @@ export const GetLocationsxUser = async (req, res) => {
                     response(res, 204, 204, locations);
                 }
             }
-            
+
 
         } else {
             response(res, 400, 102, "Something went wrong");
@@ -93,152 +93,174 @@ export const GetLocationsxUser = async (req, res) => {
 
 }
 
-// // create categories
-// export const createCategories = async (req, res) => {
+// create locations
+export const createLocations = async (req, res) => {
 
-//     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
-//         if (err) {
-//             response(res, 500, 105, "Something went wrong");
-//         }
+        if (err) {
+            response(res, 500, 105, "Something went wrong");
+        }
 
-//         try {
+        try {
 
-//             const Id_Cat = uniqid();
 
-//             const { Nom_Cat } = req.body;
+            const { Dir_Ip, Id_User } = req.body;
 
-//             if (!Nom_Cat) {
+            if (!Dir_Ip || !Id_User) {
 
-//                 response(res, 400, 102, "Something went wrong");
+                response(res, 400, 102, "Something went wrong");
 
-//             } else {
+            } else {
 
-//                 //verificamos que no exista una categoria con el mismo nombre
-//                 const categoriaExists = await GetCatxName(Nom_Cat)
+                //verificamos que exista el usuario
+                const UserExists = await GetUserbyId(Id_User)
 
 
-//                 if (categoriaExists.length > 0) {
+                if (UserExists.length < 1) {
 
-//                     response(res, 500, 107, "category already exist");
+                    response(res, 500, 103, "User don't exist");
 
-//                 } else {
+                } else {
 
-//                     const userData = jwt.decode(req.token, process.env.SECRETWORD);
+                    const { Id_Rol_FK } = data.user;
 
-//                     //verify user permissions
-//                     const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
+                    //verify user permissions
+                    const adminPermiso = adminPermissions(Id_Rol_FK);
 
-//                     if (!adminPermiso) {
+                    if (!adminPermiso) {
 
-//                         response(res, 403, 403, "you dont have permissions");
-//                     } else {
+                        response(res, 403, 403, "you dont have permissions");
+                    } else {
 
-//                         //create category
-//                         const datos = {
-//                             Id_Cat: Id_Cat,
-//                             Nom_Cat: Nom_Cat.toLowerCase()
-//                         }
+                        //create category
+                        const datos = {
+                            Dir_Ip: Dir_Ip,
+                            Id_User: Id_User
+                        }
 
-//                         const newCategory = await CreateCat(datos);
-//                         const objResp = {
-//                             insertId: Id_Cat
-//                         }
-//                         response(res, 200, 200, objResp);
+                        const newLocation = await InsertLocation(datos);
+                        const objResp = {
+                            insertId: newLocation.insertId
+                        }
+                        response(res, 200, 200, objResp);
 
 
-//                     }
+                    }
 
 
 
-//                 }
-//             }
+                }
+            }
 
-//         } catch (err) {
+        } catch (err) {
 
-//             if (err.errno) {
+            if (err.errno) {
 
-//                 response(res, 400, err.errno, err.code);
+                response(res, 400, err.errno, err.code);
 
-//             } else {
-//                 response(res, 500, 500, "something went wrong");
+            } else {
+                response(res, 500, 500, "something went wrong");
 
-//             }
+            }
 
 
-//         }
+        }
 
 
-//     })
-// }
+    })
+}
 
-// //update categorias
-// export const UpdateCategories = async (req, res) => {
+// //update locations
+export const UpdateLocations = async (req, res) => {
 
-//     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
-//         if (err) {
-//             response(res, 400, 105, "Something went wrong");
-//         }
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
+        if (err) {
+            
+            response(res, 400, 105, "Something went wrong");
+        }
 
-//         try {
-//             const { Id_Rol_FK } = dat.user;
+        try {
+            const { Id_Rol_FK } = dat.user;
 
-//             let adPermision = adminPermissions(Id_Rol_FK);
+            let adPermision = adminPermissions(Id_Rol_FK);
 
+            if (adPermision) {
 
-//             if (adPermision) {
+                //Data
+                const { id } = req.params;
+                const datos = req.body;
 
-//                 //Data
+                //verify exist location
+                let datosEnv;
+                const location = await getLocxId(id)
 
+                if (location.length < 1) {
 
-//                 const { id } = req.params;
-//                 const { Nom_Cat } = req.body;
+                    response(res, 500, 103, "Something went wrong");
 
-//                 //verify exist category
+                } else {
 
-//                 const category = await GetCatxId(id)
+                    //user verify exist
+                    if (datos.Id_User) {
 
-//                 if (category.length < 1) {
+                        const userExist = GetUserbyId(datos.Id_User);
 
-//                     response(res, 500, 103, "Something went wrong");
+                        if (userExist.length < 1) {
 
-//                 } else {
+                            response(res, 500, 103, "User don't exist");
 
-//                     const datos = {
-//                         id: id,
-//                         Nom_Cat: Nom_Cat
-//                     }
 
-//                     const responses = await UpdateCat(datos)
-//                     const objRes = {
-//                         affectedRows: responses.affectedRows
-//                     }
-//                     response(res, 200, 200, objRes);
+                        }else{
+                            datosEnv = {
+                                Id_Loc: id,
+                                Dir_Ip: datos.Dir_Ip || location[0].Dir_Ip,
+                                Id_User_FK: datos.Id_User
+                            }
+                        }
 
-//                 }
+                    }else{
 
+                        datosEnv = {
+                            Id_Loc: id,
+                            Dir_Ip: datos.Dir_Ip || location[0].Dir_Ip,
+                            Id_User_FK: datos.Id_User || location[0].Id_User_FK
+                        }
 
+                    }
 
 
+                        const responses = await updateLocation(datos)
+                        const objRes = {
+                            affectedRows: responses.affectedRows
+                        }
+                        response(res, 200, 200, objRes);
+                
 
+                }
 
-//             } else {
-//                 response(res, 401, 401, "You don't have permissions");
-//             }
 
-//         } catch (err) {
 
-//             if (err.errno) {
 
-//                 response(res, 400, err.errno, err.code);
 
-//             } else {
-//                 response(res, 500, 500, "something went wrong");
 
-//             }
-//         }
+            } else {
+                response(res, 401, 401, "You don't have permissions");
+            }
 
+        } catch (err) {
 
+            if (err.errno) {
 
-//     })
-// }
+                response(res, 400, err.errno, err.code);
+
+            } else {
+                response(res, 500, 500, "something went wrong");
+
+            }
+        }
+
+
+
+    })
+}
