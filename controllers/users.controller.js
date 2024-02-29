@@ -358,7 +358,7 @@ export const loginUser = async (req, res) => {
                     } else {
 
                         //enviamos codigo de verificacion para guardar la nueva ip
-                        const { codigo, exp } = GenCodigosTemp(900);
+                        const { codigo, exp } = GenCodigosTemp(600);
                         //guardamos en la base de datos
                         const objTok = {
                             codigo: codigo,
@@ -420,7 +420,7 @@ export const ValidateCod = async (req, res) => {
                 codigo: codigo,
                 Dir_Ip: Dir_Ip
             }
-            const token = await VerEmailToken(datos)
+            const token = await VerEmailToken(datos, 4)
 
             if (token.length) {
 
