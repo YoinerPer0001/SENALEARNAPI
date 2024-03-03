@@ -119,7 +119,7 @@ export const regUser = async (req, res) => {
                     exp: exp,
                     Id_User: Id_User
                 }
-                console.log(DataToken)
+               
                 //guardamos el token en la base de datos
                 const token = await InserTokens(DataToken);
 
@@ -480,6 +480,7 @@ function TokenDb(userData) {
     const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
     const tokendecode = jwt.decode(token, process.env.SECRETWORD);
     const data1 = {
+        Id_User:userData.Id_User,
         codigo: token,
         exp: tokendecode.exp,
     }

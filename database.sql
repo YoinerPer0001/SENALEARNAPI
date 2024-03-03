@@ -1,8 +1,8 @@
 /*
-SQLyog Ultimate v11.11 (64 bit)
-MySQL - 5.5.5-10.4.32-MariaDB : Database - senalearn
+SQLyog Ultimate v13.1.1 (64 bit)
+MySQL - 10.4.32-MariaDB : Database - senalearn
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -28,7 +28,22 @@ CREATE TABLE `categorias` (
 
 /*Data for the table `categorias` */
 
-insert  into `categorias`(`Id_Cat`,`Nom_Cat`) values ('1','Programación'),('2','mamawebos'),('2fquk70wlt28m5c0','desarrollo web'),('2fquk70wlt28mn9b','diseño gráfico'),('2fquk70wlt28muiz','marketing digital'),('2fquk70wlt28n9fi','negocios y emprendimiento'),('2fquk70wlt28nixt','ciencia de datos'),('2fquk70wlt28np26','arte y creatividad'),('2fquk70wlt28ogue','salud y bienestar'),('2fquk70wlt28ors4','cocina y gastronomía'),('2fquk73olt36rfar','petristas'),('3','Marketing'),('4','Idiomas'),('5','SOFTWARE'),('ahyv6j0lt7mmmac','lolala');
+insert  into `categorias`(`Id_Cat`,`Nom_Cat`) values 
+('1','Programación'),
+('2','mamawebos'),
+('2fquk70wlt28m5c0','desarrollo web'),
+('2fquk70wlt28mn9b','diseño gráfico'),
+('2fquk70wlt28muiz','marketing digital'),
+('2fquk70wlt28n9fi','negocios y emprendimiento'),
+('2fquk70wlt28nixt','ciencia de datos'),
+('2fquk70wlt28np26','arte y creatividad'),
+('2fquk70wlt28ogue','salud y bienestar'),
+('2fquk70wlt28ors4','cocina y gastronomía'),
+('2fquk73olt36rfar','petristas'),
+('3','Marketing'),
+('4','Idiomas'),
+('5','SOFTWARE'),
+('ahyv6j0lt7mmmac','lolala');
 
 /*Table structure for table `certificados` */
 
@@ -105,7 +120,20 @@ CREATE TABLE `cursos` (
 
 /*Data for the table `cursos` */
 
-insert  into `cursos`(`Id_Cur`,`Nom_Cur`,`Des_Cur`,`Hor_Cont_Total`,`Fech_Crea_Cur`,`Id_Cat_FK`,`Fot_Cur`,`Est_Cur`) values ('1','Curso de Programación Avanzada','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-07','1','https://ejemplo.com/imagen_curso.jpg',2),('2','Fundamentos del Diseño Gráfico','Domina los elementos esenciales del diseño gráfico',40,'2023-02-01','2',NULL,2),('2fquk2aclt1pzzry','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),('2fquk3a8lt1q1ddf','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),('2fquk3eklt3iqtu1','edsfdsfdf','dsfsdfdsfdsfdf',10,'2024-02-07','1','fdsdfdsfdsfsdf',1),('2fquk5t0lt1q0tbv','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),('2fqukuklt1puwas','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),('3','Estrategias de Marketing Digital','Explora estrategias efectivas de marketing digital',40,'2023-03-01','3',NULL,2),('4','Inglés Intermedio','Desarrolla habilidades en el idioma inglés',15,'2023-04-01','4',NULL,2),('5','Gestión Financiera Personal','Aprende a manejar tus finanzas personales',18,'2023-05-01','5',NULL,2),('ahyv2bslt0x9d1j','Curso de Programación Avanzada','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-05','1','https://ejemplo.com/imagen_curso.jpg',1),('ahyv5bolsxp9nxs','Costura Basica','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-05','1','https://ejemplo.com/imagen_curso.jpg',1),('ahyv8bslsxtrcct','Costura Basica','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-05','1','https://ejemplo.com/imagen_curso.jpg',1);
+insert  into `cursos`(`Id_Cur`,`Nom_Cur`,`Des_Cur`,`Hor_Cont_Total`,`Fech_Crea_Cur`,`Id_Cat_FK`,`Fot_Cur`,`Est_Cur`) values 
+('1','Curso de Programación Avanzada','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-07','1','https://ejemplo.com/imagen_curso.jpg',2),
+('2','Fundamentos del Diseño Gráfico','Domina los elementos esenciales del diseño gráfico',40,'2023-02-01','2',NULL,2),
+('2fquk2aclt1pzzry','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),
+('2fquk3a8lt1q1ddf','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),
+('2fquk3eklt3iqtu1','edsfdsfdf','dsfsdfdsfdsfdf',10,'2024-02-07','1','fdsdfdsfdsfsdf',1),
+('2fquk5t0lt1q0tbv','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),
+('2fqukuklt1puwas','Curso de COSTURA','Este curso cubre temas avanzados de COSTURA.',100,'2024-02-07','4','https://ejemplo.com/imagen_curso.jpg',1),
+('3','Estrategias de Marketing Digital','Explora estrategias efectivas de marketing digital',40,'2023-03-01','3',NULL,2),
+('4','Inglés Intermedio','Desarrolla habilidades en el idioma inglés',15,'2023-04-01','4',NULL,2),
+('5','Gestión Financiera Personal','Aprende a manejar tus finanzas personales',18,'2023-05-01','5',NULL,2),
+('ahyv2bslt0x9d1j','Curso de Programación Avanzada','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-05','1','https://ejemplo.com/imagen_curso.jpg',1),
+('ahyv5bolsxp9nxs','Costura Basica','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-05','1','https://ejemplo.com/imagen_curso.jpg',1),
+('ahyv8bslsxtrcct','Costura Basica','Este curso cubre temas avanzados de programación en varios lenguajes.',40,'2024-02-05','1','https://ejemplo.com/imagen_curso.jpg',1);
 
 /*Table structure for table `evaluacion` */
 
@@ -157,11 +185,14 @@ CREATE TABLE `localizacion` (
   PRIMARY KEY (`Id_Loc`),
   KEY `Id_User_FK` (`Id_User_FK`),
   CONSTRAINT `localizacion_ibfk_1` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `localizacion` */
 
-insert  into `localizacion`(`Id_Loc`,`Dir_Ip`,`Id_User_FK`) values (41,'192.168.0.1','ahyv6wlt7qkine'),(42,'192.168.1.6','ahyv6wlt7qkine');
+insert  into `localizacion`(`Id_Loc`,`Dir_Ip`,`Id_User_FK`) values 
+(41,'192.168.0.1','ahyv6wlt7qkine'),
+(42,'192.168.1.6','ahyv6wlt7qkine'),
+(43,'192.178.4.44','ahyv6wlt7qkine');
 
 /*Table structure for table `modulocurso` */
 
@@ -265,11 +296,15 @@ CREATE TABLE `roles` (
   `Id_Rol` int(11) NOT NULL AUTO_INCREMENT,
   `Nom_Rol` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id_Rol`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `roles` */
 
-insert  into `roles`(`Id_Rol`,`Nom_Rol`) values (1,'ESTUDIANTE'),(2,'ADMIN'),(3,'INSTRUCTOR');
+insert  into `roles`(`Id_Rol`,`Nom_Rol`) values 
+(1,'ESTUDIANTE'),
+(2,'ADMIN'),
+(3,'INSTRUCTOR'),
+(6,'VOCERO');
 
 /*Table structure for table `roles_opciones` */
 
@@ -299,11 +334,16 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=215 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
-insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_token`) values (132,'207177','1709242624','ahyv6wlt7qkine','2'),(133,'840892','1709243437','ahyv6wlt7qkine','4');
+insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_token`) values 
+(132,'207177','1709242624','ahyv6wlt7qkine','2'),
+(133,'840892','1709243437','ahyv6wlt7qkine','4'),
+(145,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTM5NjY1MiwiZXhwIjoxNzA5NDExMDUyfQ.VroqlHRbwu8NEsf7R-1Mzw8Qq0aGgsHB1ubn_VtQd0c','1709411052','ahyv6wlt7qkine','1'),
+(213,'xdfff','27-02-2023',NULL,'1'),
+(214,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTQ3NjcwNywiZXhwIjoxNzA5NDkxMTA3fQ._Di9L5L5dWYyJAo9w8DEXdkWH43I8Vlqm6xoo7RTOlM','1709491107','ahyv6wlt7qkine','1');
 
 /*Table structure for table `usuarios` */
 
@@ -326,7 +366,8 @@ CREATE TABLE `usuarios` (
 
 /*Data for the table `usuarios` */
 
-insert  into `usuarios`(`Id_User`,`Nom_User`,`Ape_User`,`Tel_User`,`Ema_User`,`Pass_User`,`Id_Rol_FK`,`Fot_User`,`Est_Email_User`) values ('ahyv6wlt7qkine','YOINER','PERTUZ',NULL,'yoinerpertuz@gmail.com','$2b$10$mHcGTUCOGvIge8euSLfGA.ydTVcxNO7neqEvtMCITOdMFWQeu4lGK',1,NULL,1);
+insert  into `usuarios`(`Id_User`,`Nom_User`,`Ape_User`,`Tel_User`,`Ema_User`,`Pass_User`,`Id_Rol_FK`,`Fot_User`,`Est_Email_User`) values 
+('ahyv6wlt7qkine','YOINER','PERTUZ',NULL,'yoinerpertuz@gmail.com','$2b$10$mHcGTUCOGvIge8euSLfGA.ydTVcxNO7neqEvtMCITOdMFWQeu4lGK',2,NULL,1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

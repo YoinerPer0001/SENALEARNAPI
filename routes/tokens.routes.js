@@ -1,19 +1,19 @@
-import express from 'express'
-import { verifyToken } from '../Resources/verifyToken.js';
-import { GetLocations, createLocations,UpdateLocations,GetLocationsxUser } from '../controllers/localizacion.controller.js';
+import express from 'express';
+import {GetAllTokens, GetTokenssxUser,InsertToken, GetTokenssxTipo, UpdateTokens} from '../controllers/tokens.controller.js'
+import {verifyToken} from '../Resources/verifyToken.js'
 
-const routesLocation = express();
+const routesTokens = express();
 
 /**
  * @swagger
- * /api/localizacion:
+ * /api/tokens:
  *   get:
- *     summary: Retorna la lista de todas las localizaciones (Solo rol de ADMIN)..
- *     description: Retorna la lista de todas las localizaciones desde la base de datos.
+ *     summary: Retorna la lista de todos los tokens (Solo rol de ADMIN)..
+ *     description: Retorna la lista de todos los tokens desde la base de datos.
  *     security:
  *      - bearerAuth: []
  *     tags:
- *      - Localizaciones
+ *      - Tokens
  *     responses:
  *       '200':
  *         description: Operación correcta
@@ -26,9 +26,11 @@ const routesLocation = express();
  *              example:
  *                 type: success
  *                 code: 200
- *                 data: [{"Id_Loc": 1,
-                         "Dir_Ip": "192.168.0.x",
-                            "Id_User_FK": "1"
+ *                 data: [{"Id_Token": 1,
+        "Token": "xxxxxxxxx",
+        "Fec_Caducidad": "xxxxxxx",
+        "User_Id_FK": "1",
+        "Tipo_token": "1"
                         }]
  *       '204':
  *         description: La operación se realizo correctamente, pero no hubo datos que devolver
@@ -79,24 +81,24 @@ const routesLocation = express();
  *                 code: 400
  *                 message: algo salio mal
  */
-routesLocation.get('/api/localizacion', verifyToken, GetLocations)
+routesTokens.get('/api/tokens', verifyToken, GetAllTokens)
 /**
  * @swagger
- * /api/localizacion/user/{id}:
+ * /api/tokens/user/{id}:
  *   get:
- *     summary: Retorna la lista de todas las localizaciones de un determinado usuario (Solo rol de ADMIN).
+ *     summary: Retorna la lista de todos los tokens de un determinado usuario (Solo rol de ADMIN).
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: user id.
+ *         description: rol id.
  *         schema:
  *           type: string
  *           minLenght: 1
  *     security:
  *      - bearerAuth: []
  *     tags:
- *      - Localizaciones
+ *      - Tokens
  *     responses:
  *       '200':
  *         description: Operación correcta
@@ -109,9 +111,11 @@ routesLocation.get('/api/localizacion', verifyToken, GetLocations)
  *              example:
  *                 type: success
  *                 code: 200
- *                 data: [{"Id_Loc": 1,
-                         "Dir_Ip": "192.168.0.x",
-                            "Id_User_FK": "1"
+ *                 data: [{"Id_Token": 1,
+                         "Token": "xxxxxxxxx",
+                         "Fec_Caducidad": "xxxxxxx",
+                         "User_Id_FK": "1",
+                         "Tipo_token": "1"
                         }]
  *       '204':
  *         description: La operación se realizo correctamente, pero no hubo datos que devolver
@@ -162,16 +166,101 @@ routesLocation.get('/api/localizacion', verifyToken, GetLocations)
  *                 code: 400
  *                 message: algo salio mal
  */
-routesLocation.get('/api/localizacion/user/:id',verifyToken,GetLocationsxUser)
+routesTokens.get('/api/tokens/user/:id',verifyToken, GetTokenssxUser)
 /**
  * @swagger
- * /api/localizacion/create:
+ * /api/tokens/type/{tipo}:
+ *   get:
+ *     summary: Retorna la lista de todos los tokens segun su tipo (Solo rol de ADMIN).
+ *     parameters:
+ *       - name: tipo
+ *         in: path
+ *         required: true
+ *         description: # tipo de token.
+ *         schema:
+ *           type: string
+ *           minLenght: 1
+ *     security:
+ *      - bearerAuth: []
+ *     tags:
+ *      - Tokens
+ *     responses:
+ *       '200':
+ *         description: Operación correcta
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *              example:
+ *                 type: success
+ *                 code: 200
+ *                 data: [{"Id_Token": 1,
+                         "Token": "xxxxxxxxx",
+                         "Fec_Caducidad": "xxxxxxx",
+                         "User_Id_FK": "1",
+                         "Tipo_token": "1"
+                        }]
+ *       '204':
+ *         description: La operación se realizo correctamente, pero no hubo datos que devolver
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *              example:
+ *                 type: success
+ *                 code: 204
+ *                 data: {[]}
+ *       '403':
+ *         description: No autorizado
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *               example:
+ *                 type: error
+ *                 code: 403
+ *                 message: No Autorizado
+ *       '500':
+ *         description: Error de servidor
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *               example:
+ *                 type: error
+ *                 code: 500
+ *                 message: algo salio mal
+ *       '400':
+ *         description:  la solicitud del cliente no pudo ser procesada por el servidor debido a problemas en la sintaxis o el formato de la solicitud
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *               example:
+ *                 type: error
+ *                 code: 400
+ *                 message: algo salio mal
+ */
+routesTokens.get('/api/tokens/type/:tipo',verifyToken, GetTokenssxTipo)
+/**
+ * @swagger
+ * /api/tokens/create:
  *   post:
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Localizaciones
- *     summary: Crear una nueva localizacion (Solo para rol de ADMIN).
+ *       - Tokens
+ *     summary: Crear una nuevo token (Solo para rol de ADMIN).
  *     requestBody:
  *       required: true
  *       content:
@@ -179,9 +268,13 @@ routesLocation.get('/api/localizacion/user/:id',verifyToken,GetLocationsxUser)
  *           schema:
  *             type: object
  *             properties:
- *               Dir_Ip:
+ *               Token:
+ *                 type: string
+ *               Fec_Caducidad:
  *                 type: string
  *               Id_User:
+ *                 type: string
+ *               Tipo_token:
  *                 type: string
  *     responses:
  *       '200':
@@ -245,21 +338,21 @@ routesLocation.get('/api/localizacion/user/:id',verifyToken,GetLocationsxUser)
  *               code: 400
  *               message: algo salió mal
  */
-routesLocation.post('/api/localizacion/create', verifyToken, createLocations)
+routesTokens.post('/api/tokens/create',verifyToken, InsertToken);
 /**
  * @swagger
- * /api/localizacion/update/{id}:
+ * /api/tokens/update/{id}:
  *   put:
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Localizaciones
- *     summary: Actualizar Localizaciones (Solo para rol de ADMIN).
+ *       - Tokens
+ *     summary: Actualizar tokens (Solo para rol de ADMIN).
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: id localizacion.
+ *         description: id token.
  *         schema:
  *           type: string
  *           minLenght: 1
@@ -270,9 +363,13 @@ routesLocation.post('/api/localizacion/create', verifyToken, createLocations)
  *           schema:
  *             type: object
  *             properties:
- *               Dir_Ip:
+ *               Token:
+ *                 type: string
+ *               Fec_Caducidad:
  *                 type: string
  *               Id_User:
+ *                 type: string
+ *               Tipo_token:
  *                 type: string
  *     responses:
  *       '200':
@@ -336,6 +433,7 @@ routesLocation.post('/api/localizacion/create', verifyToken, createLocations)
  *               code: 400
  *               message: algo salió mal
  */
-routesLocation.put('/api/localizacion/update/:id', verifyToken, UpdateLocations)
+routesTokens.put('/api/tokens/update/:id',verifyToken, UpdateTokens)
 
-export default routesLocation;
+
+export default routesTokens;

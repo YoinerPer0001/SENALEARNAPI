@@ -1,19 +1,19 @@
-import express from 'express'
-import { verifyToken } from '../Resources/verifyToken.js';
-import { GetLocations, createLocations,UpdateLocations,GetLocationsxUser } from '../controllers/localizacion.controller.js';
+import express from 'express';
+import {GetRoles,GetRolesxId, createRoles,UpdateRoles} from '../controllers/roles.controller.js'
+import {verifyToken} from '../Resources/verifyToken.js'
 
-const routesLocation = express();
+const routesRoles = express();
 
 /**
  * @swagger
- * /api/localizacion:
+ * /api/roles:
  *   get:
- *     summary: Retorna la lista de todas las localizaciones (Solo rol de ADMIN)..
- *     description: Retorna la lista de todas las localizaciones desde la base de datos.
+ *     summary: Retorna la lista de todos los roles (Solo rol de ADMIN)..
+ *     description: Retorna la lista de todos los roles desde la base de datos.
  *     security:
  *      - bearerAuth: []
  *     tags:
- *      - Localizaciones
+ *      - Roles de Usuarios
  *     responses:
  *       '200':
  *         description: Operación correcta
@@ -26,9 +26,8 @@ const routesLocation = express();
  *              example:
  *                 type: success
  *                 code: 200
- *                 data: [{"Id_Loc": 1,
-                         "Dir_Ip": "192.168.0.x",
-                            "Id_User_FK": "1"
+ *                 data: [{"Id_Rol": 10,
+                         "Nom_Rol": "ADMIN"
                         }]
  *       '204':
  *         description: La operación se realizo correctamente, pero no hubo datos que devolver
@@ -79,12 +78,13 @@ const routesLocation = express();
  *                 code: 400
  *                 message: algo salio mal
  */
-routesLocation.get('/api/localizacion', verifyToken, GetLocations)
+routesRoles.get('/api/roles',verifyToken, GetRoles);
+
 /**
  * @swagger
- * /api/localizacion/user/{id}:
+ * /api/roles/{id}:
  *   get:
- *     summary: Retorna la lista de todas las localizaciones de un determinado usuario (Solo rol de ADMIN).
+ *     summary: Retorna la lista de todos los roles por id (Solo rol de ADMIN).
  *     parameters:
  *       - name: id
  *         in: path
@@ -96,7 +96,7 @@ routesLocation.get('/api/localizacion', verifyToken, GetLocations)
  *     security:
  *      - bearerAuth: []
  *     tags:
- *      - Localizaciones
+ *      - Roles de Usuarios
  *     responses:
  *       '200':
  *         description: Operación correcta
@@ -109,9 +109,8 @@ routesLocation.get('/api/localizacion', verifyToken, GetLocations)
  *              example:
  *                 type: success
  *                 code: 200
- *                 data: [{"Id_Loc": 1,
-                         "Dir_Ip": "192.168.0.x",
-                            "Id_User_FK": "1"
+ *                 data: [{"Id_Rol": 10,
+                         "Nom_Rol": "ADMIN"
                         }]
  *       '204':
  *         description: La operación se realizo correctamente, pero no hubo datos que devolver
@@ -162,16 +161,17 @@ routesLocation.get('/api/localizacion', verifyToken, GetLocations)
  *                 code: 400
  *                 message: algo salio mal
  */
-routesLocation.get('/api/localizacion/user/:id',verifyToken,GetLocationsxUser)
+routesRoles.get('/api/roles/:id',verifyToken, GetRolesxId);
+
 /**
  * @swagger
- * /api/localizacion/create:
+ * /api/roles/create:
  *   post:
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Localizaciones
- *     summary: Crear una nueva localizacion (Solo para rol de ADMIN).
+ *       - Roles de Usuarios
+ *     summary: Crear una nuevo rol (Solo para rol de ADMIN).
  *     requestBody:
  *       required: true
  *       content:
@@ -179,9 +179,7 @@ routesLocation.get('/api/localizacion/user/:id',verifyToken,GetLocationsxUser)
  *           schema:
  *             type: object
  *             properties:
- *               Dir_Ip:
- *                 type: string
- *               Id_User:
+ *               Nom_Rol:
  *                 type: string
  *     responses:
  *       '200':
@@ -245,21 +243,22 @@ routesLocation.get('/api/localizacion/user/:id',verifyToken,GetLocationsxUser)
  *               code: 400
  *               message: algo salió mal
  */
-routesLocation.post('/api/localizacion/create', verifyToken, createLocations)
+routesRoles.post('/api/roles/create',verifyToken, createRoles);
+
 /**
  * @swagger
- * /api/localizacion/update/{id}:
+ * /api/roles/update/{id}:
  *   put:
  *     security:
  *       - bearerAuth: []
  *     tags:
- *       - Localizaciones
- *     summary: Actualizar Localizaciones (Solo para rol de ADMIN).
+ *       - Roles de Usuarios
+ *     summary: Actualizar roles (Solo para rol de ADMIN).
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: id localizacion.
+ *         description: id Rol.
  *         schema:
  *           type: string
  *           minLenght: 1
@@ -270,9 +269,7 @@ routesLocation.post('/api/localizacion/create', verifyToken, createLocations)
  *           schema:
  *             type: object
  *             properties:
- *               Dir_Ip:
- *                 type: string
- *               Id_User:
+ *               Nom_Rol:
  *                 type: string
  *     responses:
  *       '200':
@@ -336,6 +333,6 @@ routesLocation.post('/api/localizacion/create', verifyToken, createLocations)
  *               code: 400
  *               message: algo salió mal
  */
-routesLocation.put('/api/localizacion/update/:id', verifyToken, UpdateLocations)
+routesRoles.put('/api/roles/update/:id',verifyToken, UpdateRoles);
 
-export default routesLocation;
+export default routesRoles;

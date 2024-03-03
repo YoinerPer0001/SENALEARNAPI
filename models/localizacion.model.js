@@ -97,9 +97,9 @@ export const getAllLocUsers = (id) => {
 export const updateLocation = (datos) => {
 
     return new Promise((resolve, reject) => {
-
+        
         connection.query("UPDATE localizacion SET Dir_Ip = ?, Id_User_FK=? WHERE Id_Loc = ?",
-            [datos.Dir_Ip, datos.Id_User, datos.Id_Loc], (err, result) => {
+            [datos.Dir_Ip, datos.Id_User_FK, datos.Id_Loc], (err, result) => {
 
                 if (err) {
                     const objError = {
@@ -109,6 +109,7 @@ export const updateLocation = (datos) => {
                     reject(objError);
 
                 } else {
+                    
 
                     resolve(result);
                     

@@ -50,46 +50,49 @@ export const GetLocations = async (req, res) => {
 //get  locations by user id
 export const GetLocationsxUser = async (req, res) => {
 
-    try {
-        const { id } = req.params;
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
-        if (id) {
+        try {
+            const { id } = req.params;
 
-            //verify exist user
-            const user = await GetUserbyId(id)
+            if (id) {
 
-            if (user.length < 1) {
+                //verify exist user
+                const user = await GetUserbyId(id)
 
-                response(res, 400, 103, "user don't exist");
+                if (user.length < 1) {
+
+                    response(res, 400, 103, "user don't exist");
+
+                } else {
+
+                    const locations = await getAllLocUsers(id);
+
+                    if (locations.length > 0) {
+                        response(res, 200, 200, locations);
+                    } else {
+                        response(res, 204, 204, locations);
+                    }
+                }
+
 
             } else {
-
-                const locations = await getAllLocUsers(id);
-
-                if (locations.length > 0) {
-                    response(res, 200, 200, locations);
-                } else {
-                    response(res, 204, 204, locations);
-                }
+                response(res, 400, 102, "Something went wrong");
             }
 
 
-        } else {
-            response(res, 400, 102, "Something went wrong");
+
+        } catch (err) {
+            if (err.errno) {
+
+                response(res, 400, err.errno, err.code);
+
+            } else {
+                response(res, 500, 500, "something went wrong");
+
+            }
         }
-
-
-
-    } catch (err) {
-        if (err.errno) {
-
-            response(res, 400, err.errno, err.code);
-
-        } else {
-            response(res, 500, 500, "something went wrong");
-
-        }
-    }
+    })
 
 }
 
@@ -176,7 +179,7 @@ export const UpdateLocations = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
         if (err) {
-            
+
             response(res, 400, 105, "Something went wrong");
         }
 
@@ -204,22 +207,29 @@ export const UpdateLocations = async (req, res) => {
                     //user verify exist
                     if (datos.Id_User) {
 
-                        const userExist = GetUserbyId(datos.Id_User);
+                        const userExist = await GetUserbyId(datos.Id_User);
 
                         if (userExist.length < 1) {
 
                             response(res, 500, 103, "User don't exist");
 
 
-                        }else{
+                        } else {
+
                             datosEnv = {
                                 Id_Loc: id,
                                 Dir_Ip: datos.Dir_Ip || location[0].Dir_Ip,
                                 Id_User_FK: datos.Id_User
                             }
+
+                            const responses = await updateLocation(datosEnv)
+                            const objRes = {
+                                affectedRows: responses.affectedRows
+                            }
+                            response(res, 200, 200, objRes);
                         }
 
-                    }else{
+                    } else {
 
                         datosEnv = {
                             Id_Loc: id,
@@ -227,22 +237,15 @@ export const UpdateLocations = async (req, res) => {
                             Id_User_FK: datos.Id_User || location[0].Id_User_FK
                         }
 
-                    }
-
-
-                        const responses = await updateLocation(datos)
+                        const responses = await updateLocation(datosEnv)
                         const objRes = {
                             affectedRows: responses.affectedRows
                         }
                         response(res, 200, 200, objRes);
-                
+
+                    }
 
                 }
-
-
-
-
-
 
             } else {
                 response(res, 401, 401, "You don't have permissions");

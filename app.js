@@ -6,6 +6,8 @@ import routesObjCourses from "./routes/objetivos_cursos.routes.js";
 import routesModCur from "./routes/modulos_cursos.routes.js";
 import contModRoutes from "./routes/contenido_modulo.routes.js";
 import routesLocation from "./routes/localizacion.routes.js";
+import routesTokens from "./routes/tokens.routes.js";
+import routesRoles from "./routes/roles.routes.js";
 import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
@@ -24,6 +26,8 @@ app.use(routesObjCourses);
 app.use(routesModCur);
 app.use(contModRoutes);
 app.use(routesLocation);
+app.use(routesTokens);
+app.use(routesRoles);
 
 
 
