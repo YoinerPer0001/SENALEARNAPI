@@ -231,12 +231,16 @@ CREATE TABLE `objetivos_cursos` (
 DROP TABLE IF EXISTS `opciones`;
 
 CREATE TABLE `opciones` (
-  `id_opcion` int(11) NOT NULL,
+  `id_opcion` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_opcion` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_opcion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `opciones` */
+
+insert  into `opciones`(`id_opcion`,`nombre_opcion`) values 
+(1,'lolala'),
+(2,'lilala');
 
 /*Table structure for table `preguntaseval` */
 
