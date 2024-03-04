@@ -8,6 +8,7 @@ import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, get
 import { GenCodigosTemp } from "../Resources/GenCodTemp.js";
 import { InserTokens, VerEmailToken } from "../models/tokens.model.js";
 import { InsertLocation, VerifyUserIp } from "../models/localizacion.model.js";
+import { serialize } from "cookie";
 import uniqid from 'uniqid';
 
 import 'dotenv/config'
@@ -119,7 +120,7 @@ export const regUser = async (req, res) => {
                     exp: exp,
                     Id_User: Id_User
                 }
-               
+
                 //guardamos el token en la base de datos
                 const token = await InserTokens(DataToken);
 
@@ -175,10 +176,10 @@ export const UpdateUserData = async (req, res) => {
             const { Id_User } = jwtdata.user;
 
             const UserData = req.body;
-         
+
             //get actual data
             const actualData = await GetUserbyId(Id_User);
-            
+
             const objUpdate = {
                 Id_User: Id_User,
                 Nom_User: UserData.Nom_User || actualData[0].Nom_User,
@@ -187,7 +188,7 @@ export const UpdateUserData = async (req, res) => {
                 Ema_User: UserData.Ema_User || actualData[0].Ema_User,
                 Fot_User: UserData.Fot_User || actualData[0].Tel_User
             }
-            
+
             //update data
 
             const updatedData = await UserDataUpdate(objUpdate);
@@ -204,7 +205,7 @@ export const UpdateUserData = async (req, res) => {
                 response(res, 400, err.errno, err.code);
 
             } else {
-                response(res, 500, 500,err);
+                response(res, 500, 500, err);
 
             }
         }
@@ -231,7 +232,7 @@ export const ValidateEmail = async (req, res) => {
             if (user.length > 0) {
 
                 //verificamos que el codigo sea valido
-                const token = await VerEmailToken(datos,2)
+                const token = await VerEmailToken(datos, 2)
 
                 if (token.length > 0) {
 
@@ -347,9 +348,32 @@ export const loginUser = async (req, res) => {
                         const datosToken = TokenDb(userData);
 
                         if (datosToken) {
+
+                            const tokendecode = jwt.decode(datosToken, process.env.SECRETWORD);
+                            const data1 = {
+                                Id_User:userData.Id_User,
+                                codigo: datosToken,
+                                exp: tokendecode.exp,
+                            }
+                           
                             // guardamos en Db
-                            const resp = await InserTokens(datosToken, 1)
-                            response(res, 200, 200, datosToken);
+                            const resp = await InserTokens(data1, 1)
+
+
+                            //serializar
+                            const serialized = serialize('sessionToken', datosToken, {
+                                httpOnly: true,
+                                secure: process.env.NODE_ENV === 'production',
+                                sameSite: 'strict',
+                                maxAge: 86400000,
+                                path: '/'
+                            })
+
+
+                            res.setHeader('Set-Cookie', serialized)
+
+                            response(res, 200, 200, "success Login");
+
 
                         }
 
@@ -478,14 +502,14 @@ function TokenDb(userData) {
 
 
     const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
-    const tokendecode = jwt.decode(token, process.env.SECRETWORD);
-    const data1 = {
-        Id_User:userData.Id_User,
-        codigo: token,
-        exp: tokendecode.exp,
-    }
+    // const tokendecode = jwt.decode(token, process.env.SECRETWORD);
+    // const data1 = {
+    //     Id_User:userData.Id_User,
+    //     codigo: token,
+    //     exp: tokendecode.exp,
+    // }
 
-    return data1;
+    return token;
 
 }
 
