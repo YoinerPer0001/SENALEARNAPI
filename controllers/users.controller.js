@@ -363,7 +363,7 @@ export const loginUser = async (req, res) => {
                             //serializar
                             const serialized = serialize('sessionToken', datosToken, {
                                 httpOnly: true,
-                                secure: process.env.NODE_ENV === 'production',
+                                secure: false,
                                 sameSite: 'strict',
                                 maxAge: 86400000,
                                 path: '/'

@@ -1,4 +1,4 @@
-import { getAllOpciones } from '../models/opciones.model.js'
+import { getAllOpciones, getOptionById, GetOpcionxName, InsertOption, updateOption } from '../models/opciones.model.js'
 import { adminPermissions } from '../managePermissions/manage.permissions.js';
 import jsonwebtoken from 'jsonwebtoken'
 import 'dotenv/config'
@@ -8,27 +8,33 @@ const jwt = jsonwebtoken;
 
 
 
-//get all options
+//get all options -- OK
 export const GetAllOptions = async (req, res) => {
 
     try {
 
         jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
-            const { Id_Rol_FK } = data.user;
+            if (err) {
+                response(res, 500, 105, "Something went wrong");
 
-            const adminPermiso = adminPermissions(Id_Rol_FK);
-
-            if (adminPermiso) {
-                const opciones = await getAllOpciones();
-
-                if (opciones.length > 0) {
-                    response(res, 200, 200, opciones);
-                } else {
-                    response(res, 204, 204, opciones);
-                }
             } else {
-                response(res, 401, 401, "You don't have permissions");
+
+                const { Id_Rol_FK } = data.user;
+
+                const adminPermiso = adminPermissions(Id_Rol_FK);
+
+                if (adminPermiso) {
+                    const opciones = await getAllOpciones();
+
+                    if (opciones.length > 0) {
+                        response(res, 200, 200, opciones);
+                    } else {
+                        response(res, 204, 204, opciones);
+                    }
+                } else {
+                    response(res, 401, 401, "You don't have permissions");
+                }
             }
 
         });
@@ -47,37 +53,48 @@ export const GetAllOptions = async (req, res) => {
 
 }
 
-//get  options by id
+//get  options by id -- OK
 export const GetOptionsById = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
         try {
-            const { id } = req.params;
 
-            if (id) {
-
-                //verify exist user
-                const user = await GetUserbyId(id)
-
-                if (user.length < 1) {
-
-                    response(res, 400, 103, "user don't exist");
-
-                } else {
-
-                    const locations = await getAllLocUsers(id);
-
-                    if (locations.length > 0) {
-                        response(res, 200, 200, locations);
-                    } else {
-                        response(res, 204, 204, locations);
-                    }
-                }
-
+            if (err) {
+                response(res, 500, 105, "Something went wrong");
 
             } else {
-                response(res, 400, 102, "Something went wrong");
+
+                const { Id_Rol_FK } = data.user;
+
+                const { id } = req.params;
+
+                const adminPermiso = adminPermissions(Id_Rol_FK);
+
+                if (!adminPermiso) {
+                    response(res, 403, 403, "you don't have permissions");
+                } else {
+
+                    if (id) {
+
+                        //verify exist user
+                        const option = await getOptionById(id)
+
+                        if (option.length < 1) {
+
+                            response(res, 204, 204, option);
+
+                        } else {
+
+                            response(res, 200, 200, option);
+
+                        }
+
+
+                    } else {
+                        response(res, 400, 102, "Something went wrong");
+                    }
+                }
             }
 
 
@@ -96,65 +113,61 @@ export const GetOptionsById = async (req, res) => {
 
 }
 
-// create locations
-export const createLocations = async (req, res) => {
+// create options
+export const createOptions = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-
-        if (err) {
-            response(res, 500, 105, "Something went wrong");
-        }
-
         try {
 
-
-            const { Dir_Ip, Id_User } = req.body;
-
-            if (!Dir_Ip || !Id_User) {
-
-                response(res, 400, 102, "Something went wrong");
-
+            if (err) {
+                response(res, 500, 105, "Something went wrong");
             } else {
 
-                //verificamos que exista el usuario
-                const UserExists = await GetUserbyId(Id_User)
+                const { Id_Rol_FK } = data.user;
+                const { nombre_opcion } = req.body;
+                
+                const nombre_optLower= nombre_opcion.toLowerCase();
+                console.log(nombre_optLower)
+                //verify user permissions
+                const adminPermiso = adminPermissions(Id_Rol_FK);
 
+                if (!adminPermiso) {
 
-                if (UserExists.length < 1) {
-
-                    response(res, 500, 103, "User don't exist");
-
+                    response(res, 403, 403, "you dont have permissions");
                 } else {
 
-                    const { Id_Rol_FK } = data.user;
+                    if (!nombre_opcion) {
 
-                    //verify user permissions
-                    const adminPermiso = adminPermissions(Id_Rol_FK);
+                        response(res, 400, 102, "Something went wrong");
 
-                    if (!adminPermiso) {
-
-                        response(res, 403, 403, "you dont have permissions");
                     } else {
 
-                        //create category
-                        const datos = {
-                            Dir_Ip: Dir_Ip,
-                            Id_User: Id_User
+                        //verificamos que no exista la opcion
+                        const option = await GetOpcionxName(nombre_optLower);
+
+
+                        if (option.length > 0) {
+
+                            response(res, 500, 103, "option is already registered");
+
+                        } else {
+
+                            const newOption = await InsertOption(nombre_optLower);
+                            const objResp = {
+                                insertId: newOption.insertId
+                            }
+                            response(res, 200, 200, objResp);
+
                         }
-
-                        const newLocation = await InsertLocation(datos);
-                        const objResp = {
-                            insertId: newLocation.insertId
-                        }
-                        response(res, 200, 200, objResp);
-
-
                     }
 
 
-
                 }
+
             }
+
+
+
 
         } catch (err) {
 
@@ -174,7 +187,7 @@ export const createLocations = async (req, res) => {
     })
 }
 
-// //update locations
+//update options
 export const UpdateLocations = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
@@ -192,58 +205,35 @@ export const UpdateLocations = async (req, res) => {
 
                 //Data
                 const { id } = req.params;
-                const datos = req.body;
+                const { nombre_opcion } = req.body;
 
-                //verify exist location
-                let datosEnv;
-                const location = await getLocxId(id)
+                if (!nombre_opcion) {
+                    response(res, 400, 102, "Something went wrong");
 
-                if (location.length < 1) {
+                } else {
+
+                }
+                //verify exist option
+                const option = await getOptionById(id)
+
+                if (option.length < 1) {
 
                     response(res, 500, 103, "Something went wrong");
 
                 } else {
-
-                    //user verify exist
-                    if (datos.Id_User) {
-
-                        const userExist = await GetUserbyId(datos.Id_User);
-
-                        if (userExist.length < 1) {
-
-                            response(res, 500, 103, "User don't exist");
-
-
-                        } else {
-
-                            datosEnv = {
-                                Id_Loc: id,
-                                Dir_Ip: datos.Dir_Ip || location[0].Dir_Ip,
-                                Id_User_FK: datos.Id_User
-                            }
-
-                            const responses = await updateLocation(datosEnv)
-                            const objRes = {
-                                affectedRows: responses.affectedRows
-                            }
-                            response(res, 200, 200, objRes);
-                        }
-
-                    } else {
-
-                        datosEnv = {
-                            Id_Loc: id,
-                            Dir_Ip: datos.Dir_Ip || location[0].Dir_Ip,
-                            Id_User_FK: datos.Id_User || location[0].Id_User_FK
-                        }
-
-                        const responses = await updateLocation(datosEnv)
-                        const objRes = {
-                            affectedRows: responses.affectedRows
-                        }
-                        response(res, 200, 200, objRes);
-
+                    const objDatos ={
+                        id_opcion: id,
+                        nombre_opcion: nombre_opcion.toLowerCase()
                     }
+
+                    const responses = await updateOption(objDatos)
+                    const objRes = {
+                        affectedRows: responses.affectedRows
+                    }
+                    response(res, 200, 200, objRes);
+
+
+
 
                 }
 

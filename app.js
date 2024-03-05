@@ -8,6 +8,7 @@ import contModRoutes from "./routes/contenido_modulo.routes.js";
 import routesLocation from "./routes/localizacion.routes.js";
 import routesTokens from "./routes/tokens.routes.js";
 import routesRoles from "./routes/roles.routes.js";
+import routesOptions from "./routes/opciones.routes.js";
 import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
@@ -16,6 +17,7 @@ const app = express();
 
 
 app.use(cors());
+
 app.use(express.json());
 
 //routes
@@ -28,6 +30,7 @@ app.use(contModRoutes);
 app.use(routesLocation);
 app.use(routesTokens);
 app.use(routesRoles);
+app.use(routesOptions);
 
 
 

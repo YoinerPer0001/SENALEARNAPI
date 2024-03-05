@@ -1,11 +1,11 @@
 import { connection } from "../db.js"
 import { response } from "../Resources/responses.js";
 
-//insertar localizacion
-export const InsertLocation = (datos) => {
+//insertar opciones -- OK
+export const InsertOption = (name) => {
     return new Promise((resolve, reject) => {
 
-        connection.query("INSERT INTO localizacion (Dir_Ip,Id_User_FK) VALUES (?,?)", [datos.Dir_Ip, datos.Id_User], (err, results) => {
+        connection.query("INSERT INTO opciones (nombre_opcion) VALUES (?)", [name], (err, results) => {
             if (err) {
 
                 const objError = {
@@ -22,26 +22,7 @@ export const InsertLocation = (datos) => {
 
 }
 
-//verificar ip de usuario
-export const VerifyUserIp = (datos) => {
-    return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ? AND Dir_Ip = ? ", [datos.Id_User, datos.Dir_Ip], (err, results) => {
-            if (err) {
-
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-        })
-    })
-}
-
-//obtener todas las opciones
+//obtener todas las opciones -- OK
 export const getAllOpciones = () => {
     return new Promise((resolve, reject) => {
 
@@ -58,11 +39,11 @@ export const getAllOpciones = () => {
     })
 }
 
-//obtener localizaciones por id
-export const getLocxId = (id) => {
+//obtener opciones por id -- OK
+export const getOptionById = (id) => {
     return new Promise((resolve, reject) => {
 
-        connection.query("SELECT * FROM localizacion WHERE Id_Loc = ?", [id], (err, result) => {
+        connection.query("SELECT * FROM opciones WHERE id_opcion = ?", [id], (err, result) => {
             if (err) {
                 const objError = {
                     errno: err.errno
@@ -75,12 +56,11 @@ export const getLocxId = (id) => {
     })
 }
 
-
-//obtener todas las localizaciones de usuarios
-export const getAllLocUsers = (id) => {
+//obtener opciones por nombre -- OK
+export const GetOpcionxName = (name) => {
     return new Promise((resolve, reject) => {
 
-        connection.query("SELECT * FROM localizacion WHERE Id_User_FK = ?", [id], (err, result) => {
+        connection.query("SELECT * FROM opciones WHERE nombre_opcion = ?", [name], (err, result) => {
             if (err) {
                 const objError = {
                     errno: err.errno
@@ -92,14 +72,15 @@ export const getAllLocUsers = (id) => {
         });
     })
 }
+
 
 //actualizar locations
-export const updateLocation = (datos) => {
+export const updateOption = (datos) => {
 
     return new Promise((resolve, reject) => {
         
-        connection.query("UPDATE localizacion SET Dir_Ip = ?, Id_User_FK=? WHERE Id_Loc = ?",
-            [datos.Dir_Ip, datos.Id_User_FK, datos.Id_Loc], (err, result) => {
+        connection.query("UPDATE opciones SET nombre_opcion = ? WHERE id_opcion = ?",
+            [datos.nombre_opcion, datos.id_opcion], (err, result) => {
 
                 if (err) {
                     const objError = {
