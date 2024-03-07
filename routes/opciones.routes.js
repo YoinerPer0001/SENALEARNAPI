@@ -1,9 +1,10 @@
 import express from 'express';
-import { GetAllOptions, GetOptionsById, createOptions, UpdateLocations } from '../controllers/opciones.controller.js';
+import { GetAllOptions, GetOptionsById, createOptions, UpdateOptions } from '../controllers/opciones.controller.js';
 import {verifyToken} from '../Resources/verifyToken.js'
 
 const routesOptions = express();
 
+//obtener todas las opciones
 /**
  * @swagger
  * /api/opciones:
@@ -79,6 +80,7 @@ const routesOptions = express();
  *                 message: algo salio mal
  */
 routesOptions.get('/api/opciones',verifyToken,GetAllOptions)
+//obtener opciones por id
 /**
  * @swagger
  * /api/options/{id}:
@@ -161,6 +163,7 @@ routesOptions.get('/api/opciones',verifyToken,GetAllOptions)
  *                 message: algo salio mal
  */
 routesOptions.get('/api/options/:id',verifyToken,GetOptionsById)
+//crear opciones
 /**
  * @swagger
  * /api/options/create:
@@ -242,6 +245,7 @@ routesOptions.get('/api/options/:id',verifyToken,GetOptionsById)
  *               message: algo salió mal
  */
 routesOptions.post('/api/options/create',verifyToken, createOptions)
+//actualizar opciones
 /**
  * @swagger
  * /api/options/update/{id}:
@@ -330,5 +334,5 @@ routesOptions.post('/api/options/create',verifyToken, createOptions)
  *               code: 400
  *               message: algo salió mal
  */
-routesOptions.put('/api/options/update/:id',verifyToken, UpdateLocations)
+routesOptions.put('/api/options/update/:id',verifyToken, UpdateOptions)
 export default routesOptions;

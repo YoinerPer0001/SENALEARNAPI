@@ -8,6 +8,7 @@ import { getAllUsers, UserByEmail, InsertUsers, GetUserbyId, UpdateEstEmail, get
 import { GenCodigosTemp } from "../Resources/GenCodTemp.js";
 import { InserTokens, VerEmailToken } from "../models/tokens.model.js";
 import { InsertLocation, VerifyUserIp } from "../models/localizacion.model.js";
+import cookieParser from "cookie-parser";
 import { serialize } from "cookie";
 import uniqid from 'uniqid';
 
@@ -359,12 +360,14 @@ export const loginUser = async (req, res) => {
                             // guardamos en Db
                             const resp = await InserTokens(data1, 1)
 
+                            const cookieP = cookieParser();
+                            
 
                             //serializar
                             const serialized = serialize('sessionToken', datosToken, {
                                 httpOnly: true,
                                 secure: false,
-                                sameSite: 'strict',
+                                sameSite: 'none',
                                 maxAge: 86400000,
                                 path: '/'
                             })

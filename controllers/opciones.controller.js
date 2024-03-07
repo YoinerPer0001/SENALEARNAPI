@@ -188,7 +188,7 @@ export const createOptions = async (req, res) => {
 }
 
 //update options
-export const UpdateLocations = async (req, res) => {
+export const UpdateOptions = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
         if (err) {

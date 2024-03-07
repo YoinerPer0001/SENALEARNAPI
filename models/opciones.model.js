@@ -2,7 +2,7 @@ import { connection } from "../db.js"
 import { response } from "../Resources/responses.js";
 
 //insertar opciones -- OK
-export const InsertOption = (name) => {
+export const InsertOption = async (name) => {
     return new Promise((resolve, reject) => {
 
         connection.query("INSERT INTO opciones (nombre_opcion) VALUES (?)", [name], (err, results) => {
@@ -23,7 +23,7 @@ export const InsertOption = (name) => {
 }
 
 //obtener todas las opciones -- OK
-export const getAllOpciones = () => {
+export const getAllOpciones = async() => {
     return new Promise((resolve, reject) => {
 
         connection.query("SELECT * FROM opciones", (err, result) => {
@@ -40,7 +40,7 @@ export const getAllOpciones = () => {
 }
 
 //obtener opciones por id -- OK
-export const getOptionById = (id) => {
+export const getOptionById = async (id) => {
     return new Promise((resolve, reject) => {
 
         connection.query("SELECT * FROM opciones WHERE id_opcion = ?", [id], (err, result) => {
@@ -57,7 +57,7 @@ export const getOptionById = (id) => {
 }
 
 //obtener opciones por nombre -- OK
-export const GetOpcionxName = (name) => {
+export const GetOpcionxName = async (name) => {
     return new Promise((resolve, reject) => {
 
         connection.query("SELECT * FROM opciones WHERE nombre_opcion = ?", [name], (err, result) => {
@@ -75,7 +75,7 @@ export const GetOpcionxName = (name) => {
 
 
 //actualizar locations
-export const updateOption = (datos) => {
+export const updateOption = async (datos) => {
 
     return new Promise((resolve, reject) => {
         
