@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../Resources/verifyToken.js';
-import { AsigOptRol, getAllOptionsxRol } from '../controllers/opciones_roles.controller.js';
+import { AsigOptRol, getAllOptionsxRol, updateOptionsRoles } from '../controllers/opciones_roles.controller.js';
 
 const routesOptionsRoles = express();
 
@@ -165,5 +165,98 @@ routesOptionsRoles.post('/api/opciones_roles/create', verifyToken, AsigOptRol);
  *                 message: algo salio mal
  */
 routesOptionsRoles.get('/api/opciones_roles/rol', verifyToken, getAllOptionsxRol)
+
+//actualizar asignaciones de opciones a roles
+/**
+ * @swagger
+ * /api/opciones_roles/update/{id}:
+ *   put:
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Opciones-Roles
+ *     summary: actualizar asignaciones de opciones a roles (Solo para rol de ADMIN).
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: id rol.
+ *         schema:
+ *           type: integer
+ *           minLenght: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Id_Opcion:
+ *                 type: integer
+ *               New_Opcion:
+ *                 type: integer
+ *     responses:
+ *       '200':
+ *         description: Operación correcta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *             example:
+ *               type: success
+ *               code: 200
+ *               data: {"affectedRows": 1}
+ *       '204':
+ *         description: La operación se realizó correctamente, pero no hubo datos que devolver
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *             example:
+ *               type: success
+ *               code: 204
+ *               data: []
+ *       '403':
+ *         description: No autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *             example:
+ *               type: error
+ *               code: 403
+ *               message: No Autorizado
+ *       '500':
+ *         description: Error de servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *             example:
+ *               type: error
+ *               code: 500
+ *               message: algo salió mal
+ *       '400':
+ *         description: La solicitud del cliente no pudo ser procesada por el servidor debido a problemas en la sintaxis o el formato de la solicitud
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *             example:
+ *               type: error
+ *               code: 400
+ *               message: algo salió mal
+ */
+routesOptionsRoles.put('/api/opciones_roles/update/:id',verifyToken,updateOptionsRoles)
 
 export default routesOptionsRoles;

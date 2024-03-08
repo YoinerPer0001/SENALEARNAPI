@@ -1,4 +1,4 @@
-import { AsignOptionRol, getAsignation, getoptionsxRol } from '../models/opciones_roles.model.js'
+import { AsignOptionRol, getAsignation, getoptionsxRol,updateOptionRol } from '../models/opciones_roles.model.js'
 import { response } from '../Resources/responses.js'
 import { adminPermissions } from '../managePermissions/manage.permissions.js'
 import jsonwebtoken from 'jsonwebtoken'
@@ -88,7 +88,7 @@ export const AsigOptRol = async (req, res) => {
 
     });
 }
-//obtener opciones de usuario
+//obtener opciones de roles
 export const getAllOptionsxRol = async (req, res) => {
 
     try {
@@ -123,4 +123,66 @@ export const getAllOptionsxRol = async (req, res) => {
             response(res, 500, 105, "Something went wrong");
         }
     }
+}
+
+//editar opciones asignadas a los roles
+export const updateOptionsRoles = (req, res) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+        try {
+            if (err) {
+                response(res, 500, 105, "Something went wrong");
+
+            } else {
+                const { Id_Rol_FK } = data.user;
+                let adPermision = adminPermissions(Id_Rol_FK);
+
+                if (adPermision) {
+                    const {id} = req.params;
+                    const { Id_Opcion, New_Opcion } = req.body;
+
+                    //verificar que existe la asignacion
+                    const asignation = await getAsignation(id, Id_Opcion)
+                    if (asignation.length > 0) {
+
+                        //verificar que existe la nueva opcion
+                        const newOption = await getOptionById(New_Opcion)
+                        if (newOption.length > 0) {
+
+                            //verificar que no existe la posible nueva asignacion
+                            const Newasignation = await getAsignation(id, New_Opcion)
+                            if (Newasignation.length > 0) {
+                                response(res, 500, 103, "option is already assigned");
+                            }else{
+                                //actualizamos
+                                const updatedAsignation = await updateOptionRol(New_Opcion, Id_Opcion, id)
+                                const objres={
+                                    affectedRows: updatedAsignation.affectedRows
+                                }
+                                response(res, 200, 200, objres)
+                            }
+                            
+                        }else{
+                            response(res, 500, 103, "option don't exist");
+                        }
+                        
+                    }else{
+
+                        response(res, 500, 103, "option is not assigned to this role");
+                    }
+
+
+                }else{
+                    response(res, 403, 403, "you don't have permissions");
+                }
+
+            }
+
+        }catch (err) {
+            if (err.errno) {
+                response(res, 500, err.errno, err.code);
+            } else {
+                response(res, 500, 105, "Something went wrong");
+            }
+        }
+    })
 }

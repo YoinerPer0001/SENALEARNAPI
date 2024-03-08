@@ -10,6 +10,7 @@ import routesTokens from "./routes/tokens.routes.js";
 import routesRoles from "./routes/roles.routes.js";
 import routesOptions from "./routes/opciones.routes.js";
 import routesOptionsRoles from "./routes/opciones_roles.routes.js"
+import routesInscripciones from "./routes/inscripciones.routes.js";
 import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
@@ -33,6 +34,7 @@ app.use(routesTokens);
 app.use(routesRoles);
 app.use(routesOptions);
 app.use(routesOptionsRoles);
+app.use(routesInscripciones);
 
 
 

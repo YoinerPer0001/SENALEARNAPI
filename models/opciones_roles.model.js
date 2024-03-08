@@ -46,3 +46,18 @@ export const getoptionsxRol = async (Id_Rol_fk)=>{
         });
     })
 }
+
+export const updateOptionRol = async (new_option_id, id_opcion_fk,Id_Rol_fk)=>{
+    return new Promise((resolve, reject)=>{
+        connection.query("UPDATE roles_opciones SET id_opcion_fk =? WHERE Id_Rol_fk =? AND id_opcion_fk =? ",[new_option_id,Id_Rol_fk,id_opcion_fk], (err, result) => {
+            if (err) {
+                const objError = {
+                    errno: err.errno
+                }
+                reject(objError);
+            } else {
+                resolve(result);
+            }
+        });
+    })
+}
