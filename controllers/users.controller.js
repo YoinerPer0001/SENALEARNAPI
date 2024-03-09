@@ -286,8 +286,6 @@ export const ValidateEmail = async (req, res) => {
     }
 }
 
-
-
 //login user
 export const loginUser = async (req, res) => {
 
@@ -428,7 +426,6 @@ export const loginUser = async (req, res) => {
 
 
 }
-
 
 //validate cods Ip new
 export const ValidateCod = async (req, res) => {

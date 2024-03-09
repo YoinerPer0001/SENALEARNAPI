@@ -174,6 +174,9 @@ CREATE TABLE `inscripciones` (
 
 /*Data for the table `inscripciones` */
 
+insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Prog_Cur`,`fecha_insc`) values 
+('ahyv6wlt7qkine','1','25%','2024-03-07');
+
 /*Table structure for table `localizacion` */
 
 DROP TABLE IF EXISTS `localizacion`;
@@ -327,7 +330,7 @@ CREATE TABLE `roles_opciones` (
 /*Data for the table `roles_opciones` */
 
 insert  into `roles_opciones`(`Id_Rol_fk`,`id_opcion_fk`) values 
-(1,1),
+(1,2),
 (2,1),
 (2,2),
 (2,3);
@@ -345,7 +348,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=303 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=316 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -442,7 +445,20 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (299,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTgyMzkxOCwiZXhwIjoxNzA5ODM4MzE4fQ.YK0iCtDbUENwvItI_pp1BcftQ1sWmgaV-V9rCbF5qXU','1709838318','ahyv6wlt7qkine','1'),
 (300,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTgyNDI2MiwiZXhwIjoxNzA5ODM4NjYyfQ.SdmyVEU8X412AlfdAiUOi1JyxDPvolaNL-Hi8REzB-Q','1709838662','ahyv6wlt7qkine','1'),
 (301,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTgyNDI5MCwiZXhwIjoxNzA5ODM4NjkwfQ.Pqk25R_5Vbkl4zhDghWFoy142r90EpbgnoQmbY6ucMQ','1709838690','ahyv6wlt7qkine','1'),
-(302,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTgyNDI5NCwiZXhwIjoxNzA5ODM4Njk0fQ.Tr4njEJp3Af-Amq2dGjJ9vr4aSNCFnE7Yq7jyQTP-sw','1709838694','ahyv6wlt7qkine','1');
+(302,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTgyNDI5NCwiZXhwIjoxNzA5ODM4Njk0fQ.Tr4njEJp3Af-Amq2dGjJ9vr4aSNCFnE7Yq7jyQTP-sw','1709838694','ahyv6wlt7qkine','1'),
+(303,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODgwNSwiZXhwIjoxNzA5ODczMjA1fQ.EKHIduu8FNLP-wQlhs3LvoY0vqEvQoPIW0ar8rkbAIo','1709873205','ahyv6wlt7qkine','1'),
+(304,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODgzNywiZXhwIjoxNzA5ODczMjM3fQ.GnHtpp5JSzZovgcPTgktLT7BFuBT82cOOSK5y0sPNcQ','1709873237','ahyv6wlt7qkine','1'),
+(305,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODg1NCwiZXhwIjoxNzA5ODczMjU0fQ.4CI_mD4Hws_qOe4Ele2b141jKUbzP8Z0c_E9-bcuh2M','1709873254','ahyv6wlt7qkine','1'),
+(306,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODg1NiwiZXhwIjoxNzA5ODczMjU2fQ.BZm-CyhWCUZRYfmotQdpIMUIeFGoPY_OWZhDTlooHso','1709873256','ahyv6wlt7qkine','1'),
+(307,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODg1NywiZXhwIjoxNzA5ODczMjU3fQ.w-xo42TgH7qy8U7WU3LXoeP0Z3MWBmAe-mtt-YeAT14','1709873257','ahyv6wlt7qkine','1'),
+(308,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODg1OSwiZXhwIjoxNzA5ODczMjU5fQ.oRGImWiCr_S0WW7Bx8r6FOwAM5iqawzN7T5HFk2nzBg','1709873259','ahyv6wlt7qkine','1'),
+(309,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODg2MSwiZXhwIjoxNzA5ODczMjYxfQ.jaLjFWJpQ5tNuCH1jvVMMHwNfTGRbEpF_b_TnE7i7D8','1709873261','ahyv6wlt7qkine','1'),
+(310,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTg1ODg2MiwiZXhwIjoxNzA5ODczMjYyfQ.mAJB3_LxcdoBRIB1d84TJvdXvPvZBPU_VPPDXm7tslA','1709873262','ahyv6wlt7qkine','1'),
+(311,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTk0MTcyMCwiZXhwIjoxNzA5OTU2MTIwfQ.xGsmFKTTCPD_cvq0S3kuTy37emb9Jmf3TwIhwGKRDCE','1709956120','ahyv6wlt7qkine','1'),
+(312,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTk4ODgzNCwiZXhwIjoxNzEwMDAzMjM0fQ.mM7cXIgj2dM9z0YWQOb1SZ8K3lSjGBobw3CjM95Fcf0','1710003234','ahyv6wlt7qkine','1'),
+(313,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTk4ODg2MCwiZXhwIjoxNzEwMDAzMjYwfQ.YSOIAzSRR9BF_wZpBrJ4R9LkAswpzhrptZ53DTYdyXQ','1710003260','ahyv6wlt7qkine','1'),
+(314,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTk5NDE5NCwiZXhwIjoxNzEwMDA4NTk0fQ.OtSnAKdH78NK8hnLj7uDquZ2JlRo5gIP_Bv_MDGfI6Q','1710008594','ahyv6wlt7qkine','1'),
+(315,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NndsdDdxa2luZSIsIkVtYV9Vc2VyIjoieW9pbmVycGVydHV6QGdtYWlsLmNvbSIsIklkX1JvbF9GSyI6Mn0sImlhdCI6MTcwOTk5NDIyOCwiZXhwIjoxNzEwMDA4NjI4fQ.LxgH-xRn2qvXTeohwu0BLM8Hpwemq51PcilcrvbkTAc','1710008628','ahyv6wlt7qkine','1');
 
 /*Table structure for table `usuarios` */
 
