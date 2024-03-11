@@ -73,7 +73,7 @@ export const InsertUsers = ( datos) => {
 export const GetUserbyId = ( id) => {
 
     return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM USUARIOS WHERE Id_User = ?", [id], (err, results) => {
+        connection.query("SELECT Id_User,Nom_User,Ape_User,Ema_User,Id_Rol_FK, Est_Email_User FROM USUARIOS WHERE Id_User = ?", [id], (err, results) => {
             if (err) {
                 const objError = {
                     errno: err.errno

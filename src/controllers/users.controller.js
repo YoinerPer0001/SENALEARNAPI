@@ -66,6 +66,53 @@ export const getUsers = async (req, res) => {
 
 }
 
+// get all users
+export const getUserxId = async (req, res) => {
+
+
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+
+        try {
+
+
+            if (err) {
+                response(res, 500, 105, "Something went wrong");
+
+            } else {
+                const {id} = req.params;
+
+                //mostramos datos de usuarios
+                const users = await GetUserbyId(id);
+                if(users.length > 0){
+                    response(res, 200, 200, users);
+                }else{
+                    response(res, 401, 401, "Users not found");
+                }
+                
+
+            }
+
+        } catch (err) {
+            if (err.errno) {
+
+                response(res, 400, err.errno, err.code);
+
+            } else {
+                response(res, 500, 500, "something went wrong");
+
+            }
+        }
+
+
+    })
+
+
+
+
+
+
+}
+
 //register user ==== OK
 export const regUser = async (req, res) => {
 
@@ -339,6 +386,8 @@ export const loginUser = async (req, res) => {
                         // si existe generamos el token y lo guardamos en la db
                         const userData = {
                             Id_User: user[0].Id_User,
+                            Nom_User: user[0].Nom_User,
+                            Ape_User: user[0].Ape_User,
                             Ema_User: user[0].Ema_User,
                             Id_Rol_FK: user[0].Id_Rol_FK,
                         }
@@ -350,16 +399,16 @@ export const loginUser = async (req, res) => {
 
                             const tokendecode = jwt.decode(datosToken, process.env.SECRETWORD);
                             const data1 = {
-                                Id_User:userData.Id_User,
+                                Id_User: userData.Id_User,
                                 codigo: datosToken,
                                 exp: tokendecode.exp,
                             }
-                           
+
                             // guardamos en Db
                             const resp = await InserTokens(data1, 1)
 
                             const cookieP = cookieParser();
-                            
+
 
                             //serializar
                             const serialized = serialize('sessionToken', datosToken, {
@@ -501,7 +550,7 @@ export const ValidateCod = async (req, res) => {
 function TokenDb(userData) {
 
 
-    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '4h' });
+    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '24h' });
     // const tokendecode = jwt.decode(token, process.env.SECRETWORD);
     // const data1 = {
     //     Id_User:userData.Id_User,

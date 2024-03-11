@@ -1,5 +1,5 @@
 import express from "express";
-import {getUsers, loginUser, regUser,ValidateEmail, ValidateCod, UpdateUserData} from "../../controllers/users.controller.js"
+import {getUsers, loginUser, regUser,ValidateEmail, ValidateCod, UpdateUserData, getUserxId} from "../../controllers/users.controller.js"
 import { verifyToken } from "../../middlewares/verifyToken.js";
 
 const userRoutes = express();
@@ -78,6 +78,89 @@ const userRoutes = express();
  *                 message: algo salio mal
  */
 userRoutes.get('/api/v1/users', verifyToken, getUsers);
+
+//get user by id
+/**
+ * @swagger
+ * /api/v1/users/{id}:
+ *   get:
+ *     summary: Retorna la informacion de un usuario mediante si Id.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: user id.
+ *         schema:
+ *           type: string
+ *           minLenght: 1
+ *     security:
+ *      - bearerAuth: []
+ *     tags:
+ *      - Usuarios
+ *     responses:
+ *       '200':
+ *         description: Operación correcta
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *              example:
+ *                 type: success
+ *                 code: 200
+ *                 data: [{"Id_User": 40,"Nom_User": "user01","Ape_User": "ape01","Tel_User": 1234567890,"Ema_User": "user01@example.com","Id_Rol_FK": 2,"Fot_User": url.com,"Est_Email_User": 1}]
+
+ *       '204':
+ *         description: La operación se realizo correctamente, pero no hubo datos que devolver
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *              example:
+ *                 type: success
+ *                 code: 204
+ *                 data: {[]}
+ *       '403':
+ *         description: No autorizado
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *               example:
+ *                 type: error
+ *                 code: 403
+ *                 message: No Autorizado
+ *       '500':
+ *         description: Error de servidor
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *               example:
+ *                 type: error
+ *                 code: 500
+ *                 message: algo salio mal
+ *       '400':
+ *         description:  la solicitud del cliente no pudo ser procesada por el servidor debido a problemas en la sintaxis o el formato de la solicitud
+ *         content:
+ *           application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *               example:
+ *                 type: error
+ *                 code: 400
+ *                 message: algo salio mal
+ */
+userRoutes.get('/api/v1/users/:id', verifyToken, getUserxId);
 
 //login user
 
@@ -539,5 +622,7 @@ userRoutes.post('/api/v1/code_validate', ValidateCod);
  *               message: algo salió mal
  */
 userRoutes.put('/api/v1/users/update',verifyToken, UpdateUserData)
+
+
 
 export default userRoutes;
