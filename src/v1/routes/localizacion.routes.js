@@ -1,6 +1,7 @@
 import express from 'express'
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { GetLocations, createLocations,UpdateLocations,GetLocationsxUser } from '../../controllers/localizacion.controller.js';
+import { createValidation, UpdateValidation } from '../../Validators/localizacion.validator.js';
 
 const routesLocation = express();
 
@@ -79,7 +80,7 @@ const routesLocation = express();
  *                 code: 400
  *                 message: algo salio mal
  */
-routesLocation.get('/api/v1/localizacion', verifyToken, GetLocations)
+routesLocation.get('/api/v1/localizaciones', verifyToken, GetLocations)
 /**
  * @swagger
  * /api/v1/localizacion/user/{id}:
@@ -162,7 +163,7 @@ routesLocation.get('/api/v1/localizacion', verifyToken, GetLocations)
  *                 code: 400
  *                 message: algo salio mal
  */
-routesLocation.get('/api/v1/localizacion/user/:id',verifyToken,GetLocationsxUser)
+routesLocation.get('/api/v1/localizaciones/user/:id',verifyToken,GetLocationsxUser)
 /**
  * @swagger
  * /api/v1/localizacion/create:
@@ -245,7 +246,7 @@ routesLocation.get('/api/v1/localizacion/user/:id',verifyToken,GetLocationsxUser
  *               code: 400
  *               message: algo salió mal
  */
-routesLocation.post('/api/v1/localizacion/create', verifyToken, createLocations)
+routesLocation.post('/api/v1/localizaciones/create', verifyToken,createValidation, createLocations)
 /**
  * @swagger
  * /api/v1/localizacion/update/{id}:
@@ -336,6 +337,6 @@ routesLocation.post('/api/v1/localizacion/create', verifyToken, createLocations)
  *               code: 400
  *               message: algo salió mal
  */
-routesLocation.put('/api/v1/localizacion/update/:id', verifyToken, UpdateLocations)
+routesLocation.put('/api/v1/localizaciones/update/:id', verifyToken,UpdateValidation, UpdateLocations)
 
 export default routesLocation;

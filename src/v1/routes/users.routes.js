@@ -1,6 +1,7 @@
 import express from "express";
-import {getUsers, loginUser, regUser,ValidateEmail, ValidateCod, UpdateUserData, getUserxId} from "../../controllers/users.controller.js"
+import { getUsers, loginUser, regUser, ValidateEmail, ValidateCod, UpdateUserData, getUserxId } from "../../controllers/users.controller.js"
 import { verifyToken } from "../../middlewares/verifyToken.js";
+import { createValidation, CodeValidationIp, CodeValidationEmail, UpdateValidation ,LoginValidation} from "../../Validators/users.validator.js";
 
 const userRoutes = express();
 
@@ -277,7 +278,7 @@ userRoutes.get('/api/v1/users/:id', verifyToken, getUserxId);
  *                 code: 400
  *                 message: algo salio mal
  */
-userRoutes.post('/api/v1/login', loginUser);
+userRoutes.post('/api/v1/login',LoginValidation, loginUser);
 
 //User Register
 
@@ -350,7 +351,7 @@ userRoutes.post('/api/v1/login', loginUser);
  *                 code: 400
  *                 message: algo salio mal
  */
-userRoutes.post('/api/v1/register', regUser);
+userRoutes.post('/api/v1/register', createValidation, regUser);
 
 //validate Email to Register
 /**
@@ -439,7 +440,7 @@ userRoutes.post('/api/v1/register', regUser);
  *                 code: 400
  *                 message: algo salio mal
  */
-userRoutes.post('/api/v1/email_validate', ValidateEmail);
+userRoutes.post('/api/v1/email_validate', CodeValidationEmail, ValidateEmail);
 
 //validate codes to login Ip new
 
@@ -543,7 +544,7 @@ userRoutes.post('/api/v1/email_validate', ValidateEmail);
  *                 code: 400
  *                 message: algo salio mal
  */
-userRoutes.post('/api/v1/code_validate', ValidateCod);
+userRoutes.post('/api/v1/ip_validation', CodeValidationIp, ValidateCod);
 
 //update user data
 
@@ -621,7 +622,7 @@ userRoutes.post('/api/v1/code_validate', ValidateCod);
  *               code: 400
  *               message: algo salió mal
  */
-userRoutes.put('/api/v1/users/update',verifyToken, UpdateUserData)
+userRoutes.put('/api/v1/users/update', verifyToken, UpdateValidation, UpdateUserData)
 
 
 

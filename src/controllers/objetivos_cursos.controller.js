@@ -3,41 +3,31 @@ import { adminPermissions, InstPermissions } from "../utils/manage.permissions.j
 import 'dotenv/config'
 import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
-import { GetObjxCourses, CreateObjCourse, GetObjxId, UpdateObjCourses } from "../models/objetivos_cursos.model.js";
-import { getCoursesxId } from "../models/cursos.model.js";
+import { Objetivos_Cursos } from "../models/objetivos_cursos.model.js";
+import { Cursos } from "../models/cursos.model.js";
 
 const jwt = jsonwebtoken;
 
 
-//get  category by id
+//get objetive by course id
 export const GetAllObjxCourse = async (req, res) => {
 
     try {
         const { id } = req.params;
 
-        const courses = await GetObjxCourses(id)
+        const courses = await Objetivos_Cursos.findOne({where: {Id_Cur_FK: id}})
 
-        if (courses.length > 0) {
+        if (courses) {
             response(res, 200, 200, courses);
         } else {
-            response(res, 204, 204, courses);
+            response(res, 404, 404, 'Not Found');
         }
-
-
 
     } catch (err) {
-        if (err.errno) {
-
-            response(res, 400, err.errno, err.code);
-
-        } else {
-
-            response(res, 500, 500, "something went wrong");
-        }
+        response(res, 500, 500, "something went wrong");
     }
 
 }
-
 
 // create COURSE objetives
 export const createObjCour = async (req, res) => {
@@ -47,86 +37,58 @@ export const createObjCour = async (req, res) => {
         if (err) {
 
             response(res, 500, 105, "Something went wrong");
-        }
+        } else {
 
-        try {
+            try {
 
-            const Id_Objetivo = uniqid();
+                const Id_Objetivo = uniqid();
 
-
-            const { Desc_Objetivo, Id_Cur } = req.body;
-
-            if (!Desc_Objetivo || !Id_Cur ) {
-                
-                response(res, 400, 102, "Something went wrong");
-
-            } else {
-
-
+                const { Desc_Objetivo, Id_Cur } = req.body;
 
                 //verify user permissions
                 const adminPermiso = adminPermissions(data.user.Id_Rol_FK);
+                const instPermissions = InstPermissions(data.user.Id_Rol_FK)
 
-                if (!adminPermiso) {
+                if (!adminPermiso && !instPermissions) {
                     response(res, 403, 403, "you dont have permissions");
 
                 } else {
 
                     //verificamos que exista el curso
-                    const courseExist = await getCoursesxId(Id_Cur);
+                    const courseExist = await Cursos.findByPk(Id_Cur);
 
-                    if (courseExist.length < 1) {
+                    if (!courseExist) {
 
                         response(res, 404, 404, "course not found");
                     } else {
-                        //verificamos que no exista una un objetivo con el mismo id
-                        const objetivoExists = await GetObjxId(Id_Objetivo)
 
+                        //create objetive
+                        const datos = {
+                            Id_Objetivo: Id_Objetivo,
+                            Desc_Objetivo: Desc_Objetivo.toLowerCase(),
+                            Id_Cur_FK: Id_Cur
+                        }
 
-                        if (objetivoExists.length > 0) {
-
-                            response(res, 500, 107, "objetive already exist");
-
+                        const newObjetive = await Objetivos_Cursos.create(datos);
+                        if (newObjetive) {
+                            response(res, 200);
                         } else {
 
-                            //create objetive
-                            const datos = {
-                                Id_Objetivo: Id_Objetivo,
-                                Desc_Objetivo: Desc_Objetivo.toLowerCase(),
-                                Id_Cur_FK: Id_Cur
-                            }
-
-                            const newObjetive = await CreateObjCourse(datos);
-                            const objRes = {
-                                insertId: Id_Objetivo
-                            }
-                            response(res, 200, 200, objRes);
-
+                            response(res, 500, 500, "error creating objetive");
                         }
 
                     }
-
-
                 }
 
-            }
 
             } catch (err) {
 
-                if (err.errno) {
-
-                    response(res, 500, 500, "something went wrong");
-
-                } else {
-
-                    response(res, 400, err.errno, err.code);
-                }
-
-
+                response(res, 500, 500, 'Something went wrong');
             }
+        }
 
 
-        })
+    })
 }
 
 //update categorias
@@ -134,68 +96,77 @@ export const UpdateObjetivesCour = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
         if (err) {
-            response(res, 400, 105, "Something went wrong");
-        }
+            response(res, 401, 401, "Something went wrong");
+        } else {
 
-        try {
-            const { Id_Rol_FK } = dat.user;
+            try {
+                const { Id_Rol_FK } = dat.user;
 
-            let adPermision = adminPermissions(Id_Rol_FK);
-            let instPermiso = InstPermissions(Id_Rol_FK);
+                let adPermision = adminPermissions(Id_Rol_FK);
+                let instPermiso = InstPermissions(Id_Rol_FK);
 
-            if (adPermision || instPermiso) {
+                if (adPermision || instPermiso) {
 
-                //Data
-                const { id } = req.params;
-                const { Desc_Objetivo, Id_Cur } = req.body;
+                    //Data
+                    const { id } = req.params;
+                    const datosRec = req.body;
+                    let datos;
 
-                //verify objetive exist
+                    //verify objetive exist
 
-                const objetive = await GetObjxId(id)
+                    let objetive = await Objetivos_Cursos.findByPk(id)
 
-                if (objetive.length < 1) {
+                    if (!objetive) {
 
-                    response(res, 500, 103, "Something went wrong");
+                        response(res, 404, 404, "Objetive not found");
+
+                    } else {
+                        objetive = objetive.dataValues;
+
+                       
+                        if (datosRec.Id_Cur) {
+
+                            let course = await Cursos.findByPk(datosRec.Id_Cur);
+
+                            if (course) {
+                                course = course.dataValues;
+                                
+                                datos = {
+                                    Desc_Objetivo: datosRec.Desc_Objetivo || objetive.Desc_Objetivo,
+                                    Id_Cur_FK: datosRec.Id_Cur
+                                }
+                              
+
+                            } else {
+
+                                datos = {
+                                    Desc_Objetivo: datosRec.Desc_Objetivo,
+                                    Id_Cur_FK: datosRec.Id_Cur || objetive.Id_Cur_FK
+                                }
+
+                            }
+                     
+
+                            const responses = await Objetivos_Cursos.update(datos, {where: {Id_Objetivo: id} })
+                            if (responses) {
+                                response(res, 200);
+                            } else {
+                                response(res, 500, 500, "Error updating objetive");
+                            }
+                          
+                        } else {
+                            response(res, 404, 404, "course don't exist");
+                        }
+                    }
 
                 } else {
-
-                    //verify course exist
-                    const course = await getCoursesxId(Id_Cur);
-
-                    if (course.length > 0) {
-                        const datos = {
-                            Id_Objetivo: id,
-                            Desc_Objetivo: Desc_Objetivo,
-                            Id_Cur_FK: Id_Cur
-                        }
-
-                        const responses = await UpdateObjCourses(datos)
-                        const objResp = {
-                            affectedRows: responses.affectedRows
-                        }
-                        response(res, 200, 200, objResp);
-                    } else {
-                        response(res, 204, 204, "course don't exist");
-                    }
+                    response(res, 401, 401, "You don't have permissions");
                 }
 
-            } else {
-                response(res, 401, 401, "You don't have permissions");
-            }
-
-        } catch (err) {
-
-            if (err.errno) {
-                response(res, 400, err.errno, err.code);
-
-            } else {
-
-                response(res, 500, 500, "something went wrong");
+            } catch (err) {
+                    response(res, 500, 500, "something went wrong");
             }
         }
-
-
-
     })
 }
 

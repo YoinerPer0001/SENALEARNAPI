@@ -1,64 +1,26 @@
-import { connection } from "../database/db.js";
+import { sequelize } from "../database/db.js";
+import { DataTypes } from "sequelize";
+import { Role } from "./roles.model.js";
+import { Opcione } from "./opciones.model.js";
 
-export const AsignOptionRol = async (Id_Rol_fk,id_opcion_fk) => {
+export const Roles_Opcione = sequelize.define('Roles_Opcione',{
+    Id_Rol_fk :{
+        type:DataTypes.INTEGER,
+        primaryKey:true,
+        references:{
+            model:Role,
+            key:'Id_Rol'
+        }
+    },
+    id_opcion_fk:{
+        type:DataTypes.INTEGER,
+        primaryKey:true,
+        references:{
+            model:Opcione,
+            key:'id_opcion'
+        }
+    }
+})
 
-    return new Promise((resolve, reject) => {
-        connection.query("INSERT INTO roles_opciones (Id_Rol_fk, id_opcion_fk) VALUES (?,?) ",
-            [Id_Rol_fk, id_opcion_fk], (err, result) => {
-                if (err) {
-                    const objError = {
-                        errno: err.errno
-                    }
-                    reject(objError);
-                } else {
-                    resolve(result);
-                }
-            });
-    });
-
-}
-
-export const getAsignation = async (Id_Rol_fk, id_opcion_fk)=>{
-    return new Promise((resolve, reject) => {
-        connection.query("SELECT * FROM roles_opciones WHERE Id_Rol_fk = ? AND id_opcion_fk = ?",[Id_Rol_fk, id_opcion_fk], (err, result) => {
-            if (err) {
-                const objError = {
-                    errno: err.errno
-                }
-                reject(objError);
-            } else {
-                resolve(result);
-            }
-        });
-    })
-}
-
-export const getoptionsxRol = async (Id_Rol_fk)=>{
-    return new Promise((resolve, reject) => {
-        connection.query("SELECT id_opcion,nombre_opcion FROM roles_opciones INNER JOIN opciones ON id_opcion_fk = id_opcion WHERE Id_Rol_fk = ?", [Id_Rol_fk], (err, result) => {
-            if (err) {
-                const objError = {
-                    errno: err.errno
-                }
-                reject(objError);
-            } else {
-                resolve(result);
-            }
-        });
-    })
-}
-
-export const updateOptionRol = async (new_option_id, id_opcion_fk,Id_Rol_fk)=>{
-    return new Promise((resolve, reject)=>{
-        connection.query("UPDATE roles_opciones SET id_opcion_fk =? WHERE Id_Rol_fk =? AND id_opcion_fk =? ",[new_option_id,Id_Rol_fk,id_opcion_fk], (err, result) => {
-            if (err) {
-                const objError = {
-                    errno: err.errno
-                }
-                reject(objError);
-            } else {
-                resolve(result);
-            }
-        });
-    })
-}
+Role.belongsToMany(Opcione,{through:'Roles_Opcione',foreignKey:'Id_Rol_fk'})
+Opcione.belongsToMany(Role,{through:'Roles_Opcione', foreignKey: 'id_opcion_fk'})

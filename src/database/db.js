@@ -1,15 +1,15 @@
-import mysql2 from "mysql2";
+import { Sequelize } from "sequelize";
 
-const mysql = mysql2;
 
-export const connection = mysql.createConnection({
+export const sequelize = new Sequelize('senalearn','root','',{
     host: 'localhost',
-    user: 'root',
-    database: 'senalearn'
-})
+    dialect:'mysql'
+});
 
-if(connection){
-    console.log("DB Connection success")
-}else{
-    console.log("DB connection error")
+try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+    
+} catch (error) {
+    console.error('Unable to connect to the database:', error);
 }

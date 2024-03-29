@@ -3,10 +3,10 @@ import {
   GetCategories,
   createCategories,
   GetCategoriesxId,
-  UpdateCategories,
-  DeleteCategories,
+  UpdateCategories
 } from "../../controllers/categorias.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
+import { createValidation, UpdateValidation } from "../../Validators/categorias.validator.js";
 
 const routesCategorias = express();
 
@@ -80,7 +80,7 @@ const routesCategorias = express();
  *                 code: 400
  *                 message: algo salio mal
  */
- 
+
 routesCategorias.get("/api/v1/categories", GetCategories);
 
 /**
@@ -248,7 +248,7 @@ routesCategorias.get("/api/v1/categories/:id", GetCategoriesxId);
  */
 
 
-routesCategorias.post("/api/v1/categories/create", verifyToken, createCategories);
+routesCategorias.post("/api/v1/categories/create", verifyToken, createValidation, createCategories);
 /**
  * @swagger
  * /api/v1/categories/update/{id}:
@@ -342,7 +342,7 @@ routesCategorias.post("/api/v1/categories/create", verifyToken, createCategories
 
 routesCategorias.put(
   "/api/v1/categories/update/:id",
-  verifyToken,
+  verifyToken, UpdateValidation,
   UpdateCategories
 );
 

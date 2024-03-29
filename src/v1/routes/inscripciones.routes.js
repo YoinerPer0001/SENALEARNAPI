@@ -1,6 +1,7 @@
 import express from 'express';
 import { verifyToken } from "../../middlewares/verifyToken.js";
-import { getAllInsc, newInsciption, editInsciption, deleteInsciption, getInscxUser, getInscxCurso } from '../../controllers/inscripciones.controller.js'
+import { getAllInsc, newInsciption, editInsciption, getInscxUser, getInscxCurso } from '../../controllers/inscripciones.controller.js'
+import { createValidation, UpdateValidation } from '../../Validators/inscripciones.validator.js';
 
 const routesInscripciones = express();
 /**
@@ -306,7 +307,7 @@ routesInscripciones.get('/api/v1/inscripciones/course/:id', verifyToken, getInsc
  *               code: 400
  *               message: algo salió mal
  */
-routesInscripciones.post('/api/v1/inscripciones/create', verifyToken, newInsciption)
+routesInscripciones.post('/api/v1/inscripciones/create', verifyToken,createValidation, newInsciption)
 /**
  * @swagger
  * /api/v1/inscripciones/update/{id}:
@@ -401,11 +402,7 @@ routesInscripciones.post('/api/v1/inscripciones/create', verifyToken, newInscipt
  *               code: 400
  *               message: algo salió mal
  */
-routesInscripciones.put('/api/v1/inscripciones/update/:id', verifyToken, editInsciption)
-
-routesInscripciones.delete('/api/v1/inscripciones/delete/:id_User/:id_Curso', verifyToken, deleteInsciption)
-
-
+routesInscripciones.put('/api/v1/inscripciones/update/:id', verifyToken,UpdateValidation, editInsciption)
 
 
 export default routesInscripciones;

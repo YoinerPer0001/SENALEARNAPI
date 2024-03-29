@@ -1,6 +1,7 @@
 import express from 'express'
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import {GetModulesxId, createModules,UpdateModules} from '../../controllers/modulos_cursos.controller.js'
+import { createValidation,UpdateValidation } from '../../Validators/modulos_cursos.validator.js';
 
 const routesModCur = express();
 
@@ -187,7 +188,8 @@ routesModCur.get('/api/v1/modulo_curso/:id', GetModulesxId)
  *               message: algo salió mal
  */
 
-routesModCur.post('/api/v1/modulo_curso/create',verifyToken, createModules)
+routesModCur.post('/api/v1/modulo_curso/create',verifyToken,createValidation, createModules)
+
 /**
  * @swagger
  * /api/v1/modulo_curso/update/{id}:
@@ -283,5 +285,6 @@ routesModCur.post('/api/v1/modulo_curso/create',verifyToken, createModules)
  *               code: 400
  *               message: algo salió mal
  */
-routesModCur.put('/api/v1/modulo_curso/update/:id',verifyToken,UpdateModules)
+routesModCur.put('/api/v1/modulo_curso/update/:id',verifyToken,UpdateValidation, UpdateModules)
+
 export default routesModCur;

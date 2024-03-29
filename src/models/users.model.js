@@ -1,147 +1,53 @@
-import { connection } from "../database/db.js";
+import { sequelize } from "../database/db.js";
+import { DataTypes } from 'sequelize'
+import { Token } from "./tokens.model.js";
+import { Localization } from "./localizacion.model.js";
 
 
-//Obtener todos los usuario
-export const getAllUsers = () => {
+export const Usuario = sequelize.define('Usuario', {
+    Id_User:{
+        type: DataTypes.STRING,
+        primaryKey: true,
+        unique:true,
+        allowNull:false
+    },
+    Nom_User:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Ape_User:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Ema_User:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Pass_User:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Id_Rol_FK:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    Est_Email_User:{
+        type: DataTypes.INTEGER,
+        defaultValue:0,
+        allowNull: false
+    },
+    Fot_User:{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    Tel_User:{
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+})
 
-    return new Promise((resolve, reject) => {
+Usuario.hasMany(Token,{foreignKey:'User_Id_FK'});
+Token.belongsTo(Usuario, {foreignKey :'User_Id_FK', targetKey: 'Id_User'});
 
-        connection.query('SELECT Id_User,Nom_User,Ape_User,Tel_User,Ema_User,Id_Rol_FK,Fot_User,Est_Email_User FROM usuarios', (err, results, fields) => {
-            if (err) {
-                console.log(err)
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-
-        })
-    })
-}
-
-//Obtener usuario por Email
-export const UserByEmail = async (Ema_User) => {
-    return new Promise((resolve, reject) => {
-
-        connection.query("SELECT * FROM usuarios WHERE Ema_User = ?", [Ema_User], (err, results) => {
-            if (err) {
-                console.log(err)
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-
-        })
-
-    })
-}
-
-//Regitrar Usuarios
-export const InsertUsers = ( datos) => {
-
-    const { Id_User, Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK } = datos;
-
-    return new Promise((resolve, reject) => {
-
-        connection.query("INSERT INTO usuarios (Id_User,Nom_User,Ape_User,Ema_User,Pass_User,Id_Rol_FK, Est_Email_User) VALUES (?,?,?,?,?,?,?)", [Id_User, Nom_User, Ape_User, Ema_User, passEncripted, Id_Rol_FK, 0], (err, results, fields) => {
-            if (err) {
-             
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-        })
-    })
-}
-
-
-//seleccionar usuarios por id
-export const GetUserbyId = ( id) => {
-
-    return new Promise((resolve, reject) => {
-        connection.query("SELECT Id_User,Nom_User,Ape_User,Ema_User,Id_Rol_FK, Est_Email_User FROM USUARIOS WHERE Id_User = ?", [id], (err, results) => {
-            if (err) {
-                const objError = {
-                    errno: err.errno
-                }
-                reject(objError);
-            } else {
-                resolve(results);
-            }
-
-        })
-    })
-}
-
-//actualizar estado usuarios
-export const UserDataUpdate = (datos) => {
-    
-    return new Promise((resolve, reject) => {
-        connection.query("UPDATE usuarios SET Nom_User = ?,Ape_User=?,Tel_User=?,Ema_User=?,Fot_User=? WHERE Id_User = ?", [datos.Nom_User,datos.Ape_User,datos.Tel_User,datos.Ema_User,datos.Fot_User,datos.Id_User], (err, results) => {
-            if (err) {
-                console.log(err)
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-        })
-    })
-}
-
-//actualizar estado email a verificado
-export const UpdateEstEmail = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query("UPDATE usuarios SET Est_Email_User = ? WHERE Id_User = ?", [1, id], (err, results) => {
-            if (err) {
-                console.log(err)
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-        })
-    })
-}
-
-//verificar existencia tanto por email o por nombre de usuario
-export const getUserByEmailUser = (campoV, valor) => {
-    return new Promise((resolve, reject) => {
-
-        connection.query(`SELECT * FROM usuarios WHERE ${campoV} = ?`, [valor], async (err, results, fields) => {
-            if (err) {
-                console.log(err)
-                const objError = {
-                    errno: err.errno,
-                    code: err.code
-                }
-                reject(objError);
-            }
-            else {
-                resolve(results)
-            }
-        })
-    })
-}
+Usuario.hasMany(Localization,{foreignKey:'Id_User_FK'});
+Localization.belongsTo(Usuario, {foreignKey :'Id_User_FK', targetKey: 'Id_User'});

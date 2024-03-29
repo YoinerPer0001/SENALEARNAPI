@@ -1,6 +1,7 @@
 import express from 'express';
 import { GetAllOptions, GetOptionsById, createOptions, UpdateOptions } from '../../controllers/opciones.controller.js';
 import { verifyToken } from "../../middlewares/verifyToken.js";
+import { createValidation, UpdateValidation } from '../../Validators/opciones.validator.js';
 
 const routesOptions = express();
 
@@ -79,7 +80,7 @@ const routesOptions = express();
  *                 code: 400
  *                 message: algo salio mal
  */
-routesOptions.get('/api/v1/opciones',verifyToken,GetAllOptions)
+routesOptions.get('/api/v1/options',verifyToken,GetAllOptions)
 //obtener opciones por id
 /**
  * @swagger
@@ -244,7 +245,7 @@ routesOptions.get('/api/v1/options/:id',verifyToken,GetOptionsById)
  *               code: 400
  *               message: algo salió mal
  */
-routesOptions.post('/api/v1/options/create',verifyToken, createOptions)
+routesOptions.post('/api/v1/options/create',verifyToken,createValidation, createOptions)
 //actualizar opciones
 /**
  * @swagger
@@ -334,5 +335,5 @@ routesOptions.post('/api/v1/options/create',verifyToken, createOptions)
  *               code: 400
  *               message: algo salió mal
  */
-routesOptions.put('/api/v1/options/update/:id',verifyToken, UpdateOptions)
+routesOptions.put('/api/v1/options/update/:id',verifyToken, UpdateValidation, UpdateOptions)
 export default routesOptions;

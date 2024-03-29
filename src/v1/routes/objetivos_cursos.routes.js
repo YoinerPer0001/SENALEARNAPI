@@ -1,6 +1,7 @@
 import express from "express"
 import {GetAllObjxCourse, createObjCour, UpdateObjetivesCour} from "../../controllers/objetivos_cursos.controller.js"
 import { verifyToken } from "../../middlewares/verifyToken.js";
+import { createValidation, UpdateValidation } from "../../Validators/objetivos_cursos_validator.js";
 
 const routesObjCourses = express();
 
@@ -170,7 +171,7 @@ routesObjCourses.get("/api/v1/obj_cursos/:id", GetAllObjxCourse );
  *               code: 400
  *               message: algo salió mal
  */
-routesObjCourses.post("/api/v1/obj_cursos/create", verifyToken, createObjCour)
+routesObjCourses.post("/api/v1/obj_cursos/create", verifyToken,createValidation, createObjCour)
 /**
  * @swagger
  * /api/v1/obj_cursos/update/{id}:
@@ -258,6 +259,6 @@ routesObjCourses.post("/api/v1/obj_cursos/create", verifyToken, createObjCour)
  *               code: 400
  *               message: algo salió mal
  */
-routesObjCourses.put("/api/v1/obj_cursos/update/:id",verifyToken, UpdateObjetivesCour)
+routesObjCourses.put("/api/v1/obj_cursos/update/:id",verifyToken,UpdateValidation, UpdateObjetivesCour)
 
 export default routesObjCourses;

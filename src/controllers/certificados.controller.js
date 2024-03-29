@@ -1,9 +1,9 @@
-import { GetAllCert, GetAllCertByUser, GetAllCertByCourse } from '../models/cerificados.model.js';
+import { } from '../models/cerificados.model.js';
 import jsonwebtoken from 'jsonwebtoken';
 import { response } from '../utils/responses.js';
 import { adminPermissions } from '../utils/manage.permissions.js';
-import {GetUserbyId} from '../models/users.model.js'
-import {getCoursesxId} from '../models/cursos.model.js'
+import {} from '../models/users.model.js'
+import {} from '../models/cursos.model.js'
 import 'dotenv/config'
 
 const jwt = jsonwebtoken;

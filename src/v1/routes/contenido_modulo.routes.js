@@ -1,6 +1,7 @@
 import express from 'express';
 import { GetContModuloxModule, createContModu,UpdateModCur } from '../../controllers/contenido_modulo.controller.js'
 import { verifyToken } from "../../middlewares/verifyToken.js";
+import { createValidation,UpdateValidation } from '../../Validators/contenido_modulo.validator.js';
 
 const contModRoutes = express();
 
@@ -163,7 +164,7 @@ contModRoutes.get('/api/v1/cont_mod/:id', GetContModuloxModule);
  *               code: 400
  *               message: algo salió mal
  */
-contModRoutes.post('/api/v1/cont_mod/create', verifyToken, createContModu)
+contModRoutes.post('/api/v1/cont_mod/create', verifyToken, createValidation,createContModu)
 /**
  * @swagger
  * /api/v1/cont_mod/update/{id}:
@@ -260,6 +261,6 @@ contModRoutes.post('/api/v1/cont_mod/create', verifyToken, createContModu)
  *               message: algo salió mal
  */
 
-contModRoutes.put('/api/v1/cont_mod/update/:id', verifyToken, UpdateModCur);
+contModRoutes.put('/api/v1/cont_mod/update/:id', verifyToken,UpdateValidation, UpdateModCur);
 
 export default contModRoutes;

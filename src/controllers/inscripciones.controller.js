@@ -1,8 +1,8 @@
-import { getAllIns, getInscxUserxCurso, InsertInscriptions, updateInscription, deleteInscription, getAllInscxUserId, getAllInscxCurso } from '../models/inscripciones.model.js'
+import { Inscripcione } from '../models/inscripciones.model.js'
 import { response } from '../utils/responses.js';
 import { adminPermissions, InstPermissions, UserPermissions } from '../utils/manage.permissions.js';
-import { GetUserbyId } from '../models/users.model.js'
-import { getCoursesxId } from '../models/cursos.model.js'
+import { Usuario } from '../models/users.model.js'
+import { Cursos } from '../models/cursos.model.js'
 import jsonwebtoken from 'jsonwebtoken';
 
 const jwt = jsonwebtoken;
@@ -12,7 +12,7 @@ export const getAllInsc = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
         try {
             if (err) {
-                response(res, 500, 105, "Something went wrong");
+                response(res, 401, 401, "Token Error");
 
             } else {
 
@@ -22,20 +22,17 @@ export const getAllInsc = async (req, res) => {
                     response(res, 403, 403, "you don't have permissions");
                 } else {
 
-                    const insc = await getAllIns();
-                    if (insc.length > 0) {
+                    const insc = await Inscripcione.findAll();
+                    if (insc) {
                         response(res, 200, 200, insc);
                     } else {
-                        response(res, 204, 204, insc);
+                        response(res, 404, 404, 'inscriptions not found');
                     }
                 }
             }
         } catch (err) {
-            if (err.errno) {
-                response(res, 400, err.errno, err.code);
-            } else {
-                response(res, 500, 500, "something went wrong");
-            }
+
+            response(res, 500, 500, "something went wrong");
         }
     })
 
@@ -47,48 +44,34 @@ export const getInscxUser = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
         try {
             if (err) {
-                response(res, 500, 105, "Something went wrong");
+                response(res, 401, 401, "Token Error");
 
             } else {
 
                 const { Id_Rol_FK } = data.user;
-                const adminper = adminPermissions(Id_Rol_FK);
-                const userper = UserPermissions(Id_Rol_FK);
 
-                if (adminper || userper) {
-
-                    const { id } = req.params;
+                const { id } = req.params;
 
 
-                    //verify that the user exists
-                    const user = await GetUserbyId(id);
-                    
-                    if (user.length > 0) {
-                        const insc = await getAllInscxUserId(id);
-                        if (insc.length > 0) {
-                            response(res, 200, 200, insc);
-                        } else {
-                            response(res, 204, 204, insc);
-                        }
+                //verify that the user exists
+                const user = await Usuario.findByPk(id);
 
-
+                if (user) {
+                    const insc = await Inscripcione.findOne({ where: { Id_User_FK: id } });
+                    if (insc) {
+                        response(res, 200, 200, insc);
                     } else {
-                        response(res, 400, 102, "user is required");
+                        response(res, 404, 404, 'inscriptions not found');
                     }
 
                 } else {
-                    response(res, 403, 403, "you don't have permissions");
-
+                    response(res, 400, 102, "user is required");
                 }
-
 
             }
         } catch (err) {
-            if (err.errno) {
-                response(res, 400, err.errno, err.code);
-            } else {
-                response(res, 500, 500, "something went wrong");
-            }
+
+            response(res, 500, 500, "something went wrong");
         }
     })
 
@@ -100,7 +83,7 @@ export const getInscxCurso = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
         try {
             if (err) {
-                response(res, 500, 105, "Something went wrong");
+                response(res, 404, 404, "Token Error");
 
             } else {
 
@@ -110,23 +93,20 @@ export const getInscxCurso = async (req, res) => {
                 if (adminper || instPer) {
                     const { id } = req.params;
 
-                    if (id) {
-                        //verify that the course exists
-                        const course = await getCoursesxId(id);
-                        if (course) {
-                            const insc = await getAllInscxCurso(id);
-                            if (insc.length > 0) {
-                                response(res, 200, 200, insc);
-                            } else {
-                                response(res, 204, 204, insc);
-                            }
-                        } else {
-                            response(res, 400, 102, "course don't exist");
-                        }
 
+                    //verify that the course exists
+                    const course = await Cursos.findByPk(id);
+                    if (course) {
+                        const insc = await Inscripcione.findOne({ where: { Id_Cur_FK: id } });
+                        if (insc) {
+                            response(res, 200, 200, insc);
+                        } else {
+                            response(res, 404, 404, 'inscriptions not found');
+                        }
                     } else {
-                        response(res, 400, 102, "course is required");
+                        response(res, 404, 404, "course not found");
                     }
+
                 } else {
                     response(res, 403, 403, "you don't have permissions");
                 }
@@ -134,11 +114,9 @@ export const getInscxCurso = async (req, res) => {
 
             }
         } catch (err) {
-            if (err.errno) {
-                response(res, 400, err.errno, err.code);
-            } else {
-                response(res, 500, 500, "something went wrong");
-            }
+
+            response(res, 500, 500, "something went wrong");
+
         }
     })
 
@@ -150,60 +128,49 @@ export const newInsciption = (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
         try {
             if (err) {
-                response(res, 500, 105, "Something went wrong");
+                response(res, 401, 401, "Token Error");
 
             } else {
 
-                const { Id_User, Id_Cur, fecha_insc } = req.body;
-                if (!Id_User || !Id_Cur || !fecha_insc) {
-                    response(res, 400, 102, "Something went wrong");
-                } else {
-                    //verificar que exista el usuario
-                    const user = await GetUserbyId(Id_User);
+                const { Id_User, Id_Cur } = req.body;
 
-                    //verificar que exista el curso
-                    const curso = await getCoursesxId(Id_Cur);
+                //verificar que exista el usuario
+                const user = await Usuario.findByPk(Id_User);
 
-                    //verificar que inscripcion no exista
-                    const insc = await getInscxUserxCurso(Id_User, Id_Cur);
+                //verificar que exista el curso
+                const curso = await Cursos.findByPk(Id_Cur);
 
-                    if (user.length > 0 && curso.length > 0 && insc.length < 1) {
-                        const datos = {
-                            Id_User_FK: Id_User,
-                            Id_Cur_FK: Id_Cur,
-                            Prog_Cur: '0%',
-                            fecha_insc: fecha_insc
-                        }
-
-
-                        //INSCRIBIMOS
-                        const responses = await InsertInscriptions(datos);
-                        const objResp = {
-                            affectedRows: responses.affectedRows
-                        }
-                        response(res, 200, 200, objResp);
-
-                    } else {
-                        if (insc.length > 0) {
-                            response(res, 404, 103, "user already inscrited in this course");
-                        } else {
-                            response(res, 404, 404, "user or course not found");
-                        }
+                //verificar que inscripcion no exista
+                const insc = await Inscripcione.findOne({ where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur } });
+               
+                if (user && curso && !insc) {
+                    const datos = {
+                        Id_User_FK: Id_User,
+                        Id_Cur_FK: Id_Cur,
+                        Prog_Cur: '0%',
                     }
 
-                }
+                    //INSCRIBIMOS
+                    const responses = await Inscripcione.create(datos);
+                    if (responses) {
+                        response(res, 200);
+                    } else {
+                        response(res, 500, 500, "Error creating Inscription");
+                    }
 
+
+                } else {
+                    if (insc) {
+                        response(res, 404, 103, "user already inscrited in this course");
+                    } else {
+                        response(res, 404, 404, "user or course not found");
+                    }
+                }
 
             }
 
         } catch (err) {
-
-            if (err.errno) {
-                response(res, 400, err.errno, err.code);
-            } else {
-                response(res, 500, 500, "something went wrong");
-            }
-
+            response(res, 500, 500, err);
         }
     })
 }
@@ -213,7 +180,7 @@ export const editInsciption = (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
         try {
             if (err) {
-                response(res, 500, 105, "Something went wrong");
+                response(res, 401, 401, "Something went wrong");
             } else {
                 //verify permissions
                 const { Id_Rol_FK } = data.user;
@@ -227,133 +194,76 @@ export const editInsciption = (req, res) => {
                     const { id } = req.params;
                     const datos = req.body
 
-                    if (!id) {
-                        response(res, 400, 102, "Id user is required");
+
+
+                    //verify that the inscription exists
+                    let insc = await Inscripcione.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } });
+                   
+                    if (!insc) {
+                        response(res, 404, 404, "inscription don't exist");
+
                     } else {
 
-                        //verify that the inscription exists
-                        const insc = await getInscxUserxCurso(id, datos.Id_Cur);
-                        if (insc.length < 1) {
-                            response(res, 400, 103, "inscription don't exist");
+                        insc = insc.dataValues;
+                        let data;
 
-                        } else {
-                            //if wants update the course
-                            if (datos.Id_Cur_New) {
+                        //if wants update the course
+                        if (datos.Id_Cur_New) {
 
-                                //we verify that the new course exists
-                                const curso = await getCoursesxId(datos.Id_Cur_New);
+                            //we verify that the new course exists
+                            const curso = await Cursos.findByPk(datos.Id_Cur_New);
 
-                                if (curso.length < 1) {
-                                    response(res, 400, 103, "course don't exist");
+                            if (!curso) {
+                                response(res, 404, 404, "course don't exist");
 
+                            } else {
+                                
+
+                                //we verify that the new inscription isn't already exists
+
+                                const NewinscxCurso = await Inscripcione.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur_New } });
+                               
+                                if (NewinscxCurso) {
+                                    response(res, 400, 103, "course already inscrited");
                                 } else {
 
-                                    //we verify that the new inscription isn't already exists
+                                    data = {
 
-                                    const NewinscxCurso = await getInscxUserxCurso(id, datos.Id_Cur_New);
-                                    if (NewinscxCurso.length > 0) {
-                                        response(res, 400, 103, "course already inscrited");
-                                    } else {
-
-                                        const data = {
-                                            Id_User_FK: id,
-                                            Id_Cur_FK: datos.Id_Cur,
-                                            Prog_Cur: datos.Prog_Cur || insc[0].Prog_Cur,
-                                            fecha_insc: datos.fecha_insc || insc[0].fecha_insc
-                                        }
-
-                                        //edit the inscription
-                                        const editedInsc = await updateInscription(data, datos.Id_Cur_New);
-                                        const objResp = {
-                                            affectedRows: editedInsc.affectedRows
-                                        }
-
-                                        response(res, 200, 200, objResp);
+                                        Id_Cur_FK: datos.Id_Cur_New || insc.Id_Cur,
+                                        Prog_Cur: datos.Prog_Cur || insc.Prog_Cur,
+                                        fecha_insc: datos.fecha_insc || insc.fecha_insc
                                     }
-                                }
-                            } else {
-                                const data = {
-                                    Id_User_FK: id,
-                                    Id_Cur_FK: datos.Id_Cur,
-                                    Prog_Cur: datos.Prog_Cur || insc[0].Prog_Cur,
-                                    fecha_insc: datos.fecha_insc || insc[0].fecha_insc
-                                }
 
-                                //edit the inscription
-                                const editedInsc = await updateInscription(data);
-                                const objResp = {
-                                    affectedRows: editedInsc.affectedRows
                                 }
-
-                                response(res, 200, 200, objResp);
                             }
-
-
+                        } else {
+                            data = {
+                                Prog_Cur: datos.Prog_Cur || insc.Prog_Cur,
+                                fecha_insc: datos.fecha_insc || insc.fecha_insc
+                            }
                         }
+
+                          //edit the inscription
+                          const editedInsc = await Inscripcione.update(data, { where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } });
+
+                          if (editedInsc) {
+
+                              response(res, 200);
+                          } else {
+
+                              response(res, 500, 500, "Error editing inscription");
+                          }
+
+
                     }
+
                 }
 
             }
         } catch (err) {
-            if (err.errno) {
-                response(res, 400, err.errno, err.code);
-            } else {
-                response(res, 500, 500, "something went wrong");
-            }
+            response(res, 500, 500, "something went wrong");
 
         }
     })
 }
-
-//edit inscriptions
-export const deleteInsciption = (req, res) => {
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-        try {
-            if (err) {
-                response(res, 500, 105, "Something went wrong");
-            } else {
-                //verify permissions
-                const { Id_Rol_FK } = data.user;
-                const adminper = adminPermissions(Id_Rol_FK);
-                if (!adminper) {
-                    response(res, 403, 403, "you don't have permissions");
-
-                } else {
-                    const { id_User, id_Curso } = req.params;
-
-                    if (!id_User || !id_Curso) {
-                        response(res, 400, 102, "Id user and Id Course is required");
-                    } else {
-                        //verify that the inscription exists
-                        const insc = await getInscxUserxCurso(id_User, id_Curso);
-                        if (insc.length < 1) {
-                            response(res, 400, 103, "inscription don't exist");
-
-                        } else {
-                            const data = {
-                                Id_User_FK: id_User,
-                                Id_Cur_FK: id_Curso
-                            }
-                            //delete the inscription
-                            const deletedInsc = await deleteInscription(data);
-                            const objResp = {
-                                affectedRows: deletedInsc.affectedRows
-                            }
-                            response(res, 200, 200, objResp);
-                        }
-
-                    }
-                }
-            }
-        } catch (e) {
-
-            if (e.errno) {
-                response(res, 400, e.errno, e.code);
-            } else {
-                response(res, 500, 500, "something went wrong");
-            }
-        }
-    });
-}
-
 

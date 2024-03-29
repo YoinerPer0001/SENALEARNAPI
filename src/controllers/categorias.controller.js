@@ -3,7 +3,7 @@ import { adminPermissions } from "../utils/manage.permissions.js";
 import 'dotenv/config'
 import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
-import { getAllCat, GetCatxName, CreateCat, GetCatxId, UpdateCat, deleteCat } from "../models/categorias.model.js";
+import { Categorias } from "../models/categorias.model.js";
 
 const jwt = jsonwebtoken;
 
@@ -12,27 +12,17 @@ export const GetCategories = async (req, res) => {
 
     try {
 
-        const categorias = await getAllCat();
+        const categorias = await Categorias.findAll();
 
-        if (categorias.length > 0) {
+        if (categorias) {
             response(res, 200, 200, categorias);
         } else {
-            response(res, 204, 204, categorias);
+            response(res, 404);
         }
-
-
-
 
     } catch (error) {
 
-        if (err.errno) {
-
-            response(res, 400, err.errno, err.code);
-
-        } else {
-            response(res, 500, 500, "something went wrong");
-
-        }
+        response(res, 500, 500, error);
     }
 
 }
@@ -43,27 +33,17 @@ export const GetCategoriesxId = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (id) {
+        const categoria = await Categorias.findByPk(id)
 
-            const categoria = await GetCatxId(id)
-
+        if (categoria) {
             response(res, 200, 200, categoria);
-
         } else {
-            response(res, 400, 102, "Something went wrong");
+            response(res, 404);
         }
-
-
 
     } catch (err) {
-        if (err.errno) {
 
-            response(res, 400, err.errno, err.code);
-
-        } else {
-            response(res, 500, 500, "something went wrong");
-
-        }
+        response(res, 500, 500, "something went wrong");
     }
 
 }
@@ -83,64 +63,43 @@ export const createCategories = async (req, res) => {
 
             const { Nom_Cat } = req.body;
 
-            if (!Nom_Cat) {
+            const { Id_Rol_FK } = data.user;
 
-                response(res, 400, 102, "Something went wrong");
+            //verify user permissions
+            const adminPermiso = adminPermissions(Id_Rol_FK);
 
+            if (!adminPermiso) {
+
+                response(res, 403, 403, "you dont have permissions");
             } else {
 
                 //verificamos que no exista una categoria con el mismo nombre
-                const categoriaExists = await GetCatxName(Nom_Cat)
+                const categoriaExists = await Categorias.findOne({ where: { Nom_Cat: Nom_Cat.toLowerCase() } })
 
-
-                if (categoriaExists.length > 0) {
+                if (categoriaExists) {
 
                     response(res, 500, 107, "category already exist");
 
                 } else {
 
-                    const userData = jwt.decode(req.token, process.env.SECRETWORD);
-
-                    //verify user permissions
-                    const adminPermiso = adminPermissions(userData.user.Id_Rol_FK);
-
-                    if (!adminPermiso) {
-
-                        response(res, 403, 403, "you dont have permissions");
-                    } else {
-
-                        //create category
-                        const datos = {
-                            Id_Cat: Id_Cat,
-                            Nom_Cat: Nom_Cat.toLowerCase()
-                        }
-
-                        const newCategory = await CreateCat(datos);
-                        const objResp = {
-                            insertId: Id_Cat
-                        }
-                        response(res, 200, 200, objResp);
-
-
+                    //create category
+                    const datos = {
+                        Id_Cat: Id_Cat,
+                        Nom_Cat: Nom_Cat.toLowerCase()
                     }
 
-
+                    const newCategory = await Categorias.create(datos);
+                    if (newCategory) {
+                        response(res, 200);
+                    } else {
+                        response(res, 500, 500, "error creating category");
+                    }
 
                 }
             }
-
         } catch (err) {
 
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
-                response(res, 500, 500, "something went wrong");
-
-            }
-
-
+            response(res, 500, 500, "something went wrong");
         }
 
 
@@ -153,122 +112,59 @@ export const UpdateCategories = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
         if (err) {
             response(res, 400, 105, "Something went wrong");
-        }
+        } else {
 
-        try {
-            const { Id_Rol_FK } = dat.user;
+            try {
+                const { Id_Rol_FK } = dat.user;
 
-            let adPermision = adminPermissions(Id_Rol_FK);
+                let adPermision = adminPermissions(Id_Rol_FK);
 
+                if (adPermision) {
 
-            if (adPermision) {
+                    //Data
+                    const { id } = req.params;
+                    const { Nom_Cat } = req.body;
 
-                //Data
+                    //verify exist category
 
+                    const category = await Categorias.findByPk(id)
 
-                const { id } = req.params;
-                const { Nom_Cat } = req.body;
+                    if (!category) {
 
-                //verify exist category
+                        response(res, 404, 404, "Category not found");
 
-                const category = await GetCatxId(id)
+                    } else {
+                        //verificamos que no exista la nueva category
+                        const categorie = await Categorias.findOne({ where: { Nom_Cat: Nom_Cat.toLowerCase() } })
 
-                if (category.length < 1) {
+                        if (categorie) {
+                            response(res, 409, 409, "category already exist");
+                        } else {
 
-                    response(res, 500, 103, "Something went wrong");
+                            const datos = {
+                                Nom_Cat: Nom_Cat.toLowerCase()
+                            }
+
+                            const responses = await Categorias.update(datos, { where: { Id_Cat: id } })
+                            if (responses) {
+                                response(res, 200);
+                            } else {
+                                response(res, 500, 500, "error updating category");
+                            }
+                        }
+
+                    }
 
                 } else {
-
-                    const datos = {
-                        id: id,
-                        Nom_Cat: Nom_Cat
-                    }
-
-                    const responses = await UpdateCat(datos)
-                    const objRes = {
-                        affectedRows: responses.affectedRows
-                    }
-                    response(res, 200, 200, objRes);
-
+                    response(res, 401, 401, "You don't have permissions");
                 }
 
-
-
-
-
-
-            } else {
-                response(res, 401, 401, "You don't have permissions");
-            }
-
-        } catch (err) {
-
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
+            } catch (err) {
                 response(res, 500, 500, "something went wrong");
-
-            }
-        }
-
-
-
-    })
-}
-
-//delete categories
-export const DeleteCategories = async (req, res) => {
-
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, datos) => {
-        if (err) {
-
-            response(res, 400, 105, "Something went wrong");
-        }
-
-        try {
-
-            const { id } = req.params;
-            const { Id_Rol_FK } = datos.user;
-
-            const permiso = adminPermissions(Id_Rol_FK);
-
-            if (!permiso) {
-                response(res, 401, 401, "You don't have permissions");
-            }
-
-            //verify category exist
-
-            const category = await GetCatxId(id)
-
-            if (category.length > 0) {
-
-                const responses = await deleteCat(id)
-
-
-                response(res, 200, 200, responses);
-
-
-
-            } else {
-                response(res, 200, 204, category);
-            }
-
-
-
-        } catch (err) {
-
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
-                response(res, 500, 500, "something went wrong");
-
             }
 
         }
 
     })
 }
+

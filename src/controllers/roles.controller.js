@@ -1,4 +1,4 @@
-import { getAllRoles, getRolById, getRolxName, createRol, updateRol } from '../models/roles.model.js'
+import { Role } from '../models/roles.model.js'
 import { adminPermissions } from '../utils/manage.permissions.js';
 import jsonwebtoken from 'jsonwebtoken'
 import 'dotenv/config'
@@ -13,35 +13,32 @@ export const GetRoles = async (req, res) => {
     try {
 
         jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-
-            const { Id_Rol_FK } = data.user;
-
-            const adminPermiso = adminPermissions(Id_Rol_FK);
-
-            if (adminPermiso) {
-                const roles = await getAllRoles();
-
-                if (roles.length > 0) {
-                    response(res, 200, 200, roles);
-                } else {
-                    response(res, 204, 204, roles);
-                }
+            if (err) {
+                response(res, 401, 401, "Invalid Token");
             } else {
-                response(res, 401, 401, "You don't have permissions");
+
+                const { Id_Rol_FK } = data.user;
+
+                const adminPermiso = adminPermissions(Id_Rol_FK);
+
+                if (adminPermiso) {
+                    const roles = await Role.findAll();
+
+                    if (roles) {
+                        response(res, 200, 200, roles);
+                    } else {
+                        response(res, 404, 404, 'Roles not found');
+                    }
+                } else {
+                    response(res, 403, 403, "You don't have permissions");
+                }
             }
 
         });
 
     } catch (error) {
 
-        if (err.errno) {
-
-            response(res, 400, err.errno, err.code);
-
-        } else {
-            response(res, 500, 500, "something went wrong");
-
-        }
+        response(res, 500, 500, "something went wrong");
     }
 
 }
@@ -50,34 +47,23 @@ export const GetRoles = async (req, res) => {
 export const GetRolesxId = async (req, res) => {
 
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+        if (err) {
+            response(res, 401, 401, "Invalid Token");
+        } else {
 
-        try {
-            const { id } = req.params;
+            try {
+                const { id } = req.params;
 
-            if (id) {
+                const roles = await Role.findByPk(id);
 
-                const roles = await getRolById(id);
-
-                if (roles.length > 0) {
+                if (roles) {
                     response(res, 200, 200, roles);
                 } else {
-                    response(res, 204, 204, roles);
+                    response(res, 404, 404, 'roles not found');
                 }
 
-            } else {
-                response(res, 400, 102, "Something went wrong");
-            }
-
-
-
-        } catch (err) {
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
+            } catch (err) {
                 response(res, 500, 500, "something went wrong");
-
             }
         }
     })
@@ -90,72 +76,53 @@ export const createRoles = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
         if (err) {
-            response(res, 500, 105, "Something went wrong");
-        }
+            response(res, 401, 401, 'Error Token');
+        } else {
 
-        try {
+            try {
 
-            const { Id_Rol_FK } = data.user;
+                const { Id_Rol_FK } = data.user;
 
-            //verify user permissions
-            const adminPermiso = adminPermissions(Id_Rol_FK);
+                //verify user permissions
+                const adminPermiso = adminPermissions(Id_Rol_FK);
 
-            if (!adminPermiso) {
+                if (!adminPermiso) {
 
-                response(res, 403, 403, "you dont have permissions");
-            } else {
-
-                const { Nom_Rol } = req.body;
-
-                if (!Nom_Rol) {
-
-                    response(res, 400, 102, "Something went wrong");
+                    response(res, 403, 403, "you dont have permissions");
 
                 } else {
 
+                    const { Nom_Rol } = req.body;
+
+
                     //verificamos que no exista un rol con el mismo nombre
-                    const rolExists = await getRolxName(Nom_Rol)
+                    const rolExists = await Role.findOne({ where: { Nom_Rol: Nom_Rol.toLowerCase() } });
 
 
-                    if (rolExists.length > 0) {
-
+                    if (rolExists) {
                         response(res, 500, 107, "rol already exist");
-
                     } else {
-
-
 
                         //create a rol
                         const datos = {
                             Nom_Rol: Nom_Rol.toLowerCase()
                         }
 
-                        const newRol = await createRol(datos.Nom_Rol);
-                        const objResp = {
-                            insertId: newRol.insertId
+                        const newRol = await Role.create(datos);
+                        if(newRol){
+                            response(res, 200);
+                        }else{
+                            response(res, 500, 500, "error creating rol");
                         }
-                        response(res, 200, 200, objResp);
-
+                        
 
                     }
 
-
-
                 }
-            }
+            } catch (err) {
 
-        } catch (err) {
-
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
                 response(res, 500, 500, "something went wrong");
-
             }
-
-
         }
 
 
@@ -167,7 +134,7 @@ export const UpdateRoles = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
         if (err) {
 
-            response(res, 400, 105, "Something went wrong");
+            response(res, 401, 401, "Error Token");
         }
 
         try {
@@ -183,28 +150,25 @@ export const UpdateRoles = async (req, res) => {
 
                 //verify exist ROL
                 let datosEnv;
-                const roles = await getRolById(id)
+                let roles = await Role.findByPk(id)
 
-                if (roles.length < 1) {
-
+                if (!roles) {
                     response(res, 500, 103, "Something went wrong");
 
                 } else {
-
+                    roles = roles.dataValues;
 
                     datosEnv = {
-                        Id_Rol : id,
-                        Nom_Rol: datos.Nom_Rol || roles[0].Nom_Rol
+                        Nom_Rol: datos.Nom_Rol || roles.Nom_Rol
                     }
 
-                  
+                    const responses = await Role.update(datosEnv,{where:{Id_Rol:id}})
 
-                    const responses = await updateRol(datosEnv)
-                    const objRes = {
-                        affectedRows: responses.affectedRows
+                    if(responses){
+                        response(res, 200);
+                    }else{
+                        response(res, 500, 500, "error updating rol");
                     }
-
-                    response(res, 200, 200, objRes);
                 }
 
             } else {
@@ -212,18 +176,7 @@ export const UpdateRoles = async (req, res) => {
             }
 
         } catch (err) {
-
-            if (err.errno) {
-
-                response(res, 400, err.errno, err.code);
-
-            } else {
-                response(res, 500, 500, "something went wrong");
-
-            }
+                response(res, 500, 500, err);
         }
-
-
-
     })
 }

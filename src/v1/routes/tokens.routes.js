@@ -1,6 +1,8 @@
 import express from 'express';
 import {GetAllTokens, GetTokenssxUser,InsertToken, GetTokenssxTipo, UpdateTokens} from '../../controllers/tokens.controller.js'
 import { verifyToken } from "../../middlewares/verifyToken.js";
+import { createValidation, UpdateValidation } from '../../Validators/tokens.validator.js';
+
 
 const routesTokens = express();
 
@@ -338,7 +340,7 @@ routesTokens.get('/api/v1/tokens/type/:tipo',verifyToken, GetTokenssxTipo)
  *               code: 400
  *               message: algo salió mal
  */
-routesTokens.post('/api/v1/tokens/create',verifyToken, InsertToken);
+routesTokens.post('/api/v1/tokens/create',verifyToken,createValidation, InsertToken);
 /**
  * @swagger
  * /api/v1/tokens/update/{id}:
@@ -433,7 +435,7 @@ routesTokens.post('/api/v1/tokens/create',verifyToken, InsertToken);
  *               code: 400
  *               message: algo salió mal
  */
-routesTokens.put('/api/v1/tokens/update/:id',verifyToken, UpdateTokens)
+routesTokens.put('/api/v1/tokens/update/:id',verifyToken,UpdateValidation, UpdateTokens)
 
 
 export default routesTokens;
