@@ -12,6 +12,9 @@ import routesOptions from "./v1/routes/opciones.routes.js";
 import routesOptionsRoles from "./v1/routes/opciones_roles.routes.js"
 import routesInscripciones from "./v1/routes/inscripciones.routes.js";
 import routesCertificados from "./v1/routes/certificados.routes.js";
+import routesEvaluaciones from './v1/routes/evaluaciones.routes.js'
+import routesPreguntasEval from "./v1/routes/preguntasEval.routes.js";
+import routesRespuestasEval from "./v1/routes/respuestasEval.routes.js";
 import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
@@ -37,8 +40,9 @@ app.use(routesOptions);
 app.use(routesOptionsRoles);
 app.use(routesInscripciones);
 app.use(routesCertificados);
-
-
+app.use(routesEvaluaciones);
+app.use(routesPreguntasEval)
+app.use(routesRespuestasEval);
 
 app.listen(3000,()=>{
     console.log("Server run in port 3000");
