@@ -2,6 +2,7 @@ import { sequelize } from "../database/db.js";
 import { DataTypes } from 'sequelize'
 import { Token } from "./tokens.model.js";
 import { Localization } from "./localizacion.model.js";
+import { Cursos } from "./cursos.model.js";
 
 
 export const Usuario = sequelize.define('Usuario', {
@@ -51,3 +52,6 @@ Token.belongsTo(Usuario, {foreignKey :'User_Id_FK', targetKey: 'Id_User'});
 
 Usuario.hasMany(Localization,{foreignKey:'Id_User_FK'});
 Localization.belongsTo(Usuario, {foreignKey :'Id_User_FK', targetKey: 'Id_User'});
+
+Usuario.hasMany(Cursos,{foreignKey:'Id_Inst'})
+Cursos.belongsTo(Usuario,{as: 'Instructor', foreignKey :'Id_Inst', targetKey: 'Id_User'})

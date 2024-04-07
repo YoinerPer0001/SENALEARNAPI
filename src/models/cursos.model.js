@@ -36,6 +36,10 @@ export const Cursos = sequelize.define('Cursos',{
     Est_Cur:{
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    Id_Inst:{
+        type: DataTypes.STRING,
+        allowNull: false
     }
 
 })

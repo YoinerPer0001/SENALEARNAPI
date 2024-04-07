@@ -5,8 +5,16 @@ import 'dotenv/config'
 import { response } from "../utils/responses.js";
 import { Cursos } from "../models/cursos.model.js";
 import { Categorias } from "../models/categorias.model.js"
+import { Usuario } from "../models/users.model.js";
 
 const jwt = jsonwebtoken;
+
+const atrInst = ['Id_User', 'Nom_User', 'Ape_User', 'Ema_User', 'Fot_User'];
+
+const objInclude = [
+    { model: Usuario, as: 'Instructor', attributes: atrInst },
+    { model: Categorias, as: 'Categoria', attributes: ['Id_Cat', 'Nom_Cat'] }
+]
 
 // get all courses published
 export const getCursos = async (req, res) => {
@@ -14,7 +22,10 @@ export const getCursos = async (req, res) => {
     try {
 
         //lista de cursos publicados
-        const courses = await Cursos.findAll({ where: { Est_Cur: 2 } })
+        const courses = await Cursos.findAll({
+            where: { Est_Cur: 2 },
+            include: objInclude
+        })
 
         if (courses) {
             response(res, 200, 200, courses);
@@ -23,7 +34,7 @@ export const getCursos = async (req, res) => {
         }
 
     } catch (err) {
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 
 
@@ -36,7 +47,7 @@ export const getCuCat = async (req, res) => {
 
         const { id } = req.params;
 
-        const course = await Cursos.findOne({ where: { Id_Cat_FK: id, Est_Cur: 2 } })
+        const course = await Cursos.findOne({ where: { Id_Cat_FK: id, Est_Cur: 2 },include: objInclude })
 
         if (course) {
             response(res, 200, 200, course);
@@ -65,7 +76,7 @@ export const CreateCourse = async (req, res) => {
 
                 const { Nom_Cur, Des_Cur, Hor_Cont_Total, Fech_Crea_Cur, Id_Cat_FK, Fot_Cur } = req.body;
 
-                const { Id_Rol_FK } = dat.user;
+                const { Id_Rol_FK, Id_User } = dat.user;
 
 
                 let Id_Cur = uniqid();
@@ -90,6 +101,7 @@ export const CreateCourse = async (req, res) => {
                             Fech_Crea_Cur: Fech_Crea_Cur,
                             Id_Cat_FK: Id_Cat_FK,
                             Fot_Cur: Fot_Cur,
+                            Id_Inst: Id_User,
                             Est_Cur: Est_Cur
                         }
 
@@ -158,13 +170,13 @@ export const UpdateCourse = async (req, res) => {
                             Fot_Cur: InfoCur.Fot_Cur || curso.Fot_Cur
                         }
 
-                        const resp = await Cursos.update(objDatos,{where:{Id_Cur: id}})
+                        const resp = await Cursos.update(objDatos, { where: { Id_Cur: id } })
                         if (resp) {
                             response(res, 200);
                         } else {
                             response(res, 500, 500, "error updating course");
                         }
-                    }else{
+                    } else {
                         response(res, 404, 404, "Course not found");
                     }
 

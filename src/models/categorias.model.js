@@ -15,5 +15,5 @@ export const Categorias = sequelize.define('categorias',{
 })
 
 Categorias.hasMany(Cursos,{foreignKey: 'Id_Cat_FK'});
-Cursos.belongsTo(Categorias,{foreignKey: 'Id_Cat_FK', targetKey: 'Id_Cat'});
+Cursos.belongsTo( Categorias,{ as: 'Categoria', foreignKey: 'Id_Cat_FK', targetKey: 'Id_Cat'});
 
