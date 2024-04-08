@@ -10,6 +10,7 @@ import { evaluacion } from "../models/evaluacion.model.js";
 const jwt = jsonwebtoken;
 
 
+//cuando el usuario quiera acceder a las preguntas de la evaluacion verificamos que todo el contenido de el modulo donde se encuentra alojado la evaluacion tenga el estado visto en 1
 
 //get  questions by evaluation's id
 export const GetQuestionsxId = async (req, res) => {

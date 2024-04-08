@@ -19,6 +19,10 @@ export const Contenido_Modulos = sequelize.define('Contenido_Modulos',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    Visto:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
     Id_Mod_FK:{
         type:DataTypes.STRING,
         allowNull:false
