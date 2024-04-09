@@ -1,5 +1,5 @@
 import express from "express";
-import { getCursos, getCuCat,CreateCourse, UpdateCourse} from "../../controllers/cursos.controller.js";
+import { getCursos, getCuCat,CreateCourse, UpdateCourse, getCursoId} from "../../controllers/cursos.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { createValidation, UpdateValidation } from "../../Validators/cursos.validator.js";
 
@@ -352,5 +352,7 @@ RoutesCursos.post("/api/v1/cursos/new",verifyToken,createValidation, CreateCours
  *               message: algo salió mal
  */
 RoutesCursos.put("/api/v1/cursos/update/:id",verifyToken, UpdateValidation, UpdateCourse)
+
+RoutesCursos.get("/api/v1/cursos/:id",getCursoId);
 
 export default RoutesCursos;

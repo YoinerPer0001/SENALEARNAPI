@@ -63,6 +63,30 @@ export const getCuCat = async (req, res) => {
 
 }
 
+// get course by id
+export const getCursoId = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const course = await Cursos.findOne({ where: { Id_Cur: id }, include: objInclude })
+
+        if (course) {
+            response(res, 200, 200, course);
+        } else {
+            response(res, 404, 404, 'Course not found');
+        }
+
+
+    } catch (err) {
+
+        response(res, 500, 500, "something went wrong");
+    }
+
+}
+
+
 //CREATE A NEW COURSE
 export const CreateCourse = async (req, res) => {
 
