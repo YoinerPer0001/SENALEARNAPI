@@ -18,5 +18,5 @@ export const preguntaseval = sequelize.define('preguntaseval',{
     }
 })
 
-preguntaseval.hasMany(respuestaseval,{foreignKey: 'Id_Preg_Eval_FK'})
+preguntaseval.hasMany(respuestaseval,{as:'Respuestas', foreignKey: 'Id_Preg_Eval_FK'})
 respuestaseval.belongsTo(preguntaseval,{foreignKey: 'Id_Preg_Eval_FK',targetKey:'Id_Preg_Eval'})

@@ -23,5 +23,3 @@ export const Usuario_contenido = sequelize.define('Usuario_contenido',{
     }
 })
 
-Usuario.belongsToMany(Contenido_Modulos,{through:'Usuario_contenido', foreignKey:'Id_User_FK'})
-Contenido_Modulos.belongsToMany(Usuario,{through:'Usuario_contenido', foreignKey:'Id_Cont_Mod_FK'})

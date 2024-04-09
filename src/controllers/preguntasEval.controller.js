@@ -10,6 +10,7 @@ import { Contenido_Modulos } from "../models/contenido_modulo.model.js";
 import { Modulocurso } from "../models/modulos_cursos.model.js";
 import { Usuario_contenido } from "../models/usuario_contenidos.model.js";
 import { sequelize } from "../database/db.js";
+import { respuestaseval } from "../models/respuestasEval.model.js";
 
 const jwt = jsonwebtoken;
 
@@ -31,49 +32,64 @@ export const GetQuestionsxId = async (req, res) => {
                 const user = UserPermissions(Id_Rol_FK)
 
                 let evaluacions = await evaluacion.findByPk(id)
-                if (user) {
-                    evaluacions = evaluacions.dataValues;
-                    //verificamos que el contenido asociado al modulo de la evaluacion esté visto
-                    const { Id_User } = data.user;
-                    //verificamos el modulo
-                    const contenidos = await Contenido_Modulos.findAll({
-                        include: {
-                            model: Modulocurso,
-                            where: { Id_Mod: evaluacions.Id_Mod_Cur_FK }
+                if (evaluacions) {
+                    if (user) {
+                        evaluacions = evaluacions.dataValues;
+                        //verificamos que el contenido asociado al modulo de la evaluacion esté visto
+                        const { Id_User } = data.user;
+                        //verificamos el modulo
+                        const contenidos = await Contenido_Modulos.findAll({
+                            include: [{
+                                model: Modulocurso,
+                                where: { Id_Mod: evaluacions.Id_Mod_Cur_FK }
+
+                            }]
+
+                        })
+
+                        const NumberConts = contenidos.length;
+
+                        // verificar que los contenidos existan el la tabla de contenido visto
+
+                        const Cont_Existe = await Usuario_contenido.findAll({
+                            where: { Id_User_FK: Id_User },
+                            include: {
+                                model: Contenido_Modulos,
+                                include: {
+                                    model: Modulocurso,
+                                    where: { Id_Mod: evaluacions.Id_Mod_Cur_FK }
+                                }
+                            }
+                        })
+
+                        const numberView = Cont_Existe.length;
+
+                        if (numberView == NumberConts) {
+                            const preguntas = await preguntaseval.findAll({attributes:{exclude:['createdAt','updatedAt']}, include: [{
+                                model: respuestaseval, as: 'Respuestas', attributes: ['Id_Res_Eval', 'Text_Resp_Eval']
+                            }] })
+                            response(res, 200, 200, preguntas);
+                        } else {
+                            response(res, 403, 403, "View all module content is required");
                         }
-
-                    })
-
-                    const NumberConts = contenidos.length;
-
-                    // verificar que los contenidos existan el la tabla de contenido visto
-                    
-                    const Cont_Existe = await Usuario_contenido.findAll({ where: {Id_User_FK: Id_User } ,
-                    include:[{
-                        model:Contenido_Modulos,
-                        where:{Id_Cont: sequelize.col('Id_Cont')}
-                    }]
-                    })
-
-                    response(res,200,200, Cont_Existe)
+                        
+                    } else {
 
 
+                        const preguntas = await preguntaseval.findAll({ where: { Id_Eval_FK: id } })
+
+                        if (preguntas) {
+                            response(res, 200, 200, preguntas);
+                        } else {
+                            response(res, 404, 404, 'Questions not found');
+                        }
+                    }
+
+
+
+                } else {
+                    response(res, 404, 404, 'evaluation not found');
                 }
-
-                // const evaluacions = await evaluacion.findByPk(id);
-
-                // if (evaluacions) {
-                //     const preguntas = await preguntaseval.findAll({ where: { Id_Eval_FK: id } })
-
-                //     if (preguntas) {
-                //         response(res, 200, 200, preguntas);
-                //     } else {
-                //         response(res, 404, 404, 'Questions not found');
-                //     }
-
-                // } else {
-                //     response(res, 404, 404, 'evaluation not found');
-                // }
 
             } catch (err) {
                 response(res, 500, 500, err);

@@ -107,6 +107,8 @@ CREATE TABLE `contenido_modulos` (
 
 insert  into `contenido_modulos`(`Id_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Id_Mod_FK`,`createdAt`,`updatedAt`) values 
 ('1',1,'454355','lolalal','ahyv5b8lubfeofn',NULL,'2024-03-28 18:18:20'),
+('2',1,'edsfsafasdsd','modulo 2','1','2024-04-08 18:57:52','2024-04-08 18:57:53'),
+('3',1,'vfsdffdf','modulo 2.1','1','2024-04-08 18:58:20','2024-04-08 18:58:24'),
 ('ahyva8slubjubdo',1,'454355','fdsfdsfdsffdsfdsfdsf','ahyv5b8lubfeofn','2024-03-28 18:09:31','2024-03-28 18:09:31');
 
 /*Table structure for table `cursos` */
@@ -177,6 +179,7 @@ CREATE TABLE `evaluacions` (
 
 insert  into `evaluacions`(`Id_Eva`,`Tit_Eva`,`Des_Eva`,`Fec_Crea`,`Fec_Cer`,`Id_Mod_Cur_FK`,`Not_Min_Apr_Eva`,`Estado_Eval`,`Intentos_Eval`,`createdAt`,`updatedAt`) values 
 ('1','sadsad','sadsadsad','2024-04-04','2024-04-04','ahyv5b8lubfeofn',3.50,1,3,'2024-04-04 16:36:56','2024-04-04 16:36:58'),
+('2','mama','la mejor','2024-04-08','2024-04-08','1',4.00,1,1,'2024-04-08 18:59:05','2024-04-08 18:59:07'),
 ('ahyv4cwlulsj9sf','loala','mamawebo','2024-04-04','2024-02-02','ahyv5b8lubfeofn',3.50,0,2,'2024-04-04 22:10:34','2024-04-04 22:12:34');
 
 /*Table structure for table `inscripciones` */
@@ -201,7 +204,8 @@ CREATE TABLE `inscripciones` (
 insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Prog_Cur`,`fecha_insc`,`createdAt`,`updatedAt`) values 
 ('ahyv8xwlu7cj900','1','0%','2024-03-28','2024-03-28 19:21:12','2024-03-28 19:21:14'),
 ('ahyv8xwlu7cj900','2','0%','2024-03-29','2024-03-29 02:35:32','2024-03-29 02:35:32'),
-('ahyv8xwlu7cj900','5','10%','2024-03-29','2024-03-29 00:44:50','2024-03-29 00:52:04');
+('ahyv8xwlu7cj900','5','10%','2024-03-29','2024-03-29 00:44:50','2024-03-29 00:52:04'),
+('erxyjd4wglurlw09c','2','0%','2024-04-08','2024-04-08 23:55:46','2024-04-08 23:55:46');
 
 /*Table structure for table `localizations` */
 
@@ -216,7 +220,7 @@ CREATE TABLE `localizations` (
   PRIMARY KEY (`Id_Loc`),
   KEY `Id_User_FK` (`Id_User_FK`),
   CONSTRAINT `localizations_ibfk_1` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `localizations` */
 
@@ -224,7 +228,8 @@ insert  into `localizations`(`Id_Loc`,`Dir_Ip`,`Id_User_FK`,`createdAt`,`updated
 (45,'192.168.0.1','ahyv8xwlu7cj900','2024-03-25 19:33:52','2024-03-25 19:33:52'),
 (46,'192.168.0.5','ahyv8xwlu7cj900','2024-03-25 19:42:45','2024-03-25 19:42:45'),
 (47,'192.168.88.9','ahyv8xwlu7cj900','2024-03-26 13:33:17','2024-03-26 13:38:18'),
-(48,'192.168.0.1','ahyv45gluc483jo','2024-03-29 03:40:06','2024-03-29 03:40:06');
+(48,'192.168.0.1','ahyv45gluc483jo','2024-03-29 03:40:06','2024-03-29 03:40:06'),
+(49,'192.168.0.1','erxyjd4wglurlw09c','2024-04-08 23:51:08','2024-04-08 23:51:08');
 
 /*Table structure for table `modulocursos` */
 
@@ -246,6 +251,7 @@ CREATE TABLE `modulocursos` (
 /*Data for the table `modulocursos` */
 
 insert  into `modulocursos`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Horas_Cont_Mod`,`createdAt`,`updatedAt`) values 
+('1','modulo 1',0,'3',15,'2024-04-08 18:56:53','2024-04-08 18:56:56'),
 ('ahyv5b8lubfeofn','loalala',0,'1',20,'2024-03-28 16:05:23','2024-03-28 16:28:55');
 
 /*Table structure for table `objetivos_cursos` */
@@ -412,7 +418,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=336 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=340 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -434,7 +440,36 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (332,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyMjY4MjM5LCJleHAiOjE3MTIzNTQ2Mzl9.H','1712354639','ahyv45gluc483jo','1','2024-04-04 22:03:59','2024-04-04 22:03:59'),
 (333,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyMjY4NDc5LCJleHAiOjE3MTIzNTQ4Nzl9.t','1712354879','ahyv45gluc483jo','1','2024-04-04 22:07:59','2024-04-04 22:07:59'),
 (334,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyNDE0MTgwLCJleHAiOjE3MTI1MDA1ODB9.P','1712500580','ahyv45gluc483jo','1','2024-04-06 14:36:20','2024-04-06 14:36:20'),
-(335,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyNDUzNDIyLCJleHAiOjE3MTI1Mzk4MjJ9.z','1712539822','ahyv45gluc483jo','1','2024-04-07 01:30:22','2024-04-07 01:30:22');
+(335,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyNDUzNDIyLCJleHAiOjE3MTI1Mzk4MjJ9.z','1712539822','ahyv45gluc483jo','1','2024-04-07 01:30:22','2024-04-07 01:30:22'),
+(336,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyNTkwMjkwLCJleHAiOjE3MTI2NzY2OTB9.z','1712676690','ahyv45gluc483jo','1','2024-04-08 15:31:30','2024-04-08 15:31:30'),
+(337,'047174','1712620868','erxyjd4wglurlw09c','2','2024-04-08 23:51:08','2024-04-08 23:51:08'),
+(338,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyNjIwNDg1LCJleHAiOjE3MTI3MDY4OD','1712706885','erxyjd4wglurlw09c','1','2024-04-08 23:54:45','2024-04-08 23:54:45'),
+(339,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyNjk5NzQ1LCJleHAiOjE3MTI3ODYxND','1712786145','erxyjd4wglurlw09c','1','2024-04-09 21:55:45','2024-04-09 21:55:45');
+
+/*Table structure for table `usuario_contenidos` */
+
+DROP TABLE IF EXISTS `usuario_contenidos`;
+
+CREATE TABLE `usuario_contenidos` (
+  `Id_Vista` varchar(100) NOT NULL,
+  `Id_Cont_Mod_FK` varchar(100) DEFAULT NULL,
+  `Id_User_FK` varchar(100) DEFAULT NULL,
+  `Fech_Visualizacion` datetime DEFAULT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id_Vista`),
+  KEY `ewee` (`Id_Cont_Mod_FK`),
+  KEY `Id_User_FK` (`Id_User_FK`),
+  CONSTRAINT `ewee` FOREIGN KEY (`Id_Cont_Mod_FK`) REFERENCES `contenido_modulos` (`Id_Cont`),
+  CONSTRAINT `usuario_contenidos_ibfk_1` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `usuario_contenidos` */
+
+insert  into `usuario_contenidos`(`Id_Vista`,`Id_Cont_Mod_FK`,`Id_User_FK`,`Fech_Visualizacion`,`createdAt`,`updatedAt`) values 
+('',NULL,NULL,NULL,NULL,NULL),
+('1','2','erxyjd4wglurlw09c','2024-04-08 20:23:37',NULL,NULL),
+('2','3','erxyjd4wglurlw09c','2024-04-09 18:09:35','2024-04-09 18:09:38','2024-04-09 18:09:40');
 
 /*Table structure for table `usuarios` */
 
@@ -461,7 +496,8 @@ CREATE TABLE `usuarios` (
 
 insert  into `usuarios`(`Id_User`,`Nom_User`,`Ape_User`,`Tel_User`,`Ema_User`,`Pass_User`,`Id_Rol_FK`,`Fot_User`,`Est_Email_User`,`createdAt`,`updatedAt`) values 
 ('ahyv45gluc483jo','yoiner','pertuz',NULL,'yoinerpertuz@gmail.com','$2b$10$MqGsaRb8ajQeWH88eTlD/utEzqu1TQxLAAeQkwl4Q.cJAPaR6AG76',2,NULL,1,'2024-03-29 03:40:06','2024-03-29 03:41:52'),
-('ahyv8xwlu7cj900','Yonier','perez','3139839832','yoinerpertuyz@gmail.com','$2b$10$0TZRSwVDWhrvBBArqwp2w.YFj9q5CdEhDfTbEaNc2iAZ36/52Ad2y',2,'3139839832',1,'2024-03-25 19:33:52','2024-03-29 02:36:08');
+('ahyv8xwlu7cj900','Yonier','perez','3139839832','yoinerpertuyz@gmail.com','$2b$10$0TZRSwVDWhrvBBArqwp2w.YFj9q5CdEhDfTbEaNc2iAZ36/52Ad2y',2,'3139839832',1,'2024-03-25 19:33:52','2024-03-29 02:36:08'),
+('erxyjd4wglurlw09c','Kilian','Mbbape',NULL,'KilianEmbappe@gmail.com','$2b$10$sVSQ3Ha.YBPyKFkzJeFYD.EE123Zb.kXyp/zcvyUQJCJvcwyqBIma',1,NULL,0,'2024-04-08 23:51:08','2024-04-08 23:51:08');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
