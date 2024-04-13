@@ -54,11 +54,13 @@ DROP TABLE IF EXISTS `certificados`;
 
 CREATE TABLE `certificados` (
   `Tit_Cert` varchar(255) DEFAULT NULL,
-  `Descp_Cert` varchar(255) DEFAULT NULL,
+  `Descp_Cert` text DEFAULT NULL,
   `Fec_Crea_Cert` date DEFAULT NULL,
-  `Firm_Dig_Cert` blob DEFAULT NULL,
+  `Firm_Dig_Cert` varchar(255) DEFAULT NULL,
   `Id_User_FK` varchar(100) NOT NULL,
   `Id_Cur_FK` varchar(100) NOT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`Id_User_FK`,`Id_Cur_FK`),
   KEY `Id_Cur_FK` (`Id_Cur_FK`),
   CONSTRAINT `certificados_ibfk_2` FOREIGN KEY (`Id_Cur_FK`) REFERENCES `cursos` (`Id_Cur`),
@@ -66,6 +68,11 @@ CREATE TABLE `certificados` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `certificados` */
+
+insert  into `certificados`(`Tit_Cert`,`Descp_Cert`,`Fec_Crea_Cert`,`Firm_Dig_Cert`,`Id_User_FK`,`Id_Cur_FK`,`createdAt`,`updatedAt`) values 
+('Tecnico en sistemas','el estudiante curso correctamente durante el periodo de 6 años el curso de ADSO','2024-04-11','url firma','ahyv45gluc483jo','1','2024-04-11 17:04:11','2024-04-11 17:04:13'),
+('dsfdf','fsdfdf','2024-04-11','firma','ahyv8xwlu7cj900','1','2024-04-11 22:53:52','2024-04-11 22:53:52'),
+('dsfdf','fsdfdf','2024-04-11','32434','ahyv8xwlu7cj900','2','2024-04-11 17:42:45','2024-04-11 17:42:49');
 
 /*Table structure for table `comentarios` */
 
@@ -95,6 +102,7 @@ CREATE TABLE `contenido_modulos` (
   `Tip_Cont` int(50) DEFAULT NULL COMMENT '1:audio, 2:video, 3: texto, 4:documento',
   `Url_Cont` varchar(255) DEFAULT NULL,
   `Tit_Cont` varchar(255) DEFAULT NULL,
+  `Porcentaje_Asig` decimal(5,2) DEFAULT NULL,
   `Id_Mod_FK` varchar(100) DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -105,11 +113,33 @@ CREATE TABLE `contenido_modulos` (
 
 /*Data for the table `contenido_modulos` */
 
-insert  into `contenido_modulos`(`Id_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Id_Mod_FK`,`createdAt`,`updatedAt`) values 
-('1',1,'454355','lolalal','ahyv5b8lubfeofn',NULL,'2024-03-28 18:18:20'),
-('2',1,'edsfsafasdsd','modulo 2','1','2024-04-08 18:57:52','2024-04-08 18:57:53'),
-('3',1,'vfsdffdf','modulo 2.1','1','2024-04-08 18:58:20','2024-04-08 18:58:24'),
-('ahyva8slubjubdo',1,'454355','fdsfdsfdsffdsfdsfdsf','ahyv5b8lubfeofn','2024-03-28 18:09:31','2024-03-28 18:09:31');
+insert  into `contenido_modulos`(`Id_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Porcentaje_Asig`,`Id_Mod_FK`,`createdAt`,`updatedAt`) values 
+('2',1,'edsfsafasdsd','modulo 2',5.00,'erxyjd4soluxdl4co','2024-04-08 18:57:52','2024-04-13 00:45:36'),
+('3',1,'vfsdffdf','modulo 2.1',5.00,'erxyjd4soluxdl4co','2024-04-08 18:58:20','2024-04-13 00:45:36'),
+('4',1,'fdgsfsdf','hhhhhh',8.00,'ahyv5b8lubfeofn','2024-04-12 15:52:42','2024-04-12 21:34:35'),
+('ahyva8slubjubdo',1,'454355','fdsfdsfdsffdsfdsfdsf',8.00,'ahyv5b8lubfeofn','2024-03-28 18:09:31','2024-04-12 21:34:35'),
+('erxyjd1l8lux60cfq',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:13:13','2024-04-12 21:34:35'),
+('erxyjd26oluxdfdtg',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:40:52','2024-04-13 00:45:36'),
+('erxyjd2j8luxdh3qn',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:42:12','2024-04-13 00:45:36'),
+('erxyjd2rsluxdj64x',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:43:49','2024-04-13 00:45:36'),
+('erxyjd494luxdhzps',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:42:54','2024-04-13 00:45:36'),
+('erxyjd4soluxdka0t',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:44:41','2024-04-13 00:45:36'),
+('erxyjd4soluxdlgf2',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:45:35','2024-04-13 00:45:36'),
+('erxyjd4wwlux710rr',1,'url video','contenido de prueba 2',7.00,'2','2024-04-12 21:41:44','2024-04-12 21:41:44'),
+('erxyjd5dklux5sunx',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:07:24','2024-04-12 21:34:35'),
+('erxyjd5h8lux5uxsl',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:09:01','2024-04-12 21:34:35'),
+('erxyjd5zklux6vyr6',1,'url video','contenido de prueba 2',7.00,'2','2024-04-12 21:37:48','2024-04-12 21:41:44'),
+('erxyjd5zklux6yfyi',1,'url video','contenido de prueba 2',7.00,'2','2024-04-12 21:39:44','2024-04-12 21:41:44'),
+('erxyjd7qclux5yfm1',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:11:44','2024-04-12 21:34:35'),
+('erxyjd7qclux5yuqx',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:12:04','2024-04-12 21:34:35'),
+('erxyjd8n8lux61m6s',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:14:13','2024-04-12 21:34:35'),
+('erxyjd8t0lux62o92',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:15:02','2024-04-12 21:34:35'),
+('erxyjd8t0lux6rt3y',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:34:35','2024-04-12 21:34:35'),
+('erxyjd8t0lux6u5sk',1,'url video','contenido de prueba 2',7.00,'2','2024-04-12 21:36:24','2024-04-12 21:41:44'),
+('erxyjd984lux5vmb9',1,'url video','contenido de prueba 1',8.00,'ahyv5b8lubfeofn','2024-04-12 21:09:33','2024-04-12 21:34:35'),
+('erxyjd9vsluxd0bzd',1,'url video','contenido de prueba 2',0.00,'2','2024-04-13 00:29:10','2024-04-13 00:29:10'),
+('erxyjda6gluxdjf86',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:44:01','2024-04-13 00:45:36'),
+('erxyjdrkluxdjq35',1,'url video','contenido de prueba 3',5.00,'1','2024-04-13 00:44:15','2024-04-13 00:45:36');
 
 /*Table structure for table `cursos` */
 
@@ -189,7 +219,7 @@ DROP TABLE IF EXISTS `inscripciones`;
 CREATE TABLE `inscripciones` (
   `Id_User_FK` varchar(100) NOT NULL,
   `Id_Cur_FK` varchar(100) NOT NULL,
-  `Prog_Cur` varchar(50) DEFAULT NULL,
+  `Prog_Cur` decimal(5,2) DEFAULT NULL,
   `fecha_insc` date DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -202,10 +232,10 @@ CREATE TABLE `inscripciones` (
 /*Data for the table `inscripciones` */
 
 insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Prog_Cur`,`fecha_insc`,`createdAt`,`updatedAt`) values 
-('ahyv8xwlu7cj900','1','0%','2024-03-28','2024-03-28 19:21:12','2024-03-28 19:21:14'),
-('ahyv8xwlu7cj900','2','0%','2024-03-29','2024-03-29 02:35:32','2024-03-29 02:35:32'),
-('ahyv8xwlu7cj900','5','10%','2024-03-29','2024-03-29 00:44:50','2024-03-29 00:52:04'),
-('erxyjd4wglurlw09c','2','0%','2024-04-08','2024-04-08 23:55:46','2024-04-08 23:55:46');
+('ahyv8xwlu7cj900','1',0.00,'2024-03-28','2024-03-28 19:21:12','2024-03-28 19:21:14'),
+('ahyv8xwlu7cj900','2',0.00,'2024-03-29','2024-03-29 02:35:32','2024-03-29 02:35:32'),
+('ahyv8xwlu7cj900','5',0.00,'2024-03-29','2024-03-29 00:44:50','2024-03-29 00:52:04'),
+('erxyjd4wglurlw09c','2',10.00,'2024-04-08','2024-04-08 23:55:46','2024-04-13 02:21:26');
 
 /*Table structure for table `localizations` */
 
@@ -240,6 +270,7 @@ CREATE TABLE `modulocursos` (
   `Tit_Mod` varchar(255) DEFAULT NULL,
   `Est_Mod` int(1) DEFAULT NULL COMMENT '0: creado, 1:activo, 2: bloqueado',
   `Id_Cur_FK` varchar(100) DEFAULT NULL,
+  `Porcentaje_Asig` decimal(5,2) DEFAULT NULL,
   `Horas_Cont_Mod` int(11) DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -250,9 +281,12 @@ CREATE TABLE `modulocursos` (
 
 /*Data for the table `modulocursos` */
 
-insert  into `modulocursos`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Horas_Cont_Mod`,`createdAt`,`updatedAt`) values 
-('1','modulo 1',0,'3',15,'2024-04-08 18:56:53','2024-04-08 18:56:56'),
-('ahyv5b8lubfeofn','loalala',0,'1',20,'2024-03-28 16:05:23','2024-03-28 16:28:55');
+insert  into `modulocursos`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Porcentaje_Asig`,`Horas_Cont_Mod`,`createdAt`,`updatedAt`) values 
+('1','modulo 1',0,'2',50.00,15,'2024-04-08 18:56:53','2024-04-13 00:45:20'),
+('2','modulo2',0,'1',33.33,11,'2024-04-12 16:35:26','2024-04-13 00:23:08'),
+('ahyv5b8lubfeofn','loalala',0,'1',33.33,20,'2024-03-28 16:05:23','2024-04-13 00:23:08'),
+('erxyjd18wluxcsktb','Introduccion al curso',0,'1',33.33,50,'2024-04-13 00:23:08','2024-04-13 00:23:08'),
+('erxyjd4soluxdl4co','Introduccion al curso 3',0,'2',50.00,50,'2024-04-13 00:45:20','2024-04-13 00:45:20');
 
 /*Table structure for table `objetivos_cursos` */
 
@@ -418,7 +452,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=340 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=344 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -444,7 +478,11 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (336,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyNTkwMjkwLCJleHAiOjE3MTI2NzY2OTB9.z','1712676690','ahyv45gluc483jo','1','2024-04-08 15:31:30','2024-04-08 15:31:30'),
 (337,'047174','1712620868','erxyjd4wglurlw09c','2','2024-04-08 23:51:08','2024-04-08 23:51:08'),
 (338,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyNjIwNDg1LCJleHAiOjE3MTI3MDY4OD','1712706885','erxyjd4wglurlw09c','1','2024-04-08 23:54:45','2024-04-08 23:54:45'),
-(339,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyNjk5NzQ1LCJleHAiOjE3MTI3ODYxND','1712786145','erxyjd4wglurlw09c','1','2024-04-09 21:55:45','2024-04-09 21:55:45');
+(339,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyNjk5NzQ1LCJleHAiOjE3MTI3ODYxND','1712786145','erxyjd4wglurlw09c','1','2024-04-09 21:55:45','2024-04-09 21:55:45'),
+(340,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyODcyODM0LCJleHAiOjE3MTI5NTkyMz','1712959234','erxyjd4wglurlw09c','1','2024-04-11 22:00:34','2024-04-11 22:00:34'),
+(341,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyODcyOTcxLCJleHAiOjE3MTI5NTkzNzF9.W','1712959371','ahyv45gluc483jo','1','2024-04-11 22:02:51','2024-04-11 22:02:51'),
+(342,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyOTUyNzQwLCJleHAiOjE3MTMwMzkxNDB9.4','1713039140','ahyv45gluc483jo','1','2024-04-12 20:12:20','2024-04-12 20:12:20'),
+(343,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyOTc0NDM0LCJleHAiOjE3MTMwNjA4Mz','1713060834','erxyjd4wglurlw09c','1','2024-04-13 02:13:54','2024-04-13 02:13:54');
 
 /*Table structure for table `usuario_contenidos` */
 
@@ -467,9 +505,9 @@ CREATE TABLE `usuario_contenidos` (
 /*Data for the table `usuario_contenidos` */
 
 insert  into `usuario_contenidos`(`Id_Vista`,`Id_Cont_Mod_FK`,`Id_User_FK`,`Fech_Visualizacion`,`createdAt`,`updatedAt`) values 
-('',NULL,NULL,NULL,NULL,NULL),
-('1','2','erxyjd4wglurlw09c','2024-04-08 20:23:37',NULL,NULL),
-('2','3','erxyjd4wglurlw09c','2024-04-09 18:09:35','2024-04-09 18:09:38','2024-04-09 18:09:40');
+('erxyjd5q4luxgn97t','erxyjd1l8lux60cfq','ahyv45gluc483jo','2025-01-22 00:00:00','2024-04-13 02:10:58','2024-04-13 02:10:58'),
+('erxyjd7holuxh03rt','2','erxyjd4wglurlw09c','2025-01-22 00:00:00','2024-04-13 02:20:58','2024-04-13 02:20:58'),
+('erxyjd7holuxh0p5m','3','erxyjd4wglurlw09c','2025-01-22 00:00:00','2024-04-13 02:21:25','2024-04-13 02:21:25');
 
 /*Table structure for table `usuarios` */
 

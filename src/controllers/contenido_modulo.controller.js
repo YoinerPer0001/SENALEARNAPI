@@ -5,6 +5,8 @@ import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
 import { Contenido_Modulos } from "../models/contenido_modulo.model.js";
 import { Modulocurso } from '../models/modulos_cursos.model.js'
+import { Cursos } from "../models/cursos.model.js";
+import { sequelize } from "../database/db.js";
 
 const jwt = jsonwebtoken;
 
@@ -18,10 +20,10 @@ export const GetContModuloxModule = async (req, res) => {
         const modules = await Modulocurso.findByPk(id)
 
         if (modules) {
-            const content = await Contenido_Modulos.findOne({where:{Id_Mod_FK:id}})
+            const content = await Contenido_Modulos.findOne({ where: { Id_Mod_FK: id } })
             if (content) {
                 response(res, 200, 200, content)
-            }else{
+            } else {
                 response(res, 404, 404, 'content not found');
             }
 
@@ -43,8 +45,6 @@ export const createContModu = async (req, res) => {
         if (err) {
             response(res, 401, 401, 'token not valid');
         } else {
-
-
             try {
 
                 const Id_Cont = uniqid();
@@ -62,8 +62,9 @@ export const createContModu = async (req, res) => {
                     response(res, 403, 403, "you dont have permissions");
                 } else {
 
-                    const moduleCourseExist = await Modulocurso.findByPk(Id_Mod_FK);
-
+                   
+                    let moduleCourseExist = await Modulocurso.findByPk(Id_Mod_FK);
+                    
                     if (moduleCourseExist) {
 
                         //create category
@@ -77,6 +78,13 @@ export const createContModu = async (req, res) => {
 
                         const newModule = await Contenido_Modulos.create(datos);
                         if (newModule) {
+                             //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
+                            const {Porcentaje_Asig} = await Modulocurso.findByPk(Id_Mod_FK)
+                            const contenidoTotal = await Contenido_Modulos.findAll({where:{Id_Mod_FK:Id_Mod_FK}})
+                            const porcentaje = (Porcentaje_Asig / contenidoTotal.length );
+                            console.log(Porcentaje_Asig)
+
+                            const updatePor = await Contenido_Modulos.update({Porcentaje_Asig:porcentaje},{where:{Id_Mod_FK:Id_Mod_FK}})
                             response(res, 200);
                         } else {
                             response(res, 500, 500, "error creating content module");
@@ -90,7 +98,7 @@ export const createContModu = async (req, res) => {
 
             } catch (err) {
 
-                response(res, 500, 500, "something went wrong");
+                response(res, 500, 500, err);
 
             }
         }
@@ -133,13 +141,13 @@ export const UpdateModCur = async (req, res) => {
                         cont_mod = cont_mod.dataValues;
 
                         if (data.Id_Mod_FK) {
-                            
+
                             const moduleExist = await Modulocurso.findByPk(data.Id_Mod_FK);
-                   
+
                             if (moduleExist) {
 
                                 datos = {
-                        
+
                                     Tip_Cont: data.Tip_Cont || cont_mod.Tip_Cont,
                                     Url_Cont: data.Url_Cont || cont_mod.Url_Cont,
                                     Tit_Cont: data.Tit_Cont || cont_mod.Tit_Cont,
@@ -154,7 +162,7 @@ export const UpdateModCur = async (req, res) => {
                         } else {
 
                             datos = {
-                                
+
                                 Tip_Cont: data.Tip_Cont || cont_mod.Tip_Cont,
                                 Url_Cont: data.Url_Cont || cont_mod.Url_Cont,
                                 Tit_Cont: data.Tit_Cont || cont_mod.Tit_Cont,
@@ -165,10 +173,10 @@ export const UpdateModCur = async (req, res) => {
                         }
 
 
-                        const responses = await Contenido_Modulos.update(datos, {where:{Id_Cont: id }})
-                        if(responses){
+                        const responses = await Contenido_Modulos.update(datos, { where: { Id_Cont: id } })
+                        if (responses) {
                             response(res, 200);
-                        }else{
+                        } else {
                             response(res, 500, 500, "error updating content module");
                         }
 

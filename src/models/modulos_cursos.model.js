@@ -22,6 +22,11 @@ export const Modulocurso = sequelize.define('Modulocurso',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    Porcentaje_Asig:{
+        type:DataTypes.DECIMAL,
+        allowNull:false,
+        defaultValue:0
+    },
     Horas_Cont_Mod:{
         type:DataTypes.INTEGER,
         allowNull:false

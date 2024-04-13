@@ -16,7 +16,7 @@ export const Inscripcione = sequelize.define('Inscripcione',
         allowNull: false
     },
     Prog_Cur:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     fecha_insc:{
@@ -25,6 +25,3 @@ export const Inscripcione = sequelize.define('Inscripcione',
         defaultValue:  sequelize.literal('CURRENT_TIMESTAMP')
     }
 })
-
-Usuario.belongsToMany(Cursos,{through:'Inscripcione', foreignKey: 'Id_User_FK'})
-Cursos.belongsToMany(Usuario,{through:'Inscripcione', foreignKey: 'Id_Cur_FK'})

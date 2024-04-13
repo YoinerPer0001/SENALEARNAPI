@@ -22,7 +22,19 @@ export const getAllInsc = async (req, res) => {
                     response(res, 403, 403, "you don't have permissions");
                 } else {
 
-                    const insc = await Inscripcione.findAll();
+                    const insc = await Inscripcione.findAll({
+                        attributes: { exclude: ['createdAt', 'updatedAt'] },
+                        include: [{
+                            model: Usuario,
+                            as: 'Usuario',
+                            attributes: { exclude: ['Id_User', 'Pass_User', 'Est_Email_User', 'createdAt', 'updatedAt'] },
+                        },
+                        {
+                            model: Cursos,
+                            as: 'Curso',
+                            attributes: { exclude: ['Id_Cur', 'createdAt', 'updatedAt'] }
+                        }]
+                    });
                     if (insc) {
                         response(res, 200, 200, insc);
                     } else {
@@ -32,7 +44,7 @@ export const getAllInsc = async (req, res) => {
             }
         } catch (err) {
 
-            response(res, 500, 500, "something went wrong");
+            response(res, 500, 500, err);
         }
     })
 
@@ -57,7 +69,21 @@ export const getInscxUser = async (req, res) => {
                 const user = await Usuario.findByPk(id);
 
                 if (user) {
-                    const insc = await Inscripcione.findOne({ where: { Id_User_FK: id } });
+
+                    const insc = await Inscripcione.findAll({
+                        attributes: { exclude: ['createdAt', 'updatedAt'] },
+                        include: [{
+                            model: Usuario,
+                            as: 'Usuario',
+                            attributes: { exclude: ['Id_User', 'Pass_User', 'Est_Email_User', 'createdAt', 'updatedAt'] },
+                        },
+                        {
+                            model: Cursos,
+                            as: 'Curso',
+                            attributes: { exclude: ['Id_Cur', 'createdAt', 'updatedAt'] }
+                        }],
+                        where: { Id_User_FK: id }
+                    });
                     if (insc) {
                         response(res, 200, 200, insc);
                     } else {
@@ -93,11 +119,24 @@ export const getInscxCurso = async (req, res) => {
                 if (adminper || instPer) {
                     const { id } = req.params;
 
-
                     //verify that the course exists
                     const course = await Cursos.findByPk(id);
                     if (course) {
-                        const insc = await Inscripcione.findOne({ where: { Id_Cur_FK: id } });
+                        const insc = await Inscripcione.findAll({
+                            attributes: { exclude: ['createdAt', 'updatedAt'] },
+                            include: [{
+                                model: Usuario,
+                                as: 'Usuario',
+                                attributes: { exclude: ['Id_User', 'Pass_User', 'Est_Email_User', 'createdAt', 'updatedAt'] },
+                            },
+                            {
+                                model: Cursos,
+                                as: 'Curso',
+                                attributes: { exclude: ['Id_Cur', 'createdAt', 'updatedAt'] }
+                            }],
+                            where: { Id_Cur_FK: id  }
+                        });
+                        
                         if (insc) {
                             response(res, 200, 200, insc);
                         } else {
@@ -142,12 +181,12 @@ export const newInsciption = (req, res) => {
 
                 //verificar que inscripcion no exista
                 const insc = await Inscripcione.findOne({ where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur } });
-               
+
                 if (user && curso && !insc) {
                     const datos = {
                         Id_User_FK: Id_User,
                         Id_Cur_FK: Id_Cur,
-                        Prog_Cur: '0%',
+                        Prog_Cur: 0,
                     }
 
                     //INSCRIBIMOS
@@ -198,7 +237,7 @@ export const editInsciption = (req, res) => {
 
                     //verify that the inscription exists
                     let insc = await Inscripcione.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } });
-                   
+
                     if (!insc) {
                         response(res, 404, 404, "inscription don't exist");
 
@@ -217,12 +256,12 @@ export const editInsciption = (req, res) => {
                                 response(res, 404, 404, "course don't exist");
 
                             } else {
-                                
+
 
                                 //we verify that the new inscription isn't already exists
 
                                 const NewinscxCurso = await Inscripcione.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur_New } });
-                               
+
                                 if (NewinscxCurso) {
                                     response(res, 400, 103, "course already inscrited");
                                 } else {
@@ -243,16 +282,16 @@ export const editInsciption = (req, res) => {
                             }
                         }
 
-                          //edit the inscription
-                          const editedInsc = await Inscripcione.update(data, { where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } });
+                        //edit the inscription
+                        const editedInsc = await Inscripcione.update(data, { where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } });
 
-                          if (editedInsc) {
+                        if (editedInsc) {
 
-                              response(res, 200);
-                          } else {
+                            response(res, 200);
+                        } else {
 
-                              response(res, 500, 500, "Error editing inscription");
-                          }
+                            response(res, 500, 500, "Error editing inscription");
+                        }
 
 
                     }

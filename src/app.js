@@ -15,6 +15,7 @@ import routesCertificados from "./v1/routes/certificados.routes.js";
 import routesEvaluaciones from './v1/routes/evaluaciones.routes.js'
 import routesPreguntasEval from "./v1/routes/preguntasEval.routes.js";
 import routesRespuestasEval from "./v1/routes/respuestasEval.routes.js";
+import routesUsuario_Cont from "./v1/routes/usuario_contenido.routes.js";
 import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
@@ -43,6 +44,7 @@ app.use(routesCertificados);
 app.use(routesEvaluaciones);
 app.use(routesPreguntasEval)
 app.use(routesRespuestasEval);
+app.use(routesUsuario_Cont);
 
 app.listen(3000,()=>{
     console.log("Server run in port 3000");

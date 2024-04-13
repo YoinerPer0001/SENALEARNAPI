@@ -20,6 +20,11 @@ export const Contenido_Modulos = sequelize.define('Contenido_Modulos',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    Porcentaje_Asig:{
+        type:DataTypes.DECIMAL,
+        allowNull:false,
+        defaultValue:0
+    },
     Id_Mod_FK:{
         type:DataTypes.STRING,
         allowNull:false

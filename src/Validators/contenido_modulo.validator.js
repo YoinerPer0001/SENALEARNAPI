@@ -15,7 +15,7 @@ export const createValidation = [
     check('Tit_Cont')
         .exists().withMessage('Tit_Cont is required')
         .not().isEmpty().withMessage('Tit_Cont cannot be empty')
-        .isNumeric().withMessage('Tit_Cont must be a number')
+        .isString().withMessage('Tit_Cont must be text')
         .isLength({ max: 100 }).withMessage('max length is 100'),
     check('Id_Mod_FK')
         .exists().withMessage('Id_Mod_FK is required')

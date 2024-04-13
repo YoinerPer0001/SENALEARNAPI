@@ -80,7 +80,17 @@ export const createModules = async (req, res) => {
 
                         const newModule = await Modulocurso.create(datos);
                         if (newModule) {
-                            response(res, 200);
+
+                            //actualizamos los porcentajes asignados segun el numero de modulos
+                            const modules = await Modulocurso.findAll({ where: { Id_Cur_FK: Id_Cur } })
+                            const porentajes = 100/modules.length || 1;
+                            
+                            const update = await Modulocurso.update({Porcentaje_Asig:porentajes},{where: { Id_Cur_FK: Id_Cur}})
+                            if(update){
+                                response(res, 200);
+                            }else{
+                                response(res, 500, 500, "error creating module");
+                            }
                         } else {
                             response(res, 500, 500, "error creating module");
                         }

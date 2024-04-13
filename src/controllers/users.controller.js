@@ -423,7 +423,6 @@ export const ValidateCod = async (req, res) => {
     }
 }
 
-
 //funtions
 
 // create token
