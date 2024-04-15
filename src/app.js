@@ -17,7 +17,6 @@ import routesPreguntasEval from "./v1/routes/preguntasEval.routes.js";
 import routesRespuestasEval from "./v1/routes/respuestasEval.routes.js";
 import routesUsuario_Cont from "./v1/routes/usuario_contenido.routes.js";
 import routesResult from "./v1/routes/resultadosEval.routes.js";
-import {swaggerDocs} from "./v1/swagger.js"
 import cors from "cors"
 
 
@@ -50,5 +49,4 @@ app.use(routesResult);
 
 app.listen(3000,()=>{
     console.log("Server run in port 3000");
-    swaggerDocs(app,3000)
 });
