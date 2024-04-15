@@ -22,6 +22,8 @@ import cors from "cors"
 
 const app = express();
 
+const port = 3000 || process.env.PORT;
+
 
 app.use(cors({credentials: true, origin: 'http://127.0.0.1:5500'}));
 
@@ -48,5 +50,5 @@ app.use(routesUsuario_Cont);
 app.use(routesResult);
 
 app.listen(3000,()=>{
-    console.log("Server run in port 3000");
+    console.log("Server run in port: " + port);
 });
