@@ -1,6 +1,7 @@
 import { Sequelize , DataTypes } from "sequelize";
 import { sequelize } from "../database/db.js";
 import { preguntaseval } from "./preguntasEval.model.js";
+import { Resultados_Evaluacione } from "./resultadosEval.model.js";
 
 export const evaluacion = sequelize.define('evaluacion',{
     Id_Eva:{
@@ -46,3 +47,6 @@ export const evaluacion = sequelize.define('evaluacion',{
 
 evaluacion.hasMany(preguntaseval, {foreignKey:'Id_Eval_FK'})
 preguntaseval.belongsTo(evaluacion,{foreignKey:'Id_Eval_FK',targetKey:'Id_Eva'})
+
+evaluacion.hasMany(Resultados_Evaluacione,{foreignKey:'Id_Eval_FK'})
+Resultados_Evaluacione.belongsTo(evaluacion, {foreignKey:'Id_Eval_FK', targetKey:'Id_Eva'})

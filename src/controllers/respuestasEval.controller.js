@@ -24,7 +24,7 @@ export const GetAnswersxId = async (req, res) => {
                 const evaluacions = await preguntaseval.findByPk(id);
 
                 if (evaluacions) {
-                    const preguntas = await respuestaseval.findAll({ where: { Id_Preg_Eval_FK: id } })
+                    const preguntas = await respuestaseval.findAll({ where: { Id_Preg_Eval_FK: id }, attributes:{exclude:['Resp_Correcta_Eval', 'createdAt','updatedAt']} })
 
                     if (preguntas) {
                         response(res, 200, 200, preguntas);
@@ -125,8 +125,8 @@ export const UpdateAnswers = async (req, res) => {
                     //verify exist ROL
                     let datosEnv;
                     let answer = await respuestaseval.findByPk(id)
+                    
                    
-
                     if (!answer) {
                         response(res, 404, 404, "answer not found");
 
@@ -136,24 +136,24 @@ export const UpdateAnswers = async (req, res) => {
                         if(datos.Id_Preg_Eval){
 
                             const evaluations = await preguntaseval.findByPk(datos.Id_Preg_Eval)
-
+                           
                             if(!evaluations){
                                 response(res, 404, 404, "question not found");
                             }else{
 
                                 datosEnv = {
-                                    Text_Preg_Eval: datos.Text_Resp_Eval || answer.Text_Resp_Eval,
+                                    Text_Resp_Eval: datos.Text_Resp_Eval || answer.Text_Resp_Eval,
                                     Resp_Correcta_Eval: datos.Resp_Correcta_Eval || answer.Resp_Correcta_Eval,
                                     Id_Eval_FK: datos.Id_Preg_Eval
                                 }
                             }
                         }else{
                             datosEnv = {
-                                Text_Preg_Eval: datos.Text_Resp_Eval || answer.Text_Resp_Eval,
+                                Text_Resp_Eval: datos.Text_Resp_Eval || answer.Text_Resp_Eval,
                                 Resp_Correcta_Eval: datos.Resp_Correcta_Eval || answer.Resp_Correcta_Eval,
                             }
                         }
-
+                        console.log(datosEnv)
                         const responses = await respuestaseval.update(datosEnv, { where: { Id_Res_Eval: id } })
 
                         if (responses) {

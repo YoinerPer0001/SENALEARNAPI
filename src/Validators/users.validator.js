@@ -21,7 +21,7 @@ export const createValidation = [
         .exists().withMessage('Pass_User is required')
         .not().isEmpty().withMessage('Pass_User cannot be empty')
         .isString().withMessage('Pass_User must be a string')
-        .isLength({ max: 100 }).withMessage('Pass_User must be at most 100 characters long'),
+        .isLength({min:8, max: 100 }).withMessage('Pass_User must be at most 8 characters long'),
     check('Dir_Ip')
         .exists().withMessage('Dir_Ip is required')
         .not().isEmpty().withMessage('Dir_Ip cannot be empty')

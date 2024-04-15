@@ -213,3 +213,69 @@ export const createCert = async (req, res) => {
         }
     });
 }
+
+export const updateCert = async (req, res) => {
+    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+        if (err) {
+            response(res, 401, 401, "Token Error");
+        } else {
+            const { Id_Rol_FK } = data.user;
+            const adminpermiso = adminPermissions(Id_Rol_FK)
+            const {id} = req.params;
+
+            if (!adminpermiso) {
+                response(res, 403, 403, "you don't have permissions");
+            } else {
+                //Tit_Cert, Descp_Cert, Fec_Crea_Cert, Firm_Dig_Cert, Id_User, Id_Cur, New_Curso
+                const datos = req.body;
+                let objDatos;
+
+                let certificado = await Certificado.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } })
+
+                if (!certificado) {
+                    response(res, 404, 404, 'user is not registered in this course')
+                } else {
+                    certificado = certificado.dataValues;
+                    if (datos.New_Curso) {
+                        const curso = await Cursos.findByPk(datos.New_Curso);
+                        if (!curso) {
+                            response(res, 404, 404, "New course don't exist");
+                        } else {
+
+                            //we verify that the new certificate isn't already exists
+                            const NewCertcxCurso = await Certificado.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.New_Curso } });
+
+                            if(NewCertcxCurso){
+                                response(res, 409, 409, "Certificate already created");
+                            }else{
+                                objDatos = {
+                                    Id_Cur_FK: datos.New_Curso,
+                                    Tit_Cert: datos.Tit_Cert || certificado.Tit_Cert,
+                                    Descp_Cert: datos.Descp_Cert || certificado.Descp_Cert,
+                                    Fec_Crea_Cert: datos.Fec_Crea_Cert || certificado.Fec_Crea_Cert,
+                                    Firm_Dig_Cert: datos.Firm_Dig_Cert || certificado.Firm_Dig_Cert
+                                }
+                            }
+                            
+                        }
+                    }else{
+                        objDatos = {
+                            Tit_Cert: datos.Tit_Cert || certificado.Tit_Cert,
+                            Descp_Cert: datos.Descp_Cert || certificado.Descp_Cert,
+                            Fec_Crea_Cert: datos.Fec_Crea_Cert || certificado.Fec_Crea_Cert,
+                            Firm_Dig_Cert: datos.Firm_Dig_Cert || certificado.Firm_Dig_Cert
+                        }
+                    }
+
+                    const cert = await Certificado.update(objDatos, { where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur } });
+                    if(cert){
+                        response(res, 200);
+                    }else{
+                        response(res, 500, 500, "Error updating Certificate");
+                    }
+                }
+            }
+        }
+
+    })
+}

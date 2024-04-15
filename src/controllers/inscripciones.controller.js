@@ -257,13 +257,13 @@ export const editInsciption = (req, res) => {
 
                             } else {
 
-
+                                
                                 //we verify that the new inscription isn't already exists
 
                                 const NewinscxCurso = await Inscripcione.findOne({ where: { Id_User_FK: id, Id_Cur_FK: datos.Id_Cur_New } });
 
                                 if (NewinscxCurso) {
-                                    response(res, 400, 103, "course already inscrited");
+                                    response(res, 409, 409, "course already inscrited");
                                 } else {
 
                                     data = {

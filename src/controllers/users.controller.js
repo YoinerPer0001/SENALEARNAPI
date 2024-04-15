@@ -163,14 +163,11 @@ export const UpdateUserData = async (req, res) => {
     jwt.verify(req.token, process.env.SECRETWORD, async (err, jwtdata) => {
 
         try {
-
-            const { Id_User } = jwtdata.user;
-
             const UserData = req.body;
-          
+            const {id} = req.params;
 
             //get actual data
-            let actualData = await Usuario.findByPk(Id_User);
+            let actualData = await Usuario.findByPk(id);
             actualData = actualData.dataValues;
 
             let objUpdate = {

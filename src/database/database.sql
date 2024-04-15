@@ -72,7 +72,7 @@ CREATE TABLE `certificados` (
 insert  into `certificados`(`Tit_Cert`,`Descp_Cert`,`Fec_Crea_Cert`,`Firm_Dig_Cert`,`Id_User_FK`,`Id_Cur_FK`,`createdAt`,`updatedAt`) values 
 ('Tecnico en sistemas','el estudiante curso correctamente durante el periodo de 6 años el curso de ADSO','2024-04-11','url firma','ahyv45gluc483jo','1','2024-04-11 17:04:11','2024-04-11 17:04:13'),
 ('dsfdf','fsdfdf','2024-04-11','firma','ahyv8xwlu7cj900','1','2024-04-11 22:53:52','2024-04-11 22:53:52'),
-('dsfdf','fsdfdf','2024-04-11','32434','ahyv8xwlu7cj900','2','2024-04-11 17:42:45','2024-04-11 17:42:49');
+('dsfdf','fsdfdf','2024-04-11','https://url.com/photo.png','ahyv8xwlu7cj900','3','2024-04-11 17:42:45','2024-04-13 15:44:18');
 
 /*Table structure for table `comentarios` */
 
@@ -191,7 +191,7 @@ DROP TABLE IF EXISTS `evaluacions`;
 CREATE TABLE `evaluacions` (
   `Id_Eva` varchar(100) NOT NULL,
   `Tit_Eva` varchar(255) DEFAULT NULL,
-  `Des_Eva` varchar(255) DEFAULT NULL,
+  `Des_Eva` text DEFAULT NULL,
   `Fec_Crea` date DEFAULT NULL,
   `Fec_Cer` date DEFAULT NULL,
   `Id_Mod_Cur_FK` varchar(100) DEFAULT NULL,
@@ -349,7 +349,9 @@ CREATE TABLE `preguntasevals` (
 
 insert  into `preguntasevals`(`Id_Preg_Eval`,`Text_Preg_Eval`,`Id_Eval_FK`,`createdAt`,`updatedAt`) values 
 ('1','mi primera cana','ahyv4cwlulsj9sf','2024-04-06 09:39:50','2024-04-06 14:50:52'),
-('ahyv584luo7gu71','una hebra de cabello adorna mi cuerpo','1','2024-04-06 14:44:07','2024-04-06 14:44:07');
+('2','una hebra de cabello adorna mi cuerpo','1','2024-04-06 14:44:07','2024-04-06 14:44:07'),
+('3','hay veeee','1','2024-04-14 17:02:53','2024-04-14 17:02:54'),
+('4','noticias de mi vejez','1','2024-04-14 17:02:50','2024-04-14 17:02:56');
 
 /*Table structure for table `respuestasevals` */
 
@@ -358,7 +360,7 @@ DROP TABLE IF EXISTS `respuestasevals`;
 CREATE TABLE `respuestasevals` (
   `Id_Res_Eval` varchar(100) NOT NULL,
   `Text_Resp_Eval` varchar(255) DEFAULT NULL,
-  `Resp_Correcta_Eval` int(1) DEFAULT NULL COMMENT '1: correcta, 0: incorrecta',
+  `Resp_Correcta_Eval` int(1) DEFAULT NULL COMMENT '1: correcta, 2: incorrecta',
   `Id_Preg_Eval_FK` varchar(100) DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -370,26 +372,39 @@ CREATE TABLE `respuestasevals` (
 /*Data for the table `respuestasevals` */
 
 insert  into `respuestasevals`(`Id_Res_Eval`,`Text_Resp_Eval`,`Resp_Correcta_Eval`,`Id_Preg_Eval_FK`,`createdAt`,`updatedAt`) values 
-('1','sdasdsd',1,'1','2024-04-06 10:30:01','2024-04-06 10:30:06');
+('1','sdasdsd',1,'2','2024-04-06 10:30:01','2024-04-06 10:30:06'),
+('2','DSD',0,'3','2024-04-14 14:57:31','2024-04-14 14:57:33'),
+('3','soledad',0,'2','2024-04-14 17:34:02','2024-04-14 17:34:04'),
+('4','carmen bolivar',0,'2','2024-04-14 17:34:20','2024-04-14 17:34:23'),
+('erxyjd5tkluzy8ro0','malambo',1,'1','2024-04-14 19:59:08','2024-04-14 19:59:08'),
+('erxyjd7jgluzygj9b','pivijay',0,'4','2024-04-14 20:05:10','2024-04-14 20:18:58');
 
-/*Table structure for table `resultados_evaluacion` */
+/*Table structure for table `resultados_evaluaciones` */
 
-DROP TABLE IF EXISTS `resultados_evaluacion`;
+DROP TABLE IF EXISTS `resultados_evaluaciones`;
 
-CREATE TABLE `resultados_evaluacion` (
-  `Id_Res_Eval` int(11) NOT NULL,
+CREATE TABLE `resultados_evaluaciones` (
+  `Id_Res_Eval` varchar(50) NOT NULL,
   `Id_Eval_FK` varchar(100) DEFAULT NULL,
   `Id_User_FK` varchar(100) DEFAULT NULL,
   `Puntuacion` decimal(5,2) DEFAULT NULL,
   `Fech_Real_Eval` datetime DEFAULT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`Id_Res_Eval`),
   KEY `Id_Eval_FK` (`Id_Eval_FK`),
   KEY `Id_User_FK` (`Id_User_FK`),
-  CONSTRAINT `resultados_evaluacion_ibfk_2` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`),
-  CONSTRAINT `resultados_evaluacion_ibfk_3` FOREIGN KEY (`Id_Eval_FK`) REFERENCES `evaluacions` (`Id_Eva`)
+  CONSTRAINT `resultados_evaluaciones_ibfk_2` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`),
+  CONSTRAINT `resultados_evaluaciones_ibfk_3` FOREIGN KEY (`Id_Eval_FK`) REFERENCES `evaluacions` (`Id_Eva`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `resultados_evaluacion` */
+/*Data for the table `resultados_evaluaciones` */
+
+insert  into `resultados_evaluaciones`(`Id_Res_Eval`,`Id_Eval_FK`,`Id_User_FK`,`Puntuacion`,`Fech_Real_Eval`,`createdAt`,`updatedAt`) values 
+('erxyjd2k0lv0a78bv','2','erxyjd4wglurlw09c',7.00,'2024-04-15 01:33:51','2024-04-15 01:33:51','2024-04-15 22:45:46'),
+('erxyjd2kklv1kbvkn','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:05:11','2024-04-15 23:05:11','2024-04-15 23:05:11'),
+('erxyjd6x4lv09rguc','1','erxyjd4wglurlw09c',5.00,'2024-04-15 01:21:36','2024-04-15 01:21:36','2024-04-15 01:21:36'),
+('erxyjd88olv1k9lim','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:03:24','2024-04-15 23:03:24','2024-04-15 23:03:24');
 
 /*Table structure for table `roles` */
 
@@ -452,7 +467,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=344 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=348 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -482,7 +497,11 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (340,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyODcyODM0LCJleHAiOjE3MTI5NTkyMz','1712959234','erxyjd4wglurlw09c','1','2024-04-11 22:00:34','2024-04-11 22:00:34'),
 (341,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyODcyOTcxLCJleHAiOjE3MTI5NTkzNzF9.W','1712959371','ahyv45gluc483jo','1','2024-04-11 22:02:51','2024-04-11 22:02:51'),
 (342,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEyOTUyNzQwLCJleHAiOjE3MTMwMzkxNDB9.4','1713039140','ahyv45gluc483jo','1','2024-04-12 20:12:20','2024-04-12 20:12:20'),
-(343,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyOTc0NDM0LCJleHAiOjE3MTMwNjA4Mz','1713060834','erxyjd4wglurlw09c','1','2024-04-13 02:13:54','2024-04-13 02:13:54');
+(343,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQ0d2dsdXJsdzA5YyIsIk5vbV9Vc2VyIjoiS2lsaWFuIiwiQXBlX1VzZXIiOiJNYmJhcGUiLCJFbWFfVXNlciI6IktpbGlhbkVtYmFwcGVAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzEyOTc0NDM0LCJleHAiOjE3MTMwNjA4Mz','1713060834','erxyjd4wglurlw09c','1','2024-04-13 02:13:54','2024-04-13 02:13:54'),
+(344,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMDIyNDAyLCJleHAiOjE3MTMxMDg4MDJ9.7','1713108802','ahyv45gluc483jo','1','2024-04-13 15:33:22','2024-04-13 15:33:22'),
+(345,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMDQ4MTIyLCJleHAiOjE3MTMxMzQ1MjJ9.6','1713134522','ahyv45gluc483jo','1','2024-04-13 22:42:02','2024-04-13 22:42:02'),
+(346,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMTM0NjQxLCJleHAiOjE3MTMyMjEwNDF9.o','1713221041','ahyv45gluc483jo','1','2024-04-14 22:44:01','2024-04-14 22:44:01'),
+(347,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMjIxMTE1LCJleHAiOjE3MTMzMDc1MTV9.y','1713307515','ahyv45gluc483jo','1','2024-04-15 22:45:15','2024-04-15 22:45:15');
 
 /*Table structure for table `usuario_contenidos` */
 
@@ -506,8 +525,9 @@ CREATE TABLE `usuario_contenidos` (
 
 insert  into `usuario_contenidos`(`Id_Vista`,`Id_Cont_Mod_FK`,`Id_User_FK`,`Fech_Visualizacion`,`createdAt`,`updatedAt`) values 
 ('erxyjd5q4luxgn97t','erxyjd1l8lux60cfq','ahyv45gluc483jo','2025-01-22 00:00:00','2024-04-13 02:10:58','2024-04-13 02:10:58'),
-('erxyjd7holuxh03rt','2','erxyjd4wglurlw09c','2025-01-22 00:00:00','2024-04-13 02:20:58','2024-04-13 02:20:58'),
-('erxyjd7holuxh0p5m','3','erxyjd4wglurlw09c','2025-01-22 00:00:00','2024-04-13 02:21:25','2024-04-13 02:21:25');
+('erxyjd7holuxh03rt','ahyva8slubjubdo','erxyjd4wglurlw09c','2027-01-22 00:00:00','2024-04-13 02:20:58','2024-04-13 22:52:44'),
+('erxyjd7holuxh0p5m','3','erxyjd4wglurlw09c','2025-01-22 00:00:00','2024-04-13 02:21:25','2024-04-13 02:21:25'),
+('erxyjd9dgluynyteh','4','erxyjd4wglurlw09c','2024-01-22 00:00:00','2024-04-13 22:23:41','2024-04-13 22:23:41');
 
 /*Table structure for table `usuarios` */
 
