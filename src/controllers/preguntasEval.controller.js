@@ -4,12 +4,10 @@ import jsonwebtoken from 'jsonwebtoken'
 import { adminPermissions, InstPermissions, UserPermissions } from "../utils/manage.permissions.js";
 import uniqid from 'uniqid'
 import 'dotenv/config'
-import { where } from "sequelize";
 import { evaluacion } from "../models/evaluacion.model.js";
 import { Contenido_Modulos } from "../models/contenido_modulo.model.js";
 import { Modulocurso } from "../models/modulos_cursos.model.js";
 import { Usuario_contenido } from "../models/usuario_contenidos.model.js";
-import { sequelize } from "../database/db.js";
 import { respuestaseval } from "../models/respuestasEval.model.js";
 
 const jwt = jsonwebtoken;

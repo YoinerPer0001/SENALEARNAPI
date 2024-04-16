@@ -353,6 +353,28 @@ insert  into `preguntasevals`(`Id_Preg_Eval`,`Text_Preg_Eval`,`Id_Eval_FK`,`crea
 ('3','hay veeee','1','2024-04-14 17:02:53','2024-04-14 17:02:54'),
 ('4','noticias de mi vejez','1','2024-04-14 17:02:50','2024-04-14 17:02:56');
 
+/*Table structure for table `requisitos_previos` */
+
+DROP TABLE IF EXISTS `requisitos_previos`;
+
+CREATE TABLE `requisitos_previos` (
+  `Id_Req` varchar(100) NOT NULL,
+  `Desc_Req` text DEFAULT NULL,
+  `Id_Cur_FK` varchar(100) DEFAULT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id_Req`),
+  KEY `Id_Cur_FK` (`Id_Cur_FK`),
+  CONSTRAINT `requisitos_previos_ibfk_1` FOREIGN KEY (`Id_Cur_FK`) REFERENCES `cursos` (`Id_Cur`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `requisitos_previos` */
+
+insert  into `requisitos_previos`(`Id_Req`,`Desc_Req`,`Id_Cur_FK`,`createdAt`,`updatedAt`) values 
+('1','tener internet','3','2024-04-16 17:28:17','2024-04-16 22:53:44'),
+('erxyjd830lv2yrnbn','tener internet 100GBs','2fquk2aclt1pzzry','2024-04-16 22:37:07','2024-04-16 22:37:07'),
+('erxyjd830lv2ys2gw','tener internet 100GBs','1','2024-04-16 22:37:27','2024-04-16 22:37:27');
+
 /*Table structure for table `respuestasevals` */
 
 DROP TABLE IF EXISTS `respuestasevals`;
@@ -404,7 +426,9 @@ insert  into `resultados_evaluaciones`(`Id_Res_Eval`,`Id_Eval_FK`,`Id_User_FK`,`
 ('erxyjd2k0lv0a78bv','2','erxyjd4wglurlw09c',7.00,'2024-04-15 01:33:51','2024-04-15 01:33:51','2024-04-15 22:45:46'),
 ('erxyjd2kklv1kbvkn','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:05:11','2024-04-15 23:05:11','2024-04-15 23:05:11'),
 ('erxyjd6x4lv09rguc','1','erxyjd4wglurlw09c',5.00,'2024-04-15 01:21:36','2024-04-15 01:21:36','2024-04-15 01:21:36'),
-('erxyjd88olv1k9lim','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:03:24','2024-04-15 23:03:24','2024-04-15 23:03:24');
+('erxyjd88olv1k9lim','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:03:24','2024-04-15 23:03:24','2024-04-15 23:03:24'),
+('erxyjd8kwlv1kuk4q','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:19:42','2024-04-15 23:19:42','2024-04-15 23:19:42'),
+('erxyjd8kwlv1kxkkv','1','erxyjd4wglurlw09c',5.00,'2024-04-15 23:22:03','2024-04-15 23:22:03','2024-04-15 23:22:03');
 
 /*Table structure for table `roles` */
 
@@ -467,7 +491,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=348 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=349 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -501,7 +525,8 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (344,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMDIyNDAyLCJleHAiOjE3MTMxMDg4MDJ9.7','1713108802','ahyv45gluc483jo','1','2024-04-13 15:33:22','2024-04-13 15:33:22'),
 (345,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMDQ4MTIyLCJleHAiOjE3MTMxMzQ1MjJ9.6','1713134522','ahyv45gluc483jo','1','2024-04-13 22:42:02','2024-04-13 22:42:02'),
 (346,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMTM0NjQxLCJleHAiOjE3MTMyMjEwNDF9.o','1713221041','ahyv45gluc483jo','1','2024-04-14 22:44:01','2024-04-14 22:44:01'),
-(347,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMjIxMTE1LCJleHAiOjE3MTMzMDc1MTV9.y','1713307515','ahyv45gluc483jo','1','2024-04-15 22:45:15','2024-04-15 22:45:15');
+(347,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMjIxMTE1LCJleHAiOjE3MTMzMDc1MTV9.y','1713307515','ahyv45gluc483jo','1','2024-04-15 22:45:15','2024-04-15 22:45:15'),
+(348,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJhaHl2NDVnbHVjNDgzam8iLCJOb21fVXNlciI6InlvaW5lciIsIkFwZV9Vc2VyIjoicGVydHV6IiwiRW1hX1VzZXIiOiJ5b2luZXJwZXJ0dXpAZ21haWwuY29tIiwiSWRfUm9sX0ZLIjoyfSwiaWF0IjoxNzEzMzA3NjM2LCJleHAiOjE3MTMzOTQwMzZ9.x','1713394036','ahyv45gluc483jo','1','2024-04-16 22:47:16','2024-04-16 22:47:16');
 
 /*Table structure for table `usuario_contenidos` */
 
