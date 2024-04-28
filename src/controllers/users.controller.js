@@ -305,22 +305,22 @@ export const loginUser = async (req, res) => {
                     // guardamos en Db
                     const resp = await Token.create(data1)
 
-                    const cookieP = cookieParser();
+                    // const cookieP = cookieParser();
 
 
-                    //serializar
-                    const serialized = serialize('sessionToken', datosToken, {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: 'none',
-                        maxAge: 86400000,
-                        path: '/'
-                    })
+                    // //serializar
+                    // const serialized = serialize('sessionToken', datosToken, {
+                    //     httpOnly: true,
+                    //     secure: true,
+                    //     sameSite: 'none',
+                    //     maxAge: 86400000,
+                    //     path: '/'
+                    // })
 
 
-                    res.setHeader('Set-Cookie', serialized)
+                    // res.setHeader('Set-Cookie', serialized)
 
-                    response(res, 200, 200, "success Login");
+                    response(res, 200, 200, datosToken);
 
 
                 }
