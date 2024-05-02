@@ -98,7 +98,7 @@ export const CreateCourse = async (req, res) => {
 
             } else {
 
-                const { Nom_Cur, Des_Cur, Hor_Cont_Total, Fech_Crea_Cur, Id_Cat_FK, Fot_Cur } = req.body;
+                const { Nom_Cur, Des_Cur, Id_Cat_FK } = req.body;
 
                 const { Id_Rol_FK, Id_User } = dat.user;
 
@@ -122,7 +122,7 @@ export const CreateCourse = async (req, res) => {
                             Nom_Cur: Nom_Cur,
                             Des_Cur: Des_Cur,
                             Hor_Cont_Total: Hor_Cont_Total,
-                            Fech_Crea_Cur: Fech_Crea_Cur,
+                            Fech_Crea_Cur: Date.now(),
                             Id_Cat_FK: Id_Cat_FK,
                             Fot_Cur: Fot_Cur,
                             Id_Inst: Id_User,
