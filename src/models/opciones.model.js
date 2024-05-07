@@ -10,5 +10,10 @@ export const Opcione = sequelize.define('Opcione',{
     nombre_opcion:{
         type:DataTypes.STRING,
         allowNull:false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })

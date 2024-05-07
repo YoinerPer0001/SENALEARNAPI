@@ -22,5 +22,10 @@ export const Resultados_Evaluacione = sequelize.define('Resultados_Evaluacione',
     Fech_Real_Eval:{
         type:DataTypes.DATE,
         allowNull:false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })

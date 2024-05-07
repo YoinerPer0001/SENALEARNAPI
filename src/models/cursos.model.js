@@ -22,7 +22,8 @@ export const Cursos = sequelize.define('Cursos',{
     },
     Hor_Cont_Total:{
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true,
+        defaultValue: null
     },
     Fech_Crea_Cur:{
         type: DataTypes.DATE,
@@ -34,7 +35,8 @@ export const Cursos = sequelize.define('Cursos',{
     },
     Fot_Cur:{
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: null
     },
     Est_Cur:{
         type: DataTypes.INTEGER,
@@ -42,6 +44,11 @@ export const Cursos = sequelize.define('Cursos',{
     },
     Id_Inst:{
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
         allowNull: false
     }
 

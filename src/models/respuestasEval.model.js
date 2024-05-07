@@ -18,6 +18,11 @@ export const respuestaseval = sequelize.define('respuestaseval',{
     Id_Preg_Eval_FK:{
         type:DataTypes.STRING,
         allowNull:false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

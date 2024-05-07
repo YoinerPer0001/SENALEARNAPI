@@ -23,5 +23,10 @@ export const Token = sequelize.define('Token',{
         type: DataTypes.CHAR,
         allowNull: false,
         defaultValue:'1'
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })

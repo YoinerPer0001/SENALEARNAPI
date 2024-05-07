@@ -1,4 +1,3 @@
-import { InstPermissions, adminPermissions } from "../utils/manage.permissions.js"
 import uniqid from 'uniqid';
 import jsonwebtoken from 'jsonwebtoken';
 import 'dotenv/config'
@@ -47,7 +46,7 @@ export const getCuCat = async (req, res) => {
 
         const { id } = req.params;
 
-        const course = await Cursos.findOne({ where: { Id_Cat_FK: id, Est_Cur: 2 },include: objInclude })
+        const course = await Cursos.findOne({ where: { Id_Cat_FK: id, Est_Cur: 2 }, include: objInclude })
 
         if (course) {
             response(res, 200, 200, course);
@@ -58,7 +57,7 @@ export const getCuCat = async (req, res) => {
 
     } catch (err) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 
 }
@@ -92,61 +91,39 @@ export const CreateCourse = async (req, res) => {
 
     try {
 
-        jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
-            if (err) {
-                response(res, 401, 401, "Token Error");
+        const { Nom_Cur, Des_Cur, Id_Cat_FK } = req.body;
 
-            } else {
+        const { Id_User } = req.Tokendata.user;
 
-                const { Nom_Cur, Des_Cur, Hor_Cont_Total, Fech_Crea_Cur, Id_Cat_FK, Fot_Cur } = req.body;
+        let Id_Cur = uniqid();
 
-                const { Id_Rol_FK, Id_User } = dat.user;
+        //verify that category exists
+        const category = await Categorias.findByPk(Id_Cat_FK);
+        if (category) {
 
+            const Est_Cur = 1;
 
-                let Id_Cur = uniqid();
-
-                //verify permissions
-                const permisoInst = InstPermissions(Id_Rol_FK);
-                const permisoAdmin = adminPermissions(Id_Rol_FK);
-
-                if (permisoInst || permisoAdmin) {
-
-                    //verify that category exists
-                    const category = await Categorias.findByPk(Id_Cat_FK);
-                    if (category) {
-
-                        const Est_Cur = 1;
-
-                        const datosCurso = {
-                            Id_Cur: Id_Cur,
-                            Nom_Cur: Nom_Cur,
-                            Des_Cur: Des_Cur,
-                            Hor_Cont_Total: Hor_Cont_Total,
-                            Fech_Crea_Cur: Fech_Crea_Cur,
-                            Id_Cat_FK: Id_Cat_FK,
-                            Fot_Cur: Fot_Cur,
-                            Id_Inst: Id_User,
-                            Est_Cur: Est_Cur
-                        }
-
-                        const resp = await Cursos.create(datosCurso);
-
-                        if (resp) {
-                            response(res, 200);
-                        } else {
-                            response(res, 500, 500, "error creating course");
-                        }
-
-                    } else {
-                        response(res, 404, 404, "Category not found");
-                    }
-                } else {
-                    response(res, 401, 401, "You don't have permissions");
-                }
-
+            const datosCurso = {
+                Id_Cur: Id_Cur,
+                Nom_Cur: Nom_Cur,
+                Des_Cur: Des_Cur,
+                Fech_Crea_Cur: Date.now(),
+                Id_Cat_FK: Id_Cat_FK,
+                Id_Inst: Id_User,
+                Est_Cur: Est_Cur
             }
 
-        });
+            const resp = await Cursos.create(datosCurso);
+
+            if (resp) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error creating course");
+            }
+
+        } else {
+            response(res, 404, 404, "Category not found");
+        }
 
 
     } catch (err) {
@@ -158,62 +135,43 @@ export const CreateCourse = async (req, res) => {
 //UPDATE COURSE
 export const UpdateCourse = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
-        if (err) {
-            response(res, 401, 401, "Token Error");
-        } else {
+    //Data
+    try {
 
-            let { user } = jwt.decode(req.token, process.env.SECRETWORD);
+        const { id } = req.params;
+        const InfoCur = req.body;
 
-            let adPermision = adminPermissions(user.Id_Rol_FK);
-            let InsPermission = InstPermissions(user.Id_Rol_FK);
+        //verify exist user
 
+        let objDatos;
 
-            if (adPermision || InsPermission) {
+        const curso = await Cursos.findByPk(id);
 
-                //Data
-                try {
+        if (curso) {
 
-                    const { id } = req.params;
-                    const InfoCur = req.body;
-
-                    //verify exist user
-
-                    let objDatos;
-
-                    const curso = await Cursos.findByPk(id);
-
-                    if (curso) {
-
-                        objDatos = {
-                            Nom_Cur: InfoCur.Nom_Cur || curso.Nom_Cur,
-                            Des_Cur: InfoCur.Des_Cur || curso.Des_Cur,
-                            Hor_Cont_Total: InfoCur.Hor_Cont_Total || curso.Hor_Cont_Total,
-                            Fech_Crea_Cur: InfoCur.Fech_Crea_Cur || curso.Fech_Crea_Cur,
-                            Id_Cat_FK: InfoCur.Id_Cat_FK || curso.Id_Cat_FK,
-                            Fot_Cur: InfoCur.Fot_Cur || curso.Fot_Cur
-                        }
-
-                        const resp = await Cursos.update(objDatos, { where: { Id_Cur: id } })
-                        if (resp) {
-                            response(res, 200);
-                        } else {
-                            response(res, 500, 500, "error updating course");
-                        }
-                    } else {
-                        response(res, 404, 404, "Course not found");
-                    }
-
-                } catch (err) {
-
-                    response(res, 500, 500, "something went wrong");
-                }
-
-            } else {
-                response(res, 401, 401, "You don't have permissions");
+            objDatos = {
+                Nom_Cur: InfoCur.Nom_Cur || curso.Nom_Cur,
+                Des_Cur: InfoCur.Des_Cur || curso.Des_Cur,
+                Hor_Cont_Total: InfoCur.Hor_Cont_Total || curso.Hor_Cont_Total,
+                Fech_Crea_Cur: InfoCur.Fech_Crea_Cur || curso.Fech_Crea_Cur,
+                Id_Cat_FK: InfoCur.Id_Cat_FK || curso.Id_Cat_FK,
+                Fot_Cur: InfoCur.Fot_Cur || curso.Fot_Cur
             }
+
+            const resp = await Cursos.update(objDatos, { where: { Id_Cur: id } })
+            if (resp) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error updating course");
+            }
+        } else {
+            response(res, 404, 404, "Course not found");
         }
 
-    })
+    } catch (err) {
+
+        response(res, 500, 500, "something went wrong");
+    }
 }
+
 

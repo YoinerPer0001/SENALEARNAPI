@@ -23,5 +23,10 @@ export const Inscripcione = sequelize.define('Inscripcione',
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue:  sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })

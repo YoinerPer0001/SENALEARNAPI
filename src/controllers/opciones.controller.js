@@ -1,9 +1,7 @@
 import { Opcione } from '../models/opciones.model.js'
-import { adminPermissions } from '../utils/manage.permissions.js';
-import jsonwebtoken from 'jsonwebtoken'
 import 'dotenv/config'
 import { response } from '../utils/responses.js';
-const jwt = jsonwebtoken;
+
 
 
 
@@ -11,31 +9,19 @@ const jwt = jsonwebtoken;
 export const GetAllOptions = async (req, res) => {
 
     try {
+        const { Id_Rol_FK } = req.Tokendata.user;
 
-        jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+        const opciones = await Opcione.findAll();
 
-            if (err) {
-                response(res, 500, 105, "Something went wrong");
-
-            } else {
-
-                const { Id_Rol_FK } = data.user;
-
-                const opciones = await Opcione.findAll();
-
-                if (opciones) {
-                    response(res, 200, 200, opciones);
-                } else {
-                    response(res, 404, 404, 'options not found');
-                }
-
-            }
-
-        });
+        if (opciones) {
+            response(res, 200, 200, opciones);
+        } else {
+            response(res, 404, 404, 'options not found');
+        }
 
     } catch (error) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 
 }
@@ -43,160 +29,109 @@ export const GetAllOptions = async (req, res) => {
 //get  options by id -- OK
 export const GetOptionsById = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+    try {
 
-        try {
+        const { id } = req.params;
 
-            if (err) {
-                response(res, 500, 105, "Something went wrong");
+        //verify exist user
+        const option = await Opcione.findByPk(id)
 
-            } else {
+        if (option) {
 
-                const { Id_Rol_FK } = data.user;
+            response(res, 200, 200, option);
 
-                const { id } = req.params;
+        } else {
 
-                    //verify exist user
-                    const option = await Opcione.findByPk(id)
+            response(res, 404, 404, 'Options not found');
 
-                    if (option) {
-
-                        response(res, 200, 200, option);
-
-                    } else {
-
-                        response(res, 404, 404, 'Options not found');
-
-                    }
-                
-            }
-
-        } catch (err) {
-
-            response(res, 500, 500, "something went wrong");
         }
-    })
+
+    } catch (err) {
+
+        response(res, 500, 500, "something went wrong");
+    }
+
 
 }
 
 // create options
 export const createOptions = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-        try {
 
-            if (err) {
-                response(res, 401, 401, "Token Error");
+    try {
+
+        const { nombre_opcion } = req.body;
+
+        if (!nombre_opcion) {
+
+            response(res, 400, 102, "Something went wrong");
+
+        } else {
+            const nombre_optLower = nombre_opcion.toLowerCase();
+
+            //verificamos que no exista la opcion
+            const option = await Opcione.findOne({ where: { nombre_opcion: nombre_optLower } });
+
+
+            if (option) {
+
+                response(res, 409, 409, "option is already registered");
+
             } else {
 
-                const { Id_Rol_FK } = data.user;
-                const { nombre_opcion } = req.body;
+                const newOption = await Opcione.create({ nombre_opcion: nombre_optLower });
 
-                //verify user permissions
-                const adminPermiso = adminPermissions(Id_Rol_FK);
-
-                if (!adminPermiso) {
-
-                    response(res, 403, 403, "you dont have permissions");
+                if (newOption) {
+                    response(res, 200);
                 } else {
-
-
-                    if (!nombre_opcion) {
-
-                        response(res, 400, 102, "Something went wrong");
-
-                    } else {
-                        const nombre_optLower = nombre_opcion.toLowerCase();
-
-                        //verificamos que no exista la opcion
-                        const option = await Opcione.findOne({ where: { nombre_opcion: nombre_optLower } });
-
-
-                        if (option) {
-
-                            response(res, 409, 409, "option is already registered");
-
-                        } else {
-
-                            const newOption = await Opcione.create({ nombre_opcion: nombre_optLower });
-
-                            if (newOption) {
-                                response(res, 200);
-                            } else {
-                                response(res, 500, 500, "error creating option");
-                            }
-
-                        }
-                    }
-
-
+                    response(res, 500, 500, "error creating option");
                 }
 
             }
-
-
-        } catch (err) {
-
-            response(res, 500, 500, "something went wrong");
         }
 
+    } catch (err) {
 
-    })
+        response(res, 500, 500, "something went wrong");
+    }
+
+
+
 }
 
 //update options
 export const UpdateOptions = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
-        if (err) {
+    try {
 
-            response(res, 401, 401, "Token Error");
+        //Data
+        const { id } = req.params;
+        const { nombre_opcion } = req.body;
+
+        //verify exist option
+        const option = await Opcione.findByPk(id)
+
+        if (!option) {
+
+            response(res, 401, 401, "Option not found");
+
         } else {
+            const objDatos = {
+                nombre_opcion: nombre_opcion.toLowerCase()
+            }
 
-            try {
-                const { Id_Rol_FK } = dat.user;
+            const responses = await Opcione.update(objDatos, { where: { id_opcion: id } })
 
-                let adPermision = adminPermissions(Id_Rol_FK);
-
-                if (adPermision) {
-
-                    //Data
-                    const { id } = req.params;
-                    const { nombre_opcion } = req.body;
-
-                    //verify exist option
-                    const option = await Opcione.findByPk(id)
-
-                    if (!option) {
-
-                        response(res, 401, 401, "Option not found");
-
-                    } else {
-                        const objDatos = {
-                            nombre_opcion: nombre_opcion.toLowerCase()
-                        }
-
-                        const responses = await Opcione.update(objDatos, { where: { id_opcion: id } })
-
-                        if (responses) {
-                            response(res, 200);
-                        } else {
-                            response(res, 500, 500, "Error updating option");
-                        }
-                    }
-
-                } else {
-                    response(res, 401, 401, "You don't have permissions");
-                }
-
-            } catch (err) {
-
-                response(res, 500, 500, "something went wrong");
-
+            if (responses) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "Error updating option");
             }
         }
 
+    } catch (err) {
 
+        response(res, 500, 500, "something went wrong");
 
-    })
+    }
 }

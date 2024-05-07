@@ -42,6 +42,11 @@ export const evaluacion = sequelize.define('evaluacion',{
         type:DataTypes.INTEGER,
         allowNull:false,
         defaultValue:0
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

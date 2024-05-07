@@ -14,6 +14,11 @@ export const Objetivos_Cursos = sequelize.define('Objetivos_Cursos',{
     Id_Cur_FK:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

@@ -11,6 +11,11 @@ export const Categorias = sequelize.define('categorias',{
     Nom_Cat:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

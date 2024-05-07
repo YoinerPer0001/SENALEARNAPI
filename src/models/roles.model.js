@@ -11,8 +11,13 @@ export const Role = sequelize.define('Role',{
     Nom_Rol:{
         type: DataTypes.STRING,
         allowNull: false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 
-Role.hasMany(Usuario,{foreignKey:'Id_Rol_FK'})
-Usuario.belongsTo(Role,{foreignKey:'Id_Rol_FK',targetKey:'Id_Rol'})
+Role.hasMany(Usuario,{ foreignKey:'Id_Rol_FK'})
+Usuario.belongsTo(Role,{as: "rol", foreignKey:'Id_Rol_FK',targetKey:'Id_Rol'})

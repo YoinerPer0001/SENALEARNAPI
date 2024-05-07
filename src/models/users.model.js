@@ -48,6 +48,11 @@ export const Usuario = sequelize.define('Usuario', {
     Tel_User:{
         type: DataTypes.STRING,
         allowNull: true
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

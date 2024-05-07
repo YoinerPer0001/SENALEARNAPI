@@ -20,6 +20,11 @@ export const Usuario_contenido = sequelize.define('Usuario_contenido',{
     Fech_Visualizacion:{
         type:DataTypes.DATE,
         allowNull:false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

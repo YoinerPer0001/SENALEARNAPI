@@ -19,6 +19,11 @@ export const Roles_Opcione = sequelize.define('Roles_Opcione',{
             model:Opcione,
             key:'id_opcion'
         }
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 

@@ -1,44 +1,28 @@
-import { Role } from '../models/roles.model.js'
-import { adminPermissions } from '../utils/manage.permissions.js';
-import jsonwebtoken from 'jsonwebtoken'
+import {Role} from '../models/roles.model.js';
 import 'dotenv/config'
 import { response } from '../utils/responses.js';
-const jwt = jsonwebtoken;
-
+import {Usuario} from '../models/users.model.js';
 
 
 //get all roles
 export const GetRoles = async (req, res) => {
 
     try {
-
-        jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-            if (err) {
-                response(res, 401, 401, "Invalid Token");
-            } else {
-
-                const { Id_Rol_FK } = data.user;
-
-                const adminPermiso = adminPermissions(Id_Rol_FK);
-
-                if (adminPermiso) {
-                    const roles = await Role.findAll();
-
-                    if (roles) {
-                        response(res, 200, 200, roles);
-                    } else {
-                        response(res, 404, 404, 'Roles not found');
-                    }
-                } else {
-                    response(res, 403, 403, "You don't have permissions");
-                }
-            }
-
+        const roles = await Role.findAll({
+            attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
+            where: { ESTADO_REGISTRO: 1 } // REGISTROS ACTIVOS
         });
+
+        if (roles) {
+            response(res, 200, 200, roles);
+        } else {
+            response(res, 404, 404, 'Not Found');
+        }
 
     } catch (error) {
 
         response(res, 500, 500, "something went wrong");
+
     }
 
 }
@@ -46,137 +30,148 @@ export const GetRoles = async (req, res) => {
 //get  roles by id
 export const GetRolesxId = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-        if (err) {
-            response(res, 401, 401, "Invalid Token");
+    try {
+        const { id } = req.params;
+
+        const roles = await Role.findByPk(id, { attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] }, });
+
+        if (roles) {
+            response(res, 200, 200, roles);
         } else {
-
-            try {
-                const { id } = req.params;
-
-                const roles = await Role.findByPk(id);
-
-                if (roles) {
-                    response(res, 200, 200, roles);
-                } else {
-                    response(res, 404, 404, 'roles not found');
-                }
-
-            } catch (err) {
-                response(res, 500, 500, "something went wrong");
-            }
+            response(res, 404, 404, roles);
         }
-    })
+
+    } catch (err) {
+
+        response(res, 500, 500, "something went wrong");
+    }
 
 }
 
 // create roles
 export const createRoles = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
-        if (err) {
-            response(res, 401, 401, 'Error Token');
+    try {
+        const { Nom_Rol } = req.body;
+
+        //verificamos que no exista un rol con el mismo nombre
+        const rolExists = await Role.findOne({ where: { Nom_Rol: Nom_Rol, ESTADO_REGISTRO: 1 } })
+
+
+        if (rolExists) {
+
+            return response(res, 409, 409, "rol already exist");
+
         } else {
 
-            try {
-
-                const { Id_Rol_FK } = data.user;
-
-                //verify user permissions
-                const adminPermiso = adminPermissions(Id_Rol_FK);
-
-                if (!adminPermiso) {
-
-                    response(res, 403, 403, "you dont have permissions");
-
-                } else {
-
-                    const { Nom_Rol } = req.body;
-
-
-                    //verificamos que no exista un rol con el mismo nombre
-                    const rolExists = await Role.findOne({ where: { Nom_Rol: Nom_Rol.toLowerCase() } });
-
-
-                    if (rolExists) {
-                        response(res, 500, 107, "rol already exist");
-                    } else {
-
-                        //create a rol
-                        const datos = {
-                            Nom_Rol: Nom_Rol.toLowerCase()
-                        }
-
-                        const newRol = await Role.create(datos);
-                        if(newRol){
-                            response(res, 200);
-                        }else{
-                            response(res, 500, 500, "error creating rol");
-                        }
-                        
-
-                    }
-
-                }
-            } catch (err) {
-
-                response(res, 500, 500, "something went wrong");
+            //create a rol
+            const datos = {
+                Nom_Rol: Nom_Rol.toLowerCase()
             }
+
+            const newRol = await Role.create(datos);
+
+            if (newRol) {
+                response(res, 200)
+            } else {
+                response(res, 500, 500, "Error creating")
+            }
+
+
         }
-
-
-    })
+    } catch (err) {
+        response(res, 500, 500, "something went wrong");
+    }
 }
 // //update roles
 export const UpdateRoles = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
-        if (err) {
+    try {
+        //Data
+        const { id } = req.params;
+        const datos = req.body;
 
-            response(res, 401, 401, "Error Token");
-        }
+        //verify exist ROL
+        let datosEnv;
+        let roles = await Role.findByPk(id)
 
-        try {
-            const { Id_Rol_FK } = dat.user;
+        if (!roles) {
+            response(res, 404, 404, "Rol don't exist");
 
-            let adPermision = adminPermissions(Id_Rol_FK);
+        } else {
+            roles = roles.dataValues;
 
-            if (adPermision) {
+            if (datos.Nom_Rol) {
+                const rolExists = await Role.findOne({ where: { Nom_Rol: datos.Nom_Rol, ESTADO_REGISTRO: 1 } })
 
-                //Data
-                const { id } = req.params;
-                const datos = req.body;
+                if (rolExists) {
 
-                //verify exist ROL
-                let datosEnv;
-                let roles = await Role.findByPk(id)
-
-                if (!roles) {
-                    response(res, 500, 103, "Something went wrong");
-
+                    return response(res, 409, 409, "New rol already exist");
                 } else {
-                    roles = roles.dataValues;
-
                     datosEnv = {
-                        Nom_Rol: datos.Nom_Rol || roles.Nom_Rol
+
+                        Nom_Rol: datos.Nom_Rol,
+                        ESTADO_REGISTRO: datos.ESTADO_REGISTRO || roles.ESTADO_REGISTRO
                     }
 
-                    const responses = await Role.update(datosEnv,{where:{Id_Rol:id}})
+                }
+            } else {
+                datosEnv = {
 
-                    if(responses){
-                        response(res, 200);
-                    }else{
-                        response(res, 500, 500, "error updating rol");
-                    }
+                    Nom_Rol: datos.Nom_Rol || roles.Nom_Rol,
+                    ESTADO_REGISTRO: datos.ESTADO_REGISTRO || roles.ESTADO_REGISTRO
                 }
 
-            } else {
-                response(res, 401, 401, "You don't have permissions");
             }
 
-        } catch (err) {
-                response(res, 500, 500, err);
+            const responses = await Role.update(datosEnv, { where: { Id_Rol: id } })
+            if (responses) {
+                response(res, 200)
+            } else {
+                response(res, 500, 500, "Error updating")
+            }
         }
-    })
+
+    } catch (err) {
+
+        response(res, 500, 500, "something went wrong");
+
+    }
+
+}
+
+export const deleteRol = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const rol = await Role.findByPk(id);
+        if (!rol) {
+            return response(res, 404, 404, "Rol don't exist");
+
+        } else {
+
+            //verificamos que no tenga usuarios asociados
+            const usuarios = await Usuario.findAll({ where: { Id_Rol_FK: id } })
+
+            if (usuarios) {
+                return response(res, 403, 403, "You cannot delete this rol, because has users associated")
+            } else {
+
+                const responses = await Role.update({ ESTADO_REGISTRO: false }, { where: { Id_Rol: id } })
+                if (responses) {
+                    response(res, 200)
+                } else {
+                    response(res, 500, 500, "Error Deleting")
+                }
+
+            }
+
+           
+
+        }
+
+    } catch (err) {
+
+        response(res, 500, 500, err);
+    }
 }

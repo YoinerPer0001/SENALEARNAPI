@@ -1,113 +1,92 @@
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { adminPermissions } from "../utils/manage.permissions.js"
 import { mensajeEnviar } from "../utils/Emailmessages/verification.message.js";
 import { mensaje_Confirm_Login } from "../utils/Emailmessages/login_verification.message.js";
 import { response } from "../utils/responses.js";
 import { GenCodigosTemp } from "../utils/GenCodTemp.js";
-import cookieParser from "cookie-parser";
-import { serialize } from "cookie";
 import uniqid from 'uniqid';
+import {Usuario} from "../models/users.model.js";
 import 'dotenv/config'
-
-import { Token } from "../models/tokens.model.js";
-import { Localization } from "../models/localizacion.model.js";
-import { Usuario } from "../models/users.model.js";
-
-
+import {Token} from "../models/tokens.model.js";
+import {Localization} from "../models/localizacion.model.js";
+import {Role} from '../models/roles.model.js';
 
 const jwt = jsonwebtoken;
 
-// get all users
+// get all users--- ok
 export const getUsers = async (req, res) => {
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
 
-        try {
+    try {
 
-            if (err) {
-                response(res, 500, 105, "Something went wrong");
+        const users = await Usuario.findAll(
+            {
+                attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
+                include:{
+                    model:Role,  as:"rol",
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
+                },
+                where: { ESTADO_REGISTRO: 1 },
 
-            } else {
-
-                //we check permissions
-                const permissions = adminPermissions(data.user.Id_Rol_FK);
-
-                if (permissions) {
-
-                    //mostramos datos de usuarios
-                    const users = await Usuario.findAll({ attributes: { exclude: ['Pass_User'] } });
-                    if (users) {
-                        response(res, 200, 200, users);
-                    } else {
-                        response(res, 401, 401, "Users not found");
-                    }
-
-
-                } else {
-                    response(res, 403, 403, "you dont have permissions");
-                }
-
-            }
-
-        } catch (err) {
-
-            response(res, 500, 500, "something went wrong");
+            });
+        if (users) {
+            response(res, 200, 200, users);
+        } else {
+            response(res, 404, 404, "Users not found");
         }
 
-
-    })
-
-
-
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
 
 
 
 }
 
-// get user by id
+// get users x id --- ok
 export const getUserxId = async (req, res) => {
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
-        try {
-            if (err) {
-                response(res, 500, 105, "Invalid Token");
 
-            } else {
-                const { id } = req.params;
+    try {
 
-                const users = await Usuario.findByPk(id, { attributes: { exclude: ['Pass_User'] } });
+        const { id } = req.params;
 
-                if (users) {
-                    response(res, 200, 200, users);
-                } else {
-                    response(res, 401, 401, "User not found");
+        //mostramos datos de usuarios
+        const users = await Usuario.findByPk(id,
+             { 
+                attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt'] },
+                include:{
+                    model:Role, as: "rol",
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
                 }
-
-
-            }
-
-        } catch (err) {
-            response(res, 500, 500, "something went wrong");
+            
+            });
+        if (users) {
+            response(res, 200, 200, users);
+        } else {
+            response(res, 404, 404, "Users not found");
         }
-    })
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+
 
 }
 
-//register user ==== OK
+//register user 
 export const regUser = async (req, res) => {
+
     try {
 
         const datos = req.body;
 
-        //verificamos que los datos esten completos
-
         const passEncripted = await bcrypt.hash(datos.Pass_User, 10);
 
+
         //verificamos que no exista EMAIL/TEL
-        const user = await Usuario.findOne({ where: { Ema_User: datos.Ema_User } });
+        const user = await Usuario.findOne({ where: { Ema_User: datos.Ema_User, ESTADO_REGISTRO: 1 } });
 
-        if (!user) {
+        if (user == null) {
 
-            // we encript password
             const Id_User = uniqid();
 
             const DataEnv = {
@@ -116,135 +95,57 @@ export const regUser = async (req, res) => {
                 Ape_User: datos.Ape_User,
                 Ema_User: datos.Ema_User,
                 Pass_User: passEncripted,
-                Id_Rol_FK: 1,
+                Id_Rol_FK: 3,
             }
 
             //insert data in database
-            const DataInsert = await Usuario.create(DataEnv);
+            const userInserted = await Usuario.create(DataEnv);
 
-            //generamos un codigo que se guardara en la base de datos
-            const { codigo, exp } = GenCodigosTemp(600);
+            if (userInserted) {
 
-            const DataToken = {
-                Token: codigo,
-                Fec_Caducidad: exp,
-                User_Id_FK: Id_User,
-                Tipo_token: 2
-            }
+                // //generamos un codigo que se guardara en la base de datos
+                const { codigo, exp } = await GenCodigosTemp(600);
 
-            //guardamos el token en la base de datos
-            const token = await Token.create(DataToken);
+                const DataToken = {
+                    Token: codigo,
+                    Fec_Caducidad: exp,
+                    User_Id_FK: Id_User
+                }
 
-            //guardamos localizacion del usuario
-            const objLoc = {
-                Dir_Ip: datos.Dir_Ip,
-                Id_User_FK: Id_User
-            }
+                //guardamos el token en la base de datos
+                const token = await Token.create(DataToken);
 
-            const locate = await Localization.create(objLoc);
+                if (token) {
+                    // //guardamos localizacion del usuario
 
-            response(res, 200);
-
-
-            // envio de correo
-            mensajeEnviar(datos.Ema_User, datos.Nom_User, codigo, datos.Pass_User);
-
-        } else {
-            response(res, 400, 107, "Email is registered");
-        }
-
-    } catch (err) {
-        response(res, 500, 500, "something went wrong");
-    }
-}
-
-//UPDATE USERS data (only rol users)
-export const UpdateUserData = async (req, res) => {
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, jwtdata) => {
-
-        try {
-            const UserData = req.body;
-            const {id} = req.params;
-
-            //get actual data
-            let actualData = await Usuario.findByPk(id);
-            actualData = actualData.dataValues;
-
-            let objUpdate = {
-
-                Nom_User: UserData.Nom_User || actualData.Nom_User,
-                Ape_User: UserData.Ape_User || actualData.Ape_User,
-                Tel_User: UserData.Tel_User || actualData.Tel_User,
-                Pass_User: actualData.Pass_User,
-                Ema_User: UserData.Ema_User || actualData.Ema_User,
-                Fot_User: UserData.Fot_User || actualData.Tel_User
-            }
-
-            if (UserData.Pass_User) {
-                objUpdate.Pass_User = await bcrypt.hash(UserData.Pass_User, 10)
-            }
-           
-
-            //update data
-            const updatedData = await Usuario.update(objUpdate, { where: { Id_User: Id_User } });
-
-            if (updatedData) {
-                response(res, 200)
-            } else {
-                response(res, 500, 500, "Error updating user data");
-            }
-
-        } catch (err) {
-
-            response(res, 500, 500, err);
-        }
-
-    })
-}
-
-//Validate Email ==== OK
-export const ValidateEmail = async (req, res) => {
-
-    try {
-        const datos = req.body;
-
-        // verificamos que exista el usuario
-        const user = await Usuario.findByPk(datos.Id_User)
-
-        if (user) {
-
-            //verificamos que el codigo sea valido
-            let token = await Token.findOne({ where: { User_Id_FK: datos.Id_User, Token: datos.codigo, Tipo_token: 2 } })
-
-            if (token) {
-
-                token = token.dataValues;
-
-                const fechaActual = Math.floor(Date.now() / 1000);
-                const fechaExp = token.Fec_Caducidad;
-
-                // verificamos que no este expirado el codigo
-                if (fechaActual > fechaExp) {
-                    response(res, 401, 401, "Expired token");
-                } else {
-                    // actualizamos el estado del Email a verificado
-                    const updatedUser = await Usuario.update({ Est_Email_User: 1 }, { where: { Id_User: datos.Id_User } })
-
-                    if (updatedUser) {
-                        response(res, 200);
-                    } else {
-                        response(res, 500, 500, "Error updating email state");
+                    const objLoc = {
+                        Dir_Ip: datos.Dir_Ip,
+                        Id_User_FK: Id_User
                     }
 
+                    const locate = await Localization.create(objLoc);
+
+                    if (locate) {
+                        response(res, 200, 200);
+                        mensajeEnviar(datos.Ema_User, datos.Nom_User, codigo, datos.Pass_User);
+                    } else {
+                        response(res, 500, 500, "");
+                    }
+                } else {
+                    response(res, 500, 500, "Error Token not added");
                 }
 
             } else {
-                response(res, 401, 401, "Something went wrong");
+
+                response(res, 500, 500, "Error User not created");
+
             }
 
-        } else {
 
-            response(res, 401, 401, "Token not found");
+
+
+        } else {
+            response(res, 409, 409, "Email is registered");
         }
 
     } catch (err) {
@@ -253,32 +154,163 @@ export const ValidateEmail = async (req, res) => {
     }
 }
 
-//login user
-export const loginUser = async (req, res) => {
+//UPDATE USERS data 
+export const UpdateUserData = async (req, res) => {
 
     try {
 
-        const datosUser = req.body;
-        //this allow login whith user or email
+        const { id } = req.params;
 
-        let user = await Usuario.findOne({ where: { Ema_User: datosUser.Ema_User } })
+        const UserData = req.body;
+        let NewEmail = null;
+
+        //get actual data
+        let actualData = await Usuario.findByPk(id);
+
+        if (actualData) {
+            actualData = actualData.dataValues;
+
+            if (UserData.Ema_User) {
+                const user = await Usuario.findOne({ where: { Ema_User: UserData.Ema_User } });
+
+                if (user) {
+                    return response(res, 409, 409, "Email is registered");
+                } else {
+                    NewEmail = UserData.Ema_User;
+                }
+            }
+
+            const objUpdate = {
+
+                Nom_User: UserData.Nom_User || actualData.Nom_User,
+                Ape_User: UserData.Ape_User || actualData.Ape_User,
+                Tel_User: UserData.Tel_User || actualData.Tel_User,
+                Ema_User: NewEmail || actualData.Ema_User,
+                Fot_User: UserData.Fot_User || actualData.Tel_User,
+                ESTADO_REGISTRO: UserData.ESTADO_REGISTRO || actualData.ESTADO_REGISTRO
+            }
+
+            //update data
+
+            const updatedData = await Usuario.update(objUpdate, { where: { Id_User: id } });
+
+            if (updatedData) {
+                response(res, 200, 200);
+            } else {
+                response(res, 500, 500, "Error updating");
+            }
+
+        } else {
+            response(res, 404, 404, "User not found");
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+
+}
+
+//Validate Email 
+export const ValidateEmail = async (req, res) => {
+
+    try {
+        const datos = req.body;
+
+        if (!datos.Id_User || !datos.codigo) {
+
+            response(res, 500, 500, "something went wrong");
+
+        } else {
+
+            // verificamos que exista el usuario
+            let user = await Usuario.findByPk(datos.Id_User)
+
+            if (user) {
+                user = user.dataValues;
+
+                //verificamos que el codigo sea valido
+                let token = await Token.findOne({ where: { User_Id_FK: datos.Id_User, token: datos.codigo } })
+
+                if (token) {
+                    token = token.dataValues;
+
+                    const fechaActual = Math.floor(Date.now() / 1000);
+                    const fechaExp = token.Fec_Caducidad;
+
+                    // verificamos que no este expirado el codigo
+                    if (fechaActual > fechaExp) {
+                        response(res, 401, 401, "Expired token");
+                    } else {
+                        // actualizamos el estado del Email a verificado
+                        const updatedUser = await Usuario.update({ 'Est_Email_User': 1 }, { where: { Id_User: datos.Id_User } });
+
+                        if (updatedUser) {
+                            response(res, 200, 200);
+                        } else {
+                            response(res, 500, 500, "Error changing email status");
+                        }
+                    }
+
+                } else {
+                    response(res, 401, 401, "Incorrect code");
+                }
+
+            } else {
+
+                response(res, 404, 404, "User not found");
+            }
+
+
+        }
+
+
+
+
+
+    } catch (err) {
+        if (err.errno) {
+
+            response(res, 400, err.errno, err.code);
+
+        } else {
+            response(res, 500, 500, "something went wrong");
+
+        }
+    }
+}
+
+//login user
+export const loginUser = async (req, res) => {
+
+
+
+    const { Ema_User, Pass_User, Dir_Ip } = req.body;
+
+
+    let user = await Usuario.findOne({ where: { Ema_User: Ema_User, ESTADO_REGISTRO: 1 } });
+
+
+    if (user) {
         user = user.dataValues;
 
-        const passDecripted = await bcrypt.compare(datosUser.Pass_User, user.Pass_User);
+        //verificamos la password
+        const passDecripted = await bcrypt.compare(Pass_User, user.Pass_User);
 
         if (passDecripted) {// if password true
 
             //verificamos la direccion ip se encuentre registrada previamente
             const objLoc = {
                 Id_User_FK: user.Id_User,
-                Dir_Ip: datosUser.Dir_Ip
+                Dir_Ip: Dir_Ip
             }
 
-            const loc = await Localization.findOne({ where: objLoc })
-          
+            let loc = await Localization.findOne({ where: objLoc });
+
+
             //VERIFICAMOS IP
 
             if (loc) {
+                loc = loc.dataValues;
 
                 // si existe generamos el token y lo guardamos en la db
                 const userData = {
@@ -287,40 +319,49 @@ export const loginUser = async (req, res) => {
                     Ape_User: user.Ape_User,
                     Ema_User: user.Ema_User,
                     Id_Rol_FK: user.Id_Rol_FK,
+
                 }
 
                 //generamos token y save on db
-                const datosToken = TokenDb(userData);
+                const datosToken = await TokenDb(userData);
 
                 if (datosToken) {
 
-                    const tokendecode = jwt.decode(datosToken, process.env.SECRETWORD);
+                    const tokendecode = jwt.decode(datosToken, process.env.SECRETWORD || "juniorTupapa");
                     const data1 = {
                         User_Id_FK: userData.Id_User,
                         Token: datosToken,
                         Fec_Caducidad: tokendecode.exp,
-                        Tipo_token: 1
+                        Tipo_token: 2
                     }
+
 
                     // guardamos en Db
                     const resp = await Token.create(data1)
 
-                    // const cookieP = cookieParser();
+
+                    if (resp) {
+                        // const cookieP = cookieParser();
 
 
-                    // //serializar
-                    // const serialized = serialize('sessionToken', datosToken, {
-                    //     httpOnly: true,
-                    //     secure: true,
-                    //     sameSite: 'none',
-                    //     maxAge: 86400000,
-                    //     path: '/'
-                    // })
+                        // //serializar
+                        // const serialized = serialize('sessionToken', datosToken, {
+                        //     httpOnly: true,
+                        //     secure: true,
+                        //     sameSite: 'none',
+                        //     maxAge: 86400000,
+                        //     path: '/'
+                        // })
+                        // res.setHeader('Set-Cookie', serialized)
+
+                        response(res, 200, 200, datosToken);
+
+                    } else {
+
+                        response(res, 500, 500, "Error saving token");
+                    }
 
 
-                    // res.setHeader('Set-Cookie', serialized)
-
-                    response(res, 200, 200, datosToken);
 
 
                 }
@@ -329,35 +370,39 @@ export const loginUser = async (req, res) => {
 
             } else {
 
+
                 //enviamos codigo de verificacion para guardar la nueva ip
-                const { codigo, exp } = GenCodigosTemp(600);
+                const { codigo, exp } = await GenCodigosTemp(600);
                 //guardamos en la base de datos
                 const objTok = {
                     Token: codigo,
                     Fec_Caducidad: exp,
                     User_Id_FK: user.Id_User,
-                    Tipo_token: 4
+                    Tipo_token: 3
                 }
+
+
 
                 //guardamos el token en la db
                 const token = await Token.create(objTok)
 
+
                 if (token) {
                     mensaje_Confirm_Login(user.Ema_User, user.Nom_User, codigo);
 
-                    response(res, 200, 108, "Verification code send success (update new ip)");
+                    response(res, 401, 401, "Verification code send success (update new ip)");
                 }
 
             }
 
         } else {
-            response(res, 401, 401, "User or password incorrect");
+
+            response(res, 403, 403, "User or password incorrect");
         }
 
-    } catch (err) {
-        response(res, 500, 500, err);
+    } else {
+        response(res, 403, 403, "User or password incorrect");
     }
-
 
 }
 
@@ -373,10 +418,16 @@ export const ValidateCod = async (req, res) => {
 
         if (user) {
             //verificamos que el token coincida
+            const datos = {
+                User_Id_FK: Id_User,
+                token: codigo
+            }
 
-            const token = await Token.findOne({ where: { User_Id_FK: Id_User, Token: codigo, Tipo_token: 4 } })
+            let token = await Token.findOne({ where: datos })
 
             if (token) {
+                token = token.dataValues;
+
 
                 const fechaActual = Math.floor(Date.now() / 1000);
                 const fechaExp = token.Fec_Caducidad;
@@ -386,47 +437,56 @@ export const ValidateCod = async (req, res) => {
                     response(res, 400, 106, "Expired token");
                 } else {
 
-                    const datos = {
+                    const datosLoc = {
                         Id_User_FK: Id_User,
                         Dir_Ip: Dir_Ip
                     }
 
                     // Insertar la nueva IP
-                    const location = await Localization.create(datos)
+                    const location = await Localization.create(datosLoc)
+                    console.log(location)
                     if (location) {
-                        response(res, 200);
+                        response(res, 200, 200);
                     } else {
-                        response(res, 500, 103, "Error updating ip state");
+                        response(res, 500, 500, "Error saving ip new");
                     }
 
                 }
 
             } else {
-                response(res, 404, 404, "Not found");
+                response(res, 404, 404, 'Token not valido');
             }
+
+
 
         } else {
 
-            response(res, 400, 103, "Something went wrong");
+            response(res, 404, 404, "Token not found");
         }
 
 
 
 
     } catch (err) {
+        if (err.errno) {
 
-        response(res, 500, 500, "something went wrong");
+            response(res, 400, err.errno, err.code);
 
+        } else {
+            response(res, 500, 500, "something went wrong");
+
+        }
     }
 }
+
 
 //funtions
 
 // create token
-function TokenDb(userData) {
+export const TokenDb = async (userData) => {
 
 
-    const token = jwt.sign({ user: userData }, process.env.SECRETWORD, { expiresIn: '24h' });
+    const token = jwt.sign({ user: userData }, process.env.SECRETWORD || "juniorTupapa", { expiresIn: '24h' });
     // const tokendecode = jwt.decode(token, process.env.SECRETWORD);
     // const data1 = {
     //     Id_User:userData.Id_User,
@@ -437,6 +497,64 @@ function TokenDb(userData) {
     return token;
 
 }
+
+
+export const closeSession = async (req, res) => {
+    try {
+        const token = req.token;
+
+        if (!token) {
+            response(res, 401, 401, 'No token provided');
+        } else {
+            const { user } = jwt.decode(token, process.env.SECRETWORD || "juniorTupapa");
+
+            const deleted = await Token.update({ ESTADO_REGISTRO: false }, { where: { token: token, User_Id_FK: user.Id_User, ESTADO_REGISTRO: 1 } })
+
+            if (deleted) {
+                response(res, 200, 200, 'success logout');
+            } else {
+                response(res, 500, 500, 'Error');
+            }
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+
+
+export const deleteUser = async (req, res,) => {
+    try {
+        const { id } = req.params;
+        const user = await Usuario.findByPk(id)
+        if (!user) {
+            response(res, 404, 404, 'user not found');
+        } else {
+
+            //verificamos que no tenga tokens asociados
+            const tokens = await Token.findAll({ where: { User_Id_FK: id, ESTADO_REGISTRO: 1 } })
+            //verificamos que no tenga localizaciones asociadas
+            const locations = await Localization.findAll({ where: { Id_User_FK: id, ESTADO_REGISTRO: 1 } })
+
+            if (!tokens && !locations) {
+                const deleted = await Usuario.update({ ESTADO_REGISTRO: 0 }, { where: { Id_User: id } })
+
+                if (deleted) {
+                    response(res, 200, 200);
+                } else {
+                    response(res, 500, 500, 'Error Deleting');
+                }
+            }else{
+                response(res, 500, 500, 'Error Deleting, User has data associated');
+            }
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+
+}
+
 
 
 

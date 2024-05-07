@@ -2,19 +2,19 @@ import express from "express";
 import { getCursos, getCuCat,CreateCourse, UpdateCourse, getCursoId} from "../../controllers/cursos.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { createValidation, UpdateValidation } from "../../Validators/cursos.validator.js";
+import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 
 const RoutesCursos = express();
 
 
-RoutesCursos.get("/api/v1/cursos", getCursos);
+RoutesCursos.get("/api/v1/courses", getCursos);
 
+RoutesCursos.get("/api/v1/courses/category/:id",getCuCat);
 
-RoutesCursos.get("/api/v1/cursos/categoria/:id",getCuCat);
+RoutesCursos.post("/api/v1/courses/new",createValidation,verifyToken,AdminInstPermissions, CreateCourse);
 
-RoutesCursos.post("/api/v1/cursos/new",verifyToken,createValidation, CreateCourse);
+RoutesCursos.put("/api/v1/courses/update/:id",UpdateValidation,verifyToken,AdminInstPermissions,  UpdateCourse)
 
-RoutesCursos.put("/api/v1/cursos/update/:id",verifyToken, UpdateValidation, UpdateCourse)
-
-RoutesCursos.get("/api/v1/cursos/:id",getCursoId);
+RoutesCursos.get("/api/v1/courses/:id",getCursoId);
 
 export default RoutesCursos;

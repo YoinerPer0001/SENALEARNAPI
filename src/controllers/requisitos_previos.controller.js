@@ -1,5 +1,4 @@
 import jsonwebtoken from "jsonwebtoken"
-import { adminPermissions, InstPermissions } from "../utils/manage.permissions.js";
 import 'dotenv/config'
 import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
@@ -18,7 +17,7 @@ export const GetReqxCurso = async (req, res) => {
 
         if (curso) {
             const requisitos = await Requisitos_previo.findAll({ where: { Id_Cur_FK: id } })
-            if(requisitos) {
+            if (requisitos) {
                 response(res, 200, 200, requisitos);
             } else {
                 response(res, 404, 404, 'requirements not found');
@@ -37,133 +36,96 @@ export const GetReqxCurso = async (req, res) => {
 // create Requirements
 export const createReq = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, data) => {
+    try {
 
-        if (err) {
-            response(res, 401, 401, "TOKEN ERROR");
-        }
+        const Id_Req = uniqid();
 
-        try {
+        const { Desc_Req, Id_Cur } = req.body;
 
-            const Id_Req = uniqid();
+        //verificamos que exista el curso
+        const curso = await Cursos.findByPk(Id_Cur)
 
-            const { Desc_Req , Id_Cur} = req.body;
+        if (!curso) {
 
-            const { Id_Rol_FK } = data.user;
+            response(res, 404, 404, "course not found");
 
-            //verify user permissions
-            const adminPermiso = adminPermissions(Id_Rol_FK);
-            const instper = InstPermissions(Id_Rol_FK);
+        } else {
 
-            if (!adminPermiso && !instper) {
-
-                response(res, 403, 403, "you dont have permissions");
-            } else {
-
-                //verificamos que exista el curso
-                const curso = await Cursos.findByPk(Id_Cur)
-                
-                if (!curso) {
-
-                    response(res, 404, 404, "course not found");
-
-                } else {
-
-                    //create req
-                    const datos = {
-                        Id_Req: Id_Req,
-                        Desc_Req: Desc_Req,
-                        Id_Cur_FK: Id_Cur.toLowerCase()
-                    }
-
-                    const newReq = await Requisitos_previo.create(datos);
-                    if (newReq) {
-                        response(res, 200);
-                    } else {
-                        response(res, 500, 500, "error creating requirement");
-                    }
-
-                }
+            //create req
+            const datos = {
+                Id_Req: Id_Req,
+                Desc_Req: Desc_Req,
+                Id_Cur_FK: Id_Cur.toLowerCase()
             }
-        } catch (err) {
 
-            response(res, 500, 500, "something went wrong");
+            const newReq = await Requisitos_previo.create(datos);
+            if (newReq) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error creating requirement");
+            }
+
         }
 
+    } catch (err) {
 
-    })
+        response(res, 500, 500, "something went wrong");
+    }
 }
 
 //update categorias
 export const UpdateReq = async (req, res) => {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, dat) => {
-        if (err) {
-            response(res, 401, 401, "TOKEN ERROR");
-        } else {
+    try {
+       
+            //Data
+            const { id } = req.params;
+            const datos = req.body;
 
-            try {
-                const { Id_Rol_FK } = dat.user;
+            //verify exist category
 
-                let adPermision = adminPermissions(Id_Rol_FK);
-                let instPermiso = InstPermissions(Id_Rol_FK);
+            let requisito = await Requisitos_previo.findByPk(id)
 
-                if (adPermision  || instPermiso) {
+            if (!requisito) {
 
-                    //Data
-                    const { id } = req.params;
-                    const datos = req.body;
+                response(res, 404, 404, "Requirement not found");
 
-                    //verify exist category
+            } else {
 
-                    let requisito= await Requisitos_previo.findByPk(id)
+                requisito = requisito.dataValues;
+                let datosEnv;
 
-                    if (!requisito) {
 
-                        response(res, 404, 404, "Requirement not found");
-
+                if (datos.Id_Cur) {
+                    const curso = await Cursos.findByPk(datos.Id_Cur)
+                    if (!curso) {
+                        response(res, 404, 404, "course not found");
                     } else {
-
-                        requisito = requisito.dataValues;
-                        let datosEnv;
-                       
-
-                        if (datos.Id_Cur) {
-                            const curso = await Cursos.findByPk(datos.Id_Cur)
-                            if (!curso) {
-                                response(res, 404, 404, "course not found");
-                            } else {
-                                datosEnv = {
-                                    Desc_Req: datos.Desc_Req || requisito.Desc_Req,
-                                    Id_Cur_FK: datos.Id_Cur.toLowerCase()
-                                }
-                            }
-                        } else {
-
-                            datosEnv = {
-                                Desc_Req: datos.Desc_Req || requisito.Desc_Req
-                            }
+                        datosEnv = {
+                            Desc_Req: datos.Desc_Req || requisito.Desc_Req,
+                            Id_Cur_FK: datos.Id_Cur.toLowerCase()
                         }
-
-                        const responses = await Requisitos_previo.update(datosEnv, { where: { Id_Req: id } })
-                            if (responses) {
-                                response(res, 200);
-                            } else {
-                                response(res, 500, 500, "error updating requeriment");
-                            }
-
                     }
-
                 } else {
-                    response(res, 401, 401, "You don't have permissions");
+
+                    datosEnv = {
+                        Desc_Req: datos.Desc_Req || requisito.Desc_Req
+                    }
                 }
 
-            } catch (err) {
-                response(res, 500, 500, "something went wrong");
+                const responses = await Requisitos_previo.update(datosEnv, { where: { Id_Req: id } })
+                if (responses) {
+                    response(res, 200);
+                } else {
+                    response(res, 500, 500, "error updating requeriment");
+                }
+
             }
 
-        }
+    } catch (err) {
+        response(res, 500, 500, "something went wrong");
+    }
 
-    })
 }
+
 

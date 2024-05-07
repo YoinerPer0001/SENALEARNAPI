@@ -29,6 +29,11 @@ export const Certificado = sequelize.define('Certificado',{
     Tit_Cert:{
         type:DataTypes.STRING,
         allowNull:false
+    },
+    ESTADO_REGISTRO:{
+        type: DataTypes.INTEGER,
+        defaultValue:1,
+        allowNull: false
     }
 })
 
