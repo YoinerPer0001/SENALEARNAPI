@@ -95,7 +95,11 @@ export const CreateCourse = async (req, res) => {
 
         const { Id_User } = req.Tokendata.user;
 
+<<<<<<< HEAD
         let Id_Cur = uniqid();
+=======
+                const { Nom_Cur, Des_Cur, Id_Cat_FK } = req.body;
+>>>>>>> cddbb888a0996a8409ee2987042866331bff0547
 
         //verify that category exists
         const category = await Categorias.findByPk(Id_Cat_FK);
@@ -103,6 +107,7 @@ export const CreateCourse = async (req, res) => {
 
             const Est_Cur = 1;
 
+<<<<<<< HEAD
             const datosCurso = {
                 Id_Cur: Id_Cur,
                 Nom_Cur: Nom_Cur,
@@ -111,6 +116,49 @@ export const CreateCourse = async (req, res) => {
                 Id_Cat_FK: Id_Cat_FK,
                 Id_Inst: Id_User,
                 Est_Cur: Est_Cur
+=======
+                let Id_Cur = uniqid();
+
+                //verify permissions
+                const permisoInst = InstPermissions(Id_Rol_FK);
+                const permisoAdmin = adminPermissions(Id_Rol_FK);
+
+                if (permisoInst || permisoAdmin) {
+
+                    //verify that category exists
+                    const category = await Categorias.findByPk(Id_Cat_FK);
+                    if (category) {
+
+                        const Est_Cur = 1;
+
+                        const datosCurso = {
+                            Id_Cur: Id_Cur,
+                            Nom_Cur: Nom_Cur,
+                            Des_Cur: Des_Cur,
+                            Hor_Cont_Total: Hor_Cont_Total,
+                            Fech_Crea_Cur: Date.now(),
+                            Id_Cat_FK: Id_Cat_FK,
+                            Fot_Cur: Fot_Cur,
+                            Id_Inst: Id_User,
+                            Est_Cur: Est_Cur
+                        }
+
+                        const resp = await Cursos.create(datosCurso);
+
+                        if (resp) {
+                            response(res, 200);
+                        } else {
+                            response(res, 500, 500, "error creating course");
+                        }
+
+                    } else {
+                        response(res, 404, 404, "Category not found");
+                    }
+                } else {
+                    response(res, 401, 401, "You don't have permissions");
+                }
+
+>>>>>>> cddbb888a0996a8409ee2987042866331bff0547
             }
 
             const resp = await Cursos.create(datosCurso);
