@@ -13,7 +13,6 @@ export const response = (res, status, codigo, message) => {
         return res.status(status).json({
 
             type: "success",
-            code: codigo,
             data: message
 
 

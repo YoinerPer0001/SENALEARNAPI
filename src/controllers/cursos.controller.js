@@ -113,14 +113,12 @@ export const CreateCourse = async (req, res) => {
                 Id_Inst: Id_User,
                 Est_Cur: Est_Cur
 
-                
-
             }
 
             const resp = await Cursos.create(datosCurso);
 
             if (resp) {
-                response(res, 200);
+                response(res, 200,200, {InsertedId:Id_Cur});
             } else {
                 response(res, 500, 500, "error creating course");
             }
