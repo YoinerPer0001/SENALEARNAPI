@@ -130,7 +130,7 @@ export const UpdateValidation = [
     check('Tel_User')
         .optional().not().isEmpty().withMessage('Tel_User cannot be empty')
         .isString().withMessage('Tel_User must be a string')
-        .isLength({ max: 10 }).withMessage('Tel_User must be at most 10 characters long'),
+        .isLength({min:10, max: 10 }).withMessage('Tel_User must be at most 10 characters long'),
     check('Ema_User')
         .optional().not().isEmpty().withMessage('Ema_User cannot be empty')
         .isEmail().withMessage('Ema_User must be a valid email address')
