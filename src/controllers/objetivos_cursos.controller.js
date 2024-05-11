@@ -20,7 +20,7 @@ export const GetAllObjxCourse = async (req, res) => {
         }
 
     } catch (err) {
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 
 }
