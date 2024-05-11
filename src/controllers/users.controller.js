@@ -5,11 +5,11 @@ import { mensaje_Confirm_Login } from "../utils/Emailmessages/login_verification
 import { response } from "../utils/responses.js";
 import { GenCodigosTemp } from "../utils/GenCodTemp.js";
 import uniqid from 'uniqid';
-import {Usuario} from "../models/users.model.js";
+import { Usuario } from "../models/users.model.js";
 import 'dotenv/config'
-import {Token} from "../models/tokens.model.js";
-import {Localization} from "../models/localizacion.model.js";
-import {Role} from '../models/roles.model.js';
+import { Token } from "../models/tokens.model.js";
+import { Localization } from "../models/localizacion.model.js";
+import { Role } from '../models/roles.model.js';
 
 const jwt = jsonwebtoken;
 
@@ -21,8 +21,8 @@ export const getUsers = async (req, res) => {
         const users = await Usuario.findAll(
             {
                 attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
-                include:{
-                    model:Role,  as:"rol",
+                include: {
+                    model: Role, as: "rol",
                     attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
                 },
                 where: { ESTADO_REGISTRO: 1 },
@@ -51,13 +51,13 @@ export const getUserxId = async (req, res) => {
 
         //mostramos datos de usuarios
         const users = await Usuario.findByPk(id,
-             { 
+            {
                 attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt'] },
-                include:{
-                    model:Role, as: "rol",
+                include: {
+                    model: Role, as: "rol",
                     attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
                 }
-            
+
             });
         if (users) {
             response(res, 200, 200, users);
@@ -163,13 +163,13 @@ export const UpdateUserData = async (req, res) => {
 
         const UserData = req.body;
         let NewEmail = null;
+        let updtEstado = null;
 
         //get actual data
         let actualData = await Usuario.findByPk(id);
 
         if (actualData) {
             actualData = actualData.dataValues;
-
             if (UserData.Ema_User) {
                 const user = await Usuario.findOne({ where: { Ema_User: UserData.Ema_User } });
 
@@ -177,6 +177,7 @@ export const UpdateUserData = async (req, res) => {
                     return response(res, 409, 409, "Email is registered");
                 } else {
                     NewEmail = UserData.Ema_User;
+                    updtEstado = "0";
                 }
             }
 
@@ -187,6 +188,7 @@ export const UpdateUserData = async (req, res) => {
                 Tel_User: UserData.Tel_User || actualData.Tel_User,
                 Ema_User: NewEmail || actualData.Ema_User,
                 Fot_User: UserData.Fot_User || actualData.Tel_User,
+                Est_Email_User: updtEstado || actualData.Est_Email_User,
                 ESTADO_REGISTRO: UserData.ESTADO_REGISTRO || actualData.ESTADO_REGISTRO
             }
 
@@ -544,7 +546,7 @@ export const deleteUser = async (req, res,) => {
                 } else {
                     response(res, 500, 500, 'Error Deleting');
                 }
-            }else{
+            } else {
                 response(res, 500, 500, 'Error Deleting, User has data associated');
             }
         }
