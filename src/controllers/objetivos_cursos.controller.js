@@ -13,7 +13,7 @@ export const GetAllObjxCourse = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const courses = await Objetivos_Cursos.findOne({ where: { Id_Cur_FK: id } })
+        const courses = await Objetivos_Cursos.findAll({ where: { Id_Cur_FK: id, ESTADO_REGISTRO: 1 }, attributes:{exclude:['createdAt', 'updatedAt']} })
 
         if (courses) {
             response(res, 200, 200, courses);
