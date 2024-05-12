@@ -41,7 +41,7 @@ export const createModules = async (req, res) => {
 
     try {
 
-        const { Tit_Mod, Id_Cur, Horas_Cont_Mod } = req.body;
+        const { Tit_Mod, Id_Cur } = req.body;
 
 
 
@@ -59,8 +59,7 @@ export const createModules = async (req, res) => {
             const datos = {
                 Id_Mod: Id_Mod,
                 Tit_Mod: Tit_Mod,
-                Id_Cur_FK: Id_Cur,
-                Horas_Cont_Mod: Horas_Cont_Mod
+                Id_Cur_FK: Id_Cur
             }
 
             const newModule = await Modulocurso.create(datos);

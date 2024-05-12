@@ -29,7 +29,8 @@ export const Modulocurso = sequelize.define('Modulocurso',{
     },
     Horas_Cont_Mod:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        allowNull:false,
+        defaultValue:0
     },
     ESTADO_REGISTRO:{
         type: DataTypes.INTEGER,

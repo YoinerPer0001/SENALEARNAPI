@@ -12,11 +12,6 @@ export const createValidation = [
         .not().isEmpty().withMessage('Id_Cur cannot be empty')
         .isString().withMessage('Id_Cur must be a string')
         .isLength({ max: 100 }).withMessage('max length is 100'),
-    check('Horas_Cont_Mod')
-        .exists().withMessage('Horas_Cont_Mod is required')
-        .not().isEmpty().withMessage('Horas_Cont_Mod cannot be empty')
-        .isNumeric().withMessage('Horas_Cont_Mod must be a number')
-        .isLength({ max: 100 }).withMessage('max length is 100'),
     (req, res, next) => {
         validateResult(req, res, next)
     }
