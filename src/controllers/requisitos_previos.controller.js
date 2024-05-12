@@ -4,6 +4,7 @@ import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
 import { Requisitos_previo } from "../models/requisitos_previos.model.js";
 import { Cursos } from "../models/cursos.model.js";
+import { sequelize } from "../database/db.js";
 
 const jwt = jsonwebtoken;
 
@@ -35,12 +36,11 @@ export const GetReqxCurso = async (req, res) => {
 
 // create Requirements
 export const createReq = async (req, res) => {
-
+    let transaccion;
     try {
 
-        const Id_Req = uniqid();
-
-        const { Desc_Req, Id_Cur } = req.body;
+        //Desc_Req
+        const { requisitos, Id_Cur } = req.body;
 
         //verificamos que exista el curso
         const curso = await Cursos.findByPk(Id_Cur)
@@ -51,24 +51,29 @@ export const createReq = async (req, res) => {
 
         } else {
 
-            //create req
-            const datos = {
-                Id_Req: Id_Req,
-                Desc_Req: Desc_Req,
-                Id_Cur_FK: Id_Cur.toLowerCase()
+            transaccion = await sequelize.transaction();
+
+            for (let requisito of requisitos) {
+                //create req
+                const datos = {
+                    Id_Req: uniqid(),
+                    Desc_Req: requisito.Desc_Req.toLowerCase(),
+                    Id_Cur_FK: Id_Cur
+                }
+
+                await Requisitos_previo.create(datos, { transaction: transaccion });
             }
 
-            const newReq = await Requisitos_previo.create(datos);
-            if (newReq) {
-                response(res, 200);
-            } else {
-                response(res, 500, 500, "error creating requirement");
-            }
+
+
+            await transaccion.commit()
+
+            response(res, 200);
 
         }
 
     } catch (err) {
-
+        if (transaccion) await transaccion.rollback();
         response(res, 500, 500, "something went wrong");
     }
 }
@@ -77,50 +82,50 @@ export const createReq = async (req, res) => {
 export const UpdateReq = async (req, res) => {
 
     try {
-       
-            //Data
-            const { id } = req.params;
-            const datos = req.body;
 
-            //verify exist category
+        //Data
+        const { id } = req.params;
+        const datos = req.body;
 
-            let requisito = await Requisitos_previo.findByPk(id)
+        //verify exist category
 
-            if (!requisito) {
+        let requisito = await Requisitos_previo.findByPk(id)
 
-                response(res, 404, 404, "Requirement not found");
+        if (!requisito) {
 
+            response(res, 404, 404, "Requirement not found");
+
+        } else {
+
+            requisito = requisito.dataValues;
+            let datosEnv;
+
+
+            if (datos.Id_Cur) {
+                const curso = await Cursos.findByPk(datos.Id_Cur)
+                if (!curso) {
+                    response(res, 404, 404, "course not found");
+                } else {
+                    datosEnv = {
+                        Desc_Req: datos.Desc_Req || requisito.Desc_Req,
+                        Id_Cur_FK: datos.Id_Cur.toLowerCase()
+                    }
+                }
             } else {
 
-                requisito = requisito.dataValues;
-                let datosEnv;
-
-
-                if (datos.Id_Cur) {
-                    const curso = await Cursos.findByPk(datos.Id_Cur)
-                    if (!curso) {
-                        response(res, 404, 404, "course not found");
-                    } else {
-                        datosEnv = {
-                            Desc_Req: datos.Desc_Req || requisito.Desc_Req,
-                            Id_Cur_FK: datos.Id_Cur.toLowerCase()
-                        }
-                    }
-                } else {
-
-                    datosEnv = {
-                        Desc_Req: datos.Desc_Req || requisito.Desc_Req
-                    }
+                datosEnv = {
+                    Desc_Req: datos.Desc_Req || requisito.Desc_Req
                 }
-
-                const responses = await Requisitos_previo.update(datosEnv, { where: { Id_Req: id } })
-                if (responses) {
-                    response(res, 200);
-                } else {
-                    response(res, 500, 500, "error updating requeriment");
-                }
-
             }
+
+            const responses = await Requisitos_previo.update(datosEnv, { where: { Id_Req: id } })
+            if (responses) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error updating requeriment");
+            }
+
+        }
 
     } catch (err) {
         response(res, 500, 500, "something went wrong");

@@ -3,6 +3,8 @@ import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
 import { Objetivos_Cursos } from "../models/objetivos_cursos.model.js";
 import { Cursos } from "../models/cursos.model.js";
+import { sequelize } from '../database/db.js';
+
 
 
 //get objetive by course id
@@ -27,12 +29,10 @@ export const GetAllObjxCourse = async (req, res) => {
 
 // create COURSE objetives
 export const createObjCour = async (req, res) => {
-
+    let transaction;
     try {
 
-        const Id_Objetivo = uniqid();
-
-        const { Desc_Objetivo, Id_Cur } = req.body;
+        const { objetivos, Id_Cur } = req.body;
 
         //verificamos que exista el curso
         const courseExist = await Cursos.findByPk(Id_Cur);
@@ -42,25 +42,30 @@ export const createObjCour = async (req, res) => {
             response(res, 404, 404, "course not found");
         } else {
 
-            //create objetive
-            const datos = {
-                Id_Objetivo: Id_Objetivo,
-                Desc_Objetivo: Desc_Objetivo.toLowerCase(),
-                Id_Cur_FK: Id_Cur
-            }
+            transaction = await sequelize.transaction();
+            let newObjetive;
 
-            const newObjetive = await Objetivos_Cursos.create(datos);
-            if (newObjetive) {
+            for(let objetivo of objetivos){
+
+                //obj create
+                const datos = {
+                    Id_Objetivo: uniqid(),
+                    Desc_Objetivo: objetivo.Desc_Objetivo.toLowerCase(),
+                    Id_Cur_FK: Id_Cur
+                }
+
+                newObjetive = await Objetivos_Cursos.create(datos, { transaction: transaction });
+
+            }
+      
+                await transaction.commit();
                 response(res, 200);
-            } else {
-
-                response(res, 500, 500, "error creating objetive");
-            }
-
+            
+            
         }
 
     } catch (err) {
-
+        await transaction.rollback();
         response(res, 500, 500, 'Something went wrong');
     }
 }

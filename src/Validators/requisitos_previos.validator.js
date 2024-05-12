@@ -7,10 +7,20 @@ export const createValidation = [
         .not().isEmpty().withMessage('Id_Cur cannot be empty')
         .isString().withMessage('Id_Cur must be a string')
         .isLength({ max: 100 }).withMessage('Id_Cur must be max length is 100'),
-    check('Desc_Req')
-        .exists().withMessage('Desc_Req is required')
-        .not().isEmpty().withMessage('Desc_Req cannot be empty')
-        .isString().withMessage('Desc_Req must be a string'),
+    check('requisitos')
+        .exists().withMessage('requisitos is required')
+        .not().isEmpty().withMessage('requisitos cannot be empty')
+        .isArray().withMessage('requisitos must be a array of objects')
+        .custom((value, { req }) => {
+            if (value) {
+                value.forEach(requisito => {
+                    if (!requisito.Desc_Req) {
+                        throw new Error('Desc_Req is required and cannot be empty')
+                    }
+                });
+            }
+            return true
+        }),
     (req, res, next) => {
         validateResult(req, res, next)
     }
