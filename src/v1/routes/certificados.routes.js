@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllCertificates, getxIdUser, getCertificatesBycurso, createCert , updateCert} from '../../controllers/certificados.controller.js';
+import { getAllCertificates, getxIdUser, getCertificatesBycurso, createCert , updateCert, deleteCert} from '../../controllers/certificados.controller.js';
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 import {createValidation, UpdateValidation} from "../../Validators/certificados.validator.js";
@@ -15,5 +15,7 @@ routesCertificados.get('/api/v1/certificados/curso/:id', verifyToken,AdminInstPe
 routesCertificados.post('/api/v1/certificados/create',createValidation, verifyToken,adminPermiso, createCert);
 
 routesCertificados.put('/api/v1/certificados/update/:id',UpdateValidation, verifyToken,adminPermiso, updateCert);
+
+routesCertificados.delete('/api/v1/certificados/user/:user/course/:course', verifyToken,adminPermiso, deleteCert)
 
 export default routesCertificados;

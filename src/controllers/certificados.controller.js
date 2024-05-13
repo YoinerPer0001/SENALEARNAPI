@@ -9,6 +9,7 @@ import { Inscripcione } from '../models/inscripciones.model.js';
 export const getAllCertificates = async (req, res) => {
     try {
         const cert = await Certificado.findAll({
+            where:{ESTADO_REGISTRO: 1},
             attributes: { exclude: ['createdAt', 'updatedAt'] },
             include: [{
                 model: Usuario,
@@ -59,7 +60,7 @@ export const getxIdUser = async (req, res) => {
                     attributes: { exclude: ['createdAt', 'updatedAt'] }
                 }
                 ],
-                where: { Id_User_FK: id }
+                where: { Id_User_FK: id , ESTADO_REGISTRO: 1}
             });
             if (cert) {
                 response(res, 200, 200, cert);
@@ -99,7 +100,7 @@ export const getCertificatesBycurso = async (req, res) => {
                     attributes: { exclude: ['createdAt', 'updatedAt'] }
                 }
                 ],
-                where: { Id_Cur_FK: id }
+                where: { Id_Cur_FK: id , ESTADO_REGISTRO: 1}
             });
             if (cert) {
                 response(res, 200, 200, cert);
@@ -234,3 +235,30 @@ export const updateCert = async (req, res) => {
         response(res, 500, 500, err);
     }
 }
+
+export const deleteCert = async (req, res) => {
+    try {
+
+        const { user, course } = req.params
+
+        const Certificate = await Certificado.findOne({ where: { Id_User_FK: user, Id_Cur_FK: course } })
+        if (Certificate) {
+
+            const responses = await Certificado.update({ ESTADO_REGISTRO: 0 }, {where: { Id_User_FK: user, Id_Cur_FK: course } })
+            if (responses) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error deleting certificate");
+            }
+
+
+        } else {
+            response(res, 404, 404, "Certificate not found");
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+
+

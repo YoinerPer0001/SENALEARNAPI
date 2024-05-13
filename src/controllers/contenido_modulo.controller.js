@@ -84,11 +84,10 @@ export const createContModu = async (req, res) => {
 }
 
 
-// //update mod cursos
+//update mod cursos
 export const UpdateModCur = async (req, res) => {
 
     try {
-        const { Id_Rol_FK } = dat.user;
 
         //Data
         const { id } = req.params;
@@ -155,4 +154,36 @@ export const UpdateModCur = async (req, res) => {
         response(res, 500, 500, err);
     }
 }
+
+//delete cont module
+// export const deleteCat = async (req, res) => {
+//     try{
+
+//         const {id} = req.params
+
+//         const category = await Categorias.findByPk(id)
+//         if(category){
+//         //verify that category dont have courses asociated
+//         const courses = await Cursos.findAll({where:{Id_Cat_FK: id}})
+//             console.log(courses)
+//         if(courses.length > 0){
+//             response(res, 409, 409, "category have courses asociated");
+//         }else{
+//             const responses = await Categorias.update({ESTADO_REGISTRO: 0},{where:{Id_Cat: id}})
+//             if(responses){
+//                 response(res, 200);
+//             }else{
+//                 response(res, 500, 500, "error deleting category");
+//             }
+//         }
+
+//         }else{
+//             response(res, 404, 404, "Category not found");
+//         }
+
+//     }catch (err) {
+//         response(res, 500, 500, err);
+//     }
+// }
+
 

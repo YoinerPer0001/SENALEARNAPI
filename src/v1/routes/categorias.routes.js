@@ -3,7 +3,8 @@ import {
   GetCategories,
   createCategories,
   GetCategoriesxId,
-  UpdateCategories
+  UpdateCategories,
+  deleteCat
 } from "../../controllers/categorias.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
@@ -22,11 +23,7 @@ routesCategorias.post("/api/v1/categories/create", createValidation,  verifyToke
 
 routesCategorias.put("/api/v1/categories/update/:id", UpdateValidation,verifyToken,adminPermiso,UpdateCategories);
 
-/*
-routesCategorias.delete(
-  "/api/categories/delete/:id",
-  verifyToken,
-  DeleteCategories
-);*/
+
+routesCategorias.delete("/api/categories/delete/:id",verifyToken,adminPermiso,deleteCat);
 
 export default routesCategorias;

@@ -2,6 +2,7 @@ import 'dotenv/config'
 import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
 import { Categorias } from "../models/categorias.model.js";
+import { Cursos } from '../models/cursos.model.js';
 
 
 //get all categories
@@ -9,9 +10,12 @@ export const GetCategories = async (req, res) => {
 
     try {
 
-        const categorias = await Categorias.findAll();
+        const categorias = await Categorias.findAll({
+            where:{ ESTADO_REGISTRO: 1},
+            attributes: {exclude:['updatedAt', 'createdAt']}
+        });
 
-        if (categorias) {
+        if (categorias.length > 0) {
             response(res, 200, 200, categorias);
         } else {
             response(res, 404);
@@ -30,7 +34,7 @@ export const GetCategoriesxId = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const categoria = await Categorias.findByPk(id)
+        const categoria = await Categorias.findByPk(id, {attributes: {exclude:['updatedAt', 'createdAt']}})
 
         if (categoria) {
             response(res, 200, 200, categoria);
@@ -128,5 +132,35 @@ export const UpdateCategories = async (req, res) => {
     }
 
 
+}
+
+export const deleteCat = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const category = await Categorias.findByPk(id)
+        if(category){
+        //verify that category dont have courses asociated
+        const courses = await Cursos.findAll({where:{Id_Cat_FK: id}})
+            console.log(courses)
+        if(courses.length > 0){
+            response(res, 409, 409, "category have courses asociated");
+        }else{
+            const responses = await Categorias.update({ESTADO_REGISTRO: 0},{where:{Id_Cat: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting category");
+            }
+        }
+
+        }else{
+            response(res, 404, 404, "Category not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
 }
 
