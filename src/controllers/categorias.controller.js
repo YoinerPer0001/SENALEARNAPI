@@ -145,7 +145,7 @@ export const deleteCat = async (req, res) => {
         const courses = await Cursos.findAll({where:{Id_Cat_FK: id}})
             console.log(courses)
         if(courses.length > 0){
-            response(res, 409, 409, "category have courses asociated");
+            response(res, 409, 409, "category has courses asociated");
         }else{
             const responses = await Categorias.update({ESTADO_REGISTRO: 0},{where:{Id_Cat: id}})
             if(responses){

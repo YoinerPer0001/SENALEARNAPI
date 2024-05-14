@@ -5,6 +5,7 @@ import { Contenido_Modulos } from "../models/contenido_modulo.model.js";
 import { Modulocurso } from '../models/modulos_cursos.model.js'
 import { Cursos } from "../models/cursos.model.js";
 import { sequelize } from "../database/db.js";
+import { Usuario_contenido } from '../models/usuario_contenidos.model.js';
 
 
 
@@ -156,34 +157,34 @@ export const UpdateModCur = async (req, res) => {
 }
 
 //delete cont module
-// export const deleteCat = async (req, res) => {
-//     try{
+export const deleteCont = async (req, res) => {
+    try{
 
-//         const {id} = req.params
+        const {id} = req.params
 
-//         const category = await Categorias.findByPk(id)
-//         if(category){
-//         //verify that category dont have courses asociated
-//         const courses = await Cursos.findAll({where:{Id_Cat_FK: id}})
-//             console.log(courses)
-//         if(courses.length > 0){
-//             response(res, 409, 409, "category have courses asociated");
-//         }else{
-//             const responses = await Categorias.update({ESTADO_REGISTRO: 0},{where:{Id_Cat: id}})
-//             if(responses){
-//                 response(res, 200);
-//             }else{
-//                 response(res, 500, 500, "error deleting category");
-//             }
-//         }
+        const contMod = await Contenido_Modulos.findByPk(id)
+        if(contMod){
+        //verify that content dont have users asociated
+        const usuariosCont = await Usuario_contenido.findAll({where:{Id_Cont_Mod_FK: id}})
+            
+        if(usuariosCont.length > 0){
+            response(res, 409, 409, "Content has users asociated");
+        }else{
+            const responses = await Contenido_Modulos.update({ESTADO_REGISTRO: 0},{where:{Id_Cont: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting content");
+            }
+        }
 
-//         }else{
-//             response(res, 404, 404, "Category not found");
-//         }
+        }else{
+            response(res, 404, 404, "Category not found");
+        }
 
-//     }catch (err) {
-//         response(res, 500, 500, err);
-//     }
-// }
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
+}
 
 

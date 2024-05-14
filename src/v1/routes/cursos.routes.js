@@ -1,5 +1,5 @@
 import express from "express";
-import { getCursos, getCuCat,CreateCourse, UpdateCourse, getCursoId} from "../../controllers/cursos.controller.js";
+import { getCursos, getCuCat,CreateCourse, UpdateCourse, getCursoId, deleteCur} from "../../controllers/cursos.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { createValidation, UpdateValidation } from "../../Validators/cursos.validator.js";
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
@@ -16,5 +16,7 @@ RoutesCursos.post("/api/v1/courses/new",createValidation,verifyToken,AdminInstPe
 RoutesCursos.put("/api/v1/courses/update/:id",UpdateValidation,verifyToken,AdminInstPermissions,  UpdateCourse)
 
 RoutesCursos.get("/api/v1/courses/:id",getCursoId);
+
+RoutesCursos.delete('/api/v1/courses/delete/:id', verifyToken, adminPermiso, deleteCur)
 
 export default RoutesCursos;

@@ -5,8 +5,12 @@ import { response } from "../utils/responses.js";
 import { Cursos } from "../models/cursos.model.js";
 import { Categorias } from "../models/categorias.model.js"
 import { Usuario } from "../models/users.model.js";
-
-const jwt = jsonwebtoken;
+import { sequelize } from '../database/db.js';
+import { Certificado } from '../models/cerificados.model.js';
+import { Inscripcione } from '../models/inscripciones.model.js';
+import { Requisitos_previo } from '../models/requisitos_previos.model.js';
+import { Modulocurso } from '../models/modulos_cursos.model.js';
+import { Objetivos_Cursos } from '../models/objetivos_cursos.model.js';
 
 const atrInst = ['Id_User', 'Nom_User', 'Ape_User', 'Ema_User', 'Fot_User'];
 
@@ -175,5 +179,40 @@ export const UpdateCourse = async (req, res) => {
         response(res, 500, 500, "something went wrong");
     }
 }
+
+export const deleteCur = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const course = await Cursos.findByPk(id)
+        if(course){
+        //verify that course dont has asociated
+        const certificado = await Certificado.findAll({where:{Id_Cur_FK: id}})
+        const inscription = await Inscripcione.findAll({where:{Id_Cur_FK: id}})
+        const reqPrev = await Requisitos_previo.findAll({where:{Id_Cur_FK: id}})
+        const modules = await Modulocurso.findAll({where:{Id_Cur_FK: id}})
+        const objetivos = await Objetivos_Cursos.findAll({where:{Id_Cur_FK: id}})
+    
+        if(certificado.length > 0 || inscription.length > 0 || reqPrev.length > 0 || modules.length > 0 || objetivos.length > 0){
+            response(res, 409, 409, "curse has resources asociated");
+        }else{
+            const responses = await Cursos.update({ESTADO_REGISTRO: 0},{where:{Id_Cur: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting course");
+            }
+        }
+
+        }else{
+            response(res, 404, 404, "course not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+
 
 

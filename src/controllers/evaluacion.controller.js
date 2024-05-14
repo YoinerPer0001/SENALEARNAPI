@@ -3,6 +3,8 @@ import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
 import { evaluacion } from "../models/evaluacion.model.js";
 import { Modulocurso } from "../models/modulos_cursos.model.js";
+import { Resultados_Evaluacione } from '../models/resultadosEval.model.js';
+import { preguntaseval } from '../models/preguntasEval.model.js';
 
 
 //get all evaluations
@@ -181,5 +183,37 @@ export const UpdateEvaluations = async (req, res) => {
         response(res, 500, 500, "something went wrong");
     }
 
+}
+
+//delete evaluation
+export const deleteEval = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const evaluacions = await evaluacion.findByPk(id)
+        if(evaluacions){
+        //verify that evaluation dont has resources asociated
+        const preguntas = await preguntaseval.findAll({where:{Id_Eval_FK: id}})
+        const resultados = await Resultados_Evaluacione.findAll({where:{Id_Eval_FK: id}})
+          
+        if(preguntas.length > 0 || resultados.length > 0){
+            response(res, 409, 409, "evaluations has resources asociated");
+        }else{
+            const responses = await evaluacion.update({ESTADO_REGISTRO: 0},{where:{Id_Eva: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting evaluation");
+            }
+        }
+
+        }else{
+            response(res, 404, 404, "evaluation not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
 }
 
