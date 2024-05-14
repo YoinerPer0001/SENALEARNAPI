@@ -17,7 +17,7 @@ export const GetModulesxId = async (req, res) => {
         const course = await Cursos.findByPk(id);
 
         if (course) {
-            const module = await Modulocurso.findOne({ where: { Id_Cur_FK: id } })
+            const module = await Modulocurso.findAll({ where: { Id_Cur_FK: id } })
             if (module) {
                 response(res, 200, 200, module);
             } else {
