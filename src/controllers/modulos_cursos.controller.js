@@ -4,6 +4,8 @@ import uniqid from 'uniqid';
 import { response } from "../utils/responses.js";
 import { Modulocurso } from "../models/modulos_cursos.model.js";
 import { Cursos } from "../models/cursos.model.js";
+import { Contenido_Modulos } from "../models/contenido_modulo.model.js";
+import { evaluacion } from "../models/evaluacion.model.js";
 
 const jwt = jsonwebtoken;
 
@@ -156,4 +158,37 @@ export const UpdateModules = async (req, res) => {
 
 }
 
+//delete evaluation
+export const deleteMod = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const modulo = await Modulocurso.findByPk(id)
+        if(modulo){
+        //verify that module dont has resources asociated
+        const contenido = await Contenido_Modulos.findAll({where:{Id_Mod_FK: id}})
+        const evaluaciones = await evaluacion.findAll({where:{Id_Mod_Cur_FK: id}})
+          
+        if(contenido.length > 0 || evaluaciones.length > 0){
+            response(res, 409, 409, "Modules has resources asociated");
+
+        }else{
+    
+            const responses = await Modulocurso.update({ESTADO_REGISTRO: 0},{where:{Id_Mod: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting module");
+            }
+        }
+
+        }else{
+            response(res, 404, 404, "module not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
+}
 

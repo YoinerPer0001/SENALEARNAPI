@@ -1,6 +1,6 @@
 import express from 'express'
 import { verifyToken } from "../../middlewares/verifyToken.js";
-import { GetLocations, createLocations, UpdateLocations, GetLocationsxUser } from '../../controllers/localizacion.controller.js';
+import { GetLocations, createLocations, UpdateLocations, GetLocationsxUser, deleteLoc } from '../../controllers/localizacion.controller.js';
 import { createValidation, UpdateValidation } from '../../Validators/localizacion.validator.js';
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 
@@ -14,5 +14,7 @@ routesLocation.get('/api/v1/locations/user/:id', verifyToken,adminPermiso, GetLo
 routesLocation.post('/api/v1/locations/create', createValidation, verifyToken,adminPermiso, createLocations)
 
 routesLocation.put('/api/v1/locations/update/:id', UpdateValidation, verifyToken,adminPermiso, UpdateLocations)
+
+routesLocation.delete('/api/v1/locations/delete/:id',verifyToken,adminPermiso,deleteLoc)
 
 export default routesLocation;

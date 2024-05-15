@@ -1,6 +1,6 @@
 import express from 'express'
 import { verifyToken } from "../../middlewares/verifyToken.js";
-import {GetModulesxId, createModules,UpdateModules} from '../../controllers/modulos_cursos.controller.js'
+import {GetModulesxId, createModules,UpdateModules, deleteMod} from '../../controllers/modulos_cursos.controller.js'
 import { createValidation,UpdateValidation } from '../../Validators/modulos_cursos.validator.js';
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 
@@ -14,5 +14,7 @@ routesModCur.post('/api/v1/modulo_curso/create',createValidation,verifyToken,Adm
 
 
 routesModCur.put('/api/v1/modulo_curso/update/:id',UpdateValidation,verifyToken,AdminInstPermissions, UpdateModules)
+
+routesModCur.delete('/api/v1/modulo_curso/delete/:id',verifyToken,adminPermiso, deleteMod)
 
 export default routesModCur;

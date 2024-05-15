@@ -132,58 +132,26 @@ export const UpdateObjetivesCour = async (req, res) => {
     }
 }
 
-/*
-//delete categories
-export const DeleteCategories = async (req, res) => {
+//delete
+export const deleteObj = async (req, res,) => {
+    try {
+        const { id } = req.params;
+        const objetivo = await Objetivos_Cursos.findByPk(id)
+        if (!objetivo) {
+            response(res, 404, 404, 'Objetive not found');
+        } else {
 
-    jwt.verify(req.token, process.env.SECRETWORD, async (err, datos) => {
-        if (err) {
+            const deleted = await Objetivos_Cursos.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Objetivo: id } })
 
-            response(res, 400, 105, "Something went wrong");
+            if (deleted) {
+                response(res, 200, 200);
+            } else {
+                response(res, 500, 500, 'Error Deleting');
+            }
         }
 
-        try {
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
 
-            const { id } = req.params;
-            const { Id_Rol_FK } = datos.user;
-
-            const permiso = adminPermissions(Id_Rol_FK);
-
-            if (!permiso) {
-                response(res, 401, 401, "You don't have permissions");
-            }
-
-            //verify category exist
-
-            const category = await GetCatxId(res, id)
-
-            if (category.length > 0) {
-
-                const responses = await deleteCat(res, id)
-
-                if (responses) {
-                    response(res, 200, 200, "Success deleted");
-                }
-
-
-            } else {
-                response(res, 200, 204, category);
-            }
-
-
-
-        } catch (err) {
-
-            if (err.errno) {
-
-                response(res, 500, 500, "something went wrong");
-
-            } else {
-
-                response(res, 400, err.errno, err.code);
-            }
-
-        }
-
-    })
-}*/
+}

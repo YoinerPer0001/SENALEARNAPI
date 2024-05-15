@@ -250,3 +250,32 @@ export const editInsciption = async (req, res) => {
 
 }
 
+//delete Inscription
+export const deleteInsc = async (req, res) => {
+    try {
+
+        const { user, course } = req.params
+
+        const insc = await Inscripcione.findOne({where: {Id_User_FK: user, Id_Cur_FK: course}})
+        if (insc) {
+
+            //verify that evaluation dont has resources asociated
+            const updated = await Inscripcione.update({ ESTADO_REGISTRO: 0 }, { where: { Id_User_FK: user, Id_Cur_FK: course } })
+            if(updated){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "Error deleting inscription");
+            }
+
+        }else{
+            response(res, 404, 404, "inscription not found");
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+
+
+
+
