@@ -69,23 +69,33 @@ export const getAllOptionsxRol = async (req, res) => {
 
     try {
 
-        const { Id_Rol_FK } = data.user;
+        const { id } = req.params;
 
         //verify rol exist
-        const rol = await Role.findByPk(Id_Rol_FK)
+        const rol = await Role.findByPk(id)
 
         if (!rol) {
             response(res, 400, 103, "rol don't exist");
         } else {
 
-            const options = await Roles_Opcione.findOne({ where: { Id_Rol_FK: Id_Rol_FK } })
+            const options = await Roles_Opcione.findAll(
+                { where: { Id_Rol_FK: id, ESTADO_REGISTRO:1 } ,
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                include:[
+                    {
+                        model: Opcione,
+                        as: 'Opcion',
+                        attributes: { exclude: ['createdAt', 'updatedAt'] },
+                    }
+                ]
+            })
 
             response(res, 200, 200, options)
 
         }
 
     } catch (err) {
-        response(res, 500, 105, "Something went wrong");
+        response(res, 500, err);
     }
 }
 

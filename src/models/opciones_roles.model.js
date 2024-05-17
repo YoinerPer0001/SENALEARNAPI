@@ -27,5 +27,8 @@ export const Roles_Opcione = sequelize.define('Roles_Opcione',{
     }
 })
 
-Role.belongsToMany(Opcione,{through:'Roles_Opcione',foreignKey:'Id_Rol_fk'})
-Opcione.belongsToMany(Role,{through:'Roles_Opcione', foreignKey: 'id_opcion_fk'})
+Role.hasMany(Roles_Opcione,{foreignKey:'Id_Rol_fk'})
+Roles_Opcione.belongsTo(Role,{foreignKey:'Id_Rol_fk'})
+
+Opcione.hasMany(Roles_Opcione,{foreignKey: 'id_opcion_fk'})
+Roles_Opcione.belongsTo(Opcione,{as:"Opcion", foreignKey: 'id_opcion_fk'})

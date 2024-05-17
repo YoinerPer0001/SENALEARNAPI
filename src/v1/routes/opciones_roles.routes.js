@@ -8,11 +8,11 @@ const routesOptionsRoles = express();
 
 //asignar opciones a roles
 
-routesOptionsRoles.post('/api/v1/opciones_roles/create', verifyToken,adminPermiso, AsigOptRol);
+routesOptionsRoles.post('/api/v1/opciones_roles/create', createValidation, verifyToken,adminPermiso, AsigOptRol);
 
 //obtener opciones de usuarios segun el rol
 
-routesOptionsRoles.get('/api/v1/opciones_roles/rol', createValidation, verifyToken, getAllOptionsxRol)
+routesOptionsRoles.get('/api/v1/opciones_roles/rol/:id',verifyToken, getAllOptionsxRol)
 
 //actualizar asignaciones de opciones a roles
 

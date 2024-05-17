@@ -9,7 +9,6 @@ import { response } from '../utils/responses.js';
 export const GetAllOptions = async (req, res) => {
 
     try {
-        const { Id_Rol_FK } = req.Tokendata.user;
 
         const opciones = await Opcione.findAll();
 
@@ -60,7 +59,7 @@ export const createOptions = async (req, res) => {
 
     try {
 
-        const { nombre_opcion } = req.body;
+        const { nombre_opcion, url } = req.body;
 
         if (!nombre_opcion) {
 
@@ -70,7 +69,7 @@ export const createOptions = async (req, res) => {
             const nombre_optLower = nombre_opcion.toLowerCase();
 
             //verificamos que no exista la opcion
-            const option = await Opcione.findOne({ where: { nombre_opcion: nombre_optLower } });
+            const option = await Opcione.findOne({ where: { nombre_opcion: nombre_optLower, url:url } });
 
 
             if (option) {
@@ -106,7 +105,7 @@ export const UpdateOptions = async (req, res) => {
 
         //Data
         const { id } = req.params;
-        const { nombre_opcion } = req.body;
+        const { nombre_opcion, url } = req.body;
 
         //verify exist option
         const option = await Opcione.findByPk(id)
@@ -117,7 +116,8 @@ export const UpdateOptions = async (req, res) => {
 
         } else {
             const objDatos = {
-                nombre_opcion: nombre_opcion.toLowerCase()
+                nombre_opcion: nombre_opcion.toLowerCase(),
+                url: url || option.dataValues.url,
             }
 
             const responses = await Opcione.update(objDatos, { where: { id_opcion: id } })
