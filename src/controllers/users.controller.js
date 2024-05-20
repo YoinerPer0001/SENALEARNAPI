@@ -20,12 +20,11 @@ export const getUsers = async (req, res) => {
 
         const users = await Usuario.findAll(
             {
-                attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
+                attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt'] },
                 include: {
                     model: Role, as: "rol",
                     attributes: { exclude: ['createdAt', 'updatedAt', 'ESTADO_REGISTRO'] },
                 },
-                where: { ESTADO_REGISTRO: 1 },
 
             });
         if (users) {

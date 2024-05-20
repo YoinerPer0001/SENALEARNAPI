@@ -26,7 +26,6 @@ export const getCursos = async (req, res) => {
 
         //lista de cursos publicados
         const courses = await Cursos.findAll({
-            where: { Est_Cur: 2 },
             include: objInclude
         })
 
