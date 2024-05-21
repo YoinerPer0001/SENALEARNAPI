@@ -101,11 +101,11 @@ CREATE TABLE `contenido_modulos` (
 /*Data for the table `contenido_modulos` */
 
 insert  into `contenido_modulos`(`Id_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Porcentaje_Asig`,`Id_Mod_FK`,`Duracion_Cont`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('2mglwgsmc97',1,'','Bienvenida',4.00,'erxyjd888lwgs428z',10.00,1,'2024-05-21 19:33:31','2024-05-21 19:38:53'),
-('erxyjd5gslwgsqvge',1,'','Hola mundo',4.00,'erxyjd888lwgs428z',10.00,1,'2024-05-21 19:37:02','2024-05-21 19:38:53'),
-('erxyjd5gslwgssku8',1,'','Instalando Programas',4.00,'erxyjd888lwgs428z',20.00,1,'2024-05-21 19:38:22','2024-05-21 19:38:53'),
-('erxyjd5gslwgst8yr',1,'','Resumen de seccion',4.00,'erxyjd888lwgs428z',20.00,1,'2024-05-21 19:38:53','2024-05-21 19:38:53'),
-('erxyjd8xolwgsh9jv',1,'url video','Introduccion',4.00,'erxyjd888lwgs428z',10.00,1,'2024-05-21 19:29:34','2024-05-21 19:38:53');
+('erxyjd8t4lwgtibh7',1,'','Introduccion',6.67,'erxyjd888lwgs428z',15.00,1,'2024-05-21 19:58:23','2024-05-21 20:04:27'),
+('erxyjd8w4lwgtq4w7',1,'','Requisitos previos',6.67,'erxyjd888lwgs428z',15.00,1,'2024-05-21 20:04:27','2024-05-21 20:04:27'),
+('erxyjd8w4lwgtrapo',1,'','Estructura basica HTML',10.00,'erxyjd4rclwgs6nbk',10.00,1,'2024-05-21 20:05:22','2024-05-21 20:05:57'),
+('erxyjd8w4lwgts282',1,'','Hello world',10.00,'erxyjd4rclwgs6nbk',10.00,1,'2024-05-21 20:05:57','2024-05-21 20:05:57'),
+('erxyjd9dolwgtj7y5',1,'','Introduccion',6.67,'erxyjd888lwgs428z',15.00,1,'2024-05-21 19:59:05','2024-05-21 20:04:27');
 
 /*Table structure for table `cursos` */
 
@@ -134,7 +134,7 @@ CREATE TABLE `cursos` (
 /*Data for the table `cursos` */
 
 insert  into `cursos`(`Id_Cur`,`Nom_Cur`,`Des_Cur`,`Hor_Cont_Total`,`Fech_Crea_Cur`,`Id_Cat_FK`,`Fot_Cur`,`Est_Cur`,`Id_Inst`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('erxyjd888lwgs1y5q','HTML, CSS Y JAVASCRIPT','Aprenderas todo acerca de la programacion web',1.17,'2024-05-21','1',NULL,1,'erxyjd1d8lvk7jiru',1,'2024-05-21 19:17:39','2024-05-21 19:38:53');
+('erxyjd888lwgs1y5q','HTML, CSS Y JAVASCRIPT','Aprenderas todo acerca de la programacion web',2.59,'2024-05-21','1',NULL,1,'erxyjd1d8lvk7jiru',1,'2024-05-21 19:17:39','2024-05-21 20:05:57');
 
 /*Table structure for table `evaluacions` */
 
@@ -216,7 +216,7 @@ CREATE TABLE `modulocursos` (
   `Est_Mod` int(1) DEFAULT NULL COMMENT '0: creado, 1:activo, 2: bloqueado',
   `Id_Cur_FK` varchar(100) DEFAULT NULL,
   `Porcentaje_Asig` decimal(5,2) DEFAULT NULL,
-  `Horas_Cont_Mod` int(11) DEFAULT NULL,
+  `Horas_Cont_Mod` decimal(10,2) DEFAULT NULL,
   `ESTADO_REGISTRO` int(1) DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -228,11 +228,11 @@ CREATE TABLE `modulocursos` (
 /*Data for the table `modulocursos` */
 
 insert  into `modulocursos`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Porcentaje_Asig`,`Horas_Cont_Mod`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('erxyjd4rclwgs6nbk','Hola mundo',0,'erxyjd888lwgs1y5q',20.00,0,1,'2024-05-21 19:21:18','2024-05-21 19:21:39'),
-('erxyjd4rclwgs6uff','Estructura basica HTML',0,'erxyjd888lwgs1y5q',20.00,0,1,'2024-05-21 19:21:28','2024-05-21 19:21:39'),
-('erxyjd4rclwgs7320','Aplicando estilos CSS',0,'erxyjd888lwgs1y5q',20.00,0,1,'2024-05-21 19:21:39','2024-05-21 19:21:39'),
-('erxyjd888lwgs428z','Introduccion',0,'erxyjd888lwgs1y5q',20.00,0,1,'2024-05-21 19:19:18','2024-05-21 19:21:39'),
-('erxyjd888lwgs5adg','Recursos necesarios',0,'erxyjd888lwgs1y5q',20.00,0,1,'2024-05-21 19:20:15','2024-05-21 19:21:39');
+('erxyjd4rclwgs6nbk','Hola mundo',0,'erxyjd888lwgs1y5q',20.00,0.34,1,'2024-05-21 19:21:18','2024-05-21 20:05:57'),
+('erxyjd4rclwgs6uff','Estructura basica HTML',0,'erxyjd888lwgs1y5q',20.00,0.00,1,'2024-05-21 19:21:28','2024-05-21 19:21:39'),
+('erxyjd4rclwgs7320','Aplicando estilos CSS',0,'erxyjd888lwgs1y5q',20.00,0.00,1,'2024-05-21 19:21:39','2024-05-21 19:21:39'),
+('erxyjd888lwgs428z','Introduccion',0,'erxyjd888lwgs1y5q',20.00,0.50,1,'2024-05-21 19:19:18','2024-05-21 20:04:27'),
+('erxyjd888lwgs5adg','Recursos necesarios',0,'erxyjd888lwgs1y5q',20.00,0.00,1,'2024-05-21 19:20:15','2024-05-21 19:21:39');
 
 /*Table structure for table `objetivos_cursos` */
 
