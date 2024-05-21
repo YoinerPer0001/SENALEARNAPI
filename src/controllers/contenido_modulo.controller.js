@@ -37,8 +37,11 @@ export const GetContModuloxModule = async (req, res) => {
 
 // create cont module
 export const createContModu = async (req, res) => {
+    let trasaction;
 
     try {
+
+     
 
         const Id_Cont = uniqid();
 
@@ -57,13 +60,15 @@ export const createContModu = async (req, res) => {
                 Id_Mod_FK: datos.Id_Mod_FK,
                 Duracion_Cont:datos.Duracion
             }
+
+            trasaction = await sequelize.transaction();
             
 
-            const newModule = await Contenido_Modulos.create(datosEnv);
+            const newModule = await Contenido_Modulos.create(datosEnv,{transaction:trasaction});
             if (newModule) {
                 //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
-                const { Porcentaje_Asig,Id_Cur_FK } = await Modulocurso.findByPk(datos.Id_Mod_FK)
-                const contenidoTotal = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: datos.Id_Mod_FK } })
+                const { Porcentaje_Asig,Id_Cur_FK,Horas_Cont_Mod } = await Modulocurso.findByPk(datos.Id_Mod_FK, {transaction:trasaction})
+                const contenidoTotal = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: datos.Id_Mod_FK }, transaction: trasaction })
                 const porcentaje = (Porcentaje_Asig / contenidoTotal.length);
 
                 if(!datos.Duracion == null) {
@@ -72,10 +77,15 @@ export const createContModu = async (req, res) => {
                
                 //actualizar duracion total del curso en la tabla de cursos hor_cont_total
                 const {Hor_Cont_Total} =await Cursos.findByPk(Id_Cur_FK);
+                const cursoHorCont = await Cursos.update({Hor_Cont_Total: (parseFloat(Hor_Cont_Total) + (datos.Duracion/60))}, {where: {Id_Cur : Id_Cur_FK}, transaction: trasaction})
                 
-                const cursoHorCont = await Cursos.update({Hor_Cont_Total: (parseFloat(Hor_Cont_Total) + (datos.Duracion/60))}, {where: {Id_Cur : Id_Cur_FK}})
-                console.log(((datos.Duracion/60)))
-                const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: datos.Id_Mod_FK } })
+                //actualizar porcentaje de cada contenido
+                const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: datos.Id_Mod_FK }, transaction: trasaction })
+
+                //actualizar horas del contenido del modulo
+                const moduleUpdt = await Modulocurso.update({Horas_Cont_Mod:(parseFloat(Horas_Cont_Mod) + (datos.Duracion/60) ) }, {where:{Id_Mod : datos.Id_Mod_FK}, transaction: trasaction})
+
+                await trasaction.commit();
                 response(res, 200);
 
             } else {
@@ -83,13 +93,14 @@ export const createContModu = async (req, res) => {
             }
 
         } else {
+           
             response(res, 400, 103, "module don't exist");
         }
 
 
 
     } catch (err) {
-
+        await trasaction.rollback();
         response(res, 500, 500, err);
 
     }
