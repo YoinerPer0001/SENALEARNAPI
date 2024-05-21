@@ -1,4 +1,4 @@
-export const response = (res, status, codigo, message) => {
+export const response = (res, status, codigo, message, exData) => {
     if (status != 200) {
         return res.status(status).json({
 
@@ -13,7 +13,8 @@ export const response = (res, status, codigo, message) => {
         return res.status(status).json({
 
             type: "success",
-            data: message
+            data: message,
+            exData : exData
 
 
         });

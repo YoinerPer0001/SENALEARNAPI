@@ -247,10 +247,52 @@ CREATE TABLE `inscripciones` (
 /*Data for the table `inscripciones` */
 
 insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Prog_Cur`,`fecha_insc`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('ahyv8xwlu7cj900','1',0.00,'2024-03-28',NULL,'2024-03-28 19:21:12','2024-03-28 19:21:14'),
-('ahyv8xwlu7cj900','2',0.00,'2024-03-29',NULL,'2024-03-29 02:35:32','2024-03-29 02:35:32'),
-('ahyv8xwlu7cj900','5',0.00,'2024-03-29',NULL,'2024-03-29 00:44:50','2024-03-29 00:52:04'),
-('erxyjd4wglurlw09c','2',10.00,'2024-04-08',NULL,'2024-04-08 23:55:46','2024-04-13 02:21:26');
+('10oPqRs','1',10.00,'2024-02-01',1,'2024-05-20 20:16:49','2024-05-20 20:16:50'),
+('10oPqRs','ahyv1eklua9rd6h',21.00,'2024-12-04',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('10oPqRs','ahyv8bslsxtrcct',73.00,'2020-06-22',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('10oPqRs','erxyjd81klvwvy13q',18.00,'2022-06-11',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('1aBcDe','2fqukuklt1puwas',24.00,'2024-08-16',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('1aBcDe','3',26.00,'2023-04-21',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('1aBcDe','ahyv1eklua9t0gg',91.00,'2023-08-05',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('2dEfGh','ahyv1eklua9t0gg',76.00,'2021-07-21',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('2dEfGh','erxyjd2bslvy8b06x',58.00,'2022-02-26',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('2dEfGh','erxyjd84gluoukzlb',52.00,'2022-12-09',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('3iJkLm','2fquk2aclt1pzzry',64.00,'2020-04-14',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('3iJkLm','4',86.00,'2023-07-24',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('3iJkLm','ahyv2bslt0x9d1j',84.00,'2023-03-20',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('4nOpQr','ahyv2bslt0x9d1j',98.00,'2023-05-23',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('4nOpQr','erxyjd59wlvwvq4g6',11.00,'2024-01-21',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('4nOpQr','erxyjd94wlvy8a7mf',69.00,'2022-06-25',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('5sTuVw','2fquk3a8lt1q1ddf',49.00,'2024-04-17',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('5sTuVw','5',50.00,'2020-08-03',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('5sTuVw','ahyv5bolsxp9nxs',95.00,'2023-04-21',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('6xYzAb','2',86.00,'2023-12-22',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('6xYzAb','ahyv5bolsxp9nxs',89.00,'2020-08-02',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('6xYzAb','erxyjd59wlvwvqy2g',35.00,'2023-02-17',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('7CdEfG','2fquk5t0lt1q0tbv',12.00,'2024-09-07',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('7CdEfG','ahyv1eklua9rd6h',57.00,'2022-02-26',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('7CdEfG','ahyv8bslsxtrcct',67.00,'2020-09-04',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('8HgHiJ','3',90.00,'2020-04-23',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('8HgHiJ','ahyv8bslsxtrcct',31.00,'2022-02-16',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('8HgHiJ','erxyjd81klvwvy13q',62.00,'2021-10-03',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('9KlMnO','2fqukuklt1puwas',1.00,'2021-08-06',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('9KlMnO','ahyv1eklua9t0gg',22.00,'2021-02-17',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('9KlMnO','erxyjd2bslvy8b06x',53.00,'2021-09-21',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('ahyv45gluc483jo','4',3.00,'2022-11-12',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('ahyv45gluc483jo','ahyv2bslt0x9d1j',60.00,'2021-03-12',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('ahyv45gluc483jo','erxyjd59wlvwvq4g6',55.00,'2022-01-22',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('ahyv8xwlu7cj900','5',57.00,'2022-03-11',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('ahyv8xwlu7cj900','ahyv5bolsxp9nxs',46.00,'2020-12-15',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('ahyv8xwlu7cj900','erxyjd59wlvwvqy2g',59.00,'2023-07-22',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('erxyjd1d8lvk7jiru','1',70.00,'2022-05-13',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('erxyjd1d8lvk7jiru','2fquk2aclt1pzzry',21.00,'2023-07-24',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('erxyjd1d8lvk7jiru','erxyjd84gluoukzlb',95.00,'2022-09-28',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('erxyjd4wglurlw09c','2fquk3a8lt1q1ddf',55.00,'2021-06-14',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('erxyjd4wglurlw09c','2fquk3eklt3iqtu1',2.00,'2024-12-11',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('erxyjd4wglurlw09c','erxyjd94wlvy8a7mf',76.00,'2024-01-17',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('user_001','2',93.00,'2023-03-16',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('user_001','2fquk5t0lt1q0tbv',20.00,'2022-01-13',1,'2024-05-20 20:15:35','2024-05-20 20:15:35'),
+('user_001','ahyv1eklua9rd6h',93.00,'2022-01-18',1,'2024-05-20 20:15:35','2024-05-20 20:15:35');
 
 /*Table structure for table `localizations` */
 
@@ -346,9 +388,10 @@ CREATE TABLE `opciones` (
 /*Data for the table `opciones` */
 
 insert  into `opciones`(`id_opcion`,`nombre_opcion`,`url`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-(1,'Panel','/admin/dashboard',1,NULL,NULL),
-(2,'Usuarios','/admin/users',1,NULL,NULL),
-(3,'Cursos','/admin/courses',1,NULL,NULL);
+(1,'Panel','/admin/dashboard',1,'2024-05-20 14:59:07','2024-05-20 14:59:09'),
+(2,'Usuarios','/admin/users',1,'2024-05-20 14:59:01','2024-05-20 14:59:04'),
+(3,'Cursos','/admin/courses',1,'2024-05-20 14:58:58','2024-05-20 14:59:00'),
+(4,'Notificaciones','/admin/notifications',1,'2024-05-20 14:58:55','2024-05-20 14:58:57');
 
 /*Table structure for table `preguntasevals` */
 
@@ -498,7 +541,8 @@ CREATE TABLE `roles_opciones` (
 insert  into `roles_opciones`(`Id_Rol_fk`,`id_opcion_fk`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
 (1,1,1,NULL,NULL),
 (1,2,1,NULL,NULL),
-(1,3,1,NULL,NULL);
+(1,3,1,NULL,NULL),
+(1,4,1,'2024-05-20 15:17:42','2024-05-20 15:17:44');
 
 /*Table structure for table `tokens` */
 
@@ -516,7 +560,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=439 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=443 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -641,7 +685,11 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (435,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYwODAzNzIsImV4cCI6MTcxNjE2Njc3Mn0.MBRv2O6E2g9Otqi4afegbwGlY3uXpIDj2-FtponL6KU','1716166772','erxyjd1d8lvk7jiru','2',1,'2024-05-19 00:59:32','2024-05-19 00:59:32'),
 (436,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYxMzE5NDYsImV4cCI6MTcxNjIxODM0Nn0.JquqCUfHOM0u4gmZP_VD90QZBV0jF34x_qJ6BwSvLzw','1716218346','erxyjd1d8lvk7jiru','2',1,'2024-05-19 15:19:06','2024-05-19 15:19:06'),
 (437,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYxMzI1MjQsImV4cCI6MTcxNjIxODkyNH0.sZb-IX0T4OKsouT35M8M_shqvRXMWgcqLQDxI_pf39k','1716218924','erxyjd1d8lvk7jiru','2',1,'2024-05-19 15:28:44','2024-05-19 15:28:44'),
-(438,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyMTQ1ODYsImV4cCI6MTcxNjMwMDk4Nn0.5WMs3RabSEVHJ-6NsunKnaoQSlrkXGmARcCrmHm9ZVM','1716300986','erxyjd1d8lvk7jiru','2',1,'2024-05-20 14:16:26','2024-05-20 14:16:26');
+(438,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyMTQ1ODYsImV4cCI6MTcxNjMwMDk4Nn0.5WMs3RabSEVHJ-6NsunKnaoQSlrkXGmARcCrmHm9ZVM','1716300986','erxyjd1d8lvk7jiru','2',1,'2024-05-20 14:16:26','2024-05-20 14:16:26'),
+(439,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDU3MTIsImV4cCI6MTcxNjMzMjExMn0.5JVMAbulN9kkrPuL7-88SHXatc9LIAOJNCb83Hx4DCw','1716332112','erxyjd1d8lvk7jiru','2',1,'2024-05-20 22:55:12','2024-05-20 22:55:12'),
+(440,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDU3MjgsImV4cCI6MTcxNjMzMjEyOH0.7C1x5HmlkJ-NozpnKtsA0UVpllgf-P0OKEpm2AtURas','1716332128','erxyjd1d8lvk7jiru','2',1,'2024-05-20 22:55:28','2024-05-20 22:55:28'),
+(441,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDU3MzYsImV4cCI6MTcxNjMzMjEzNn0.7U2_hF6jToPCgDx3w3sPV5a8osE5UulykZmBGaf3Qw0','1716332136','erxyjd1d8lvk7jiru','2',1,'2024-05-20 22:55:36','2024-05-20 22:55:36'),
+(442,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDg1OTYsImV4cCI6MTcxNjMzNDk5Nn0.VMBsrJtIwRlOLv6CI6F3x1ls9E0YsKdG5TASe0aSMPs','1716334996','erxyjd1d8lvk7jiru','2',1,'2024-05-20 23:43:16','2024-05-20 23:43:16');
 
 /*Table structure for table `usuario_contenidos` */
 

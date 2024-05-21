@@ -2,6 +2,7 @@ import { Inscripcione } from '../models/inscripciones.model.js'
 import { response } from '../utils/responses.js';
 import { Usuario } from '../models/users.model.js'
 import { Cursos } from '../models/cursos.model.js'
+import { Sequelize } from 'sequelize';
 
 
 //obtener toda la lista de inscripciones
@@ -31,6 +32,59 @@ export const getAllInsc = async (req, res) => {
 
     } catch (err) {
 
+        response(res, 500, 500, err);
+    }
+}
+
+//obtener inscripciones de un curso por mes
+export const getxMonths = async (req, res) => {
+
+    const { year } = req.params;
+
+    const listaMeses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    const listaMesesNombres = [ 'Ene', 'Feb', 'Mar', 'Abr',
+        'May', 'Jun', 'Jul', 'Ago',
+        'Sep', 'Oct', 'Nov', 'Dic'
+    ];
+    const listaPromesas = []
+    try {
+
+        listaMeses.forEach((mes) => {
+            const objRespuesta = Inscripcione.count({
+                where: {
+                    [Sequelize.Op.and]: [
+                      Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('fecha_insc')), mes),
+                      Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('fecha_insc')), year)
+                    ]
+                  }
+            })
+            listaPromesas.push(objRespuesta)
+        })
+
+        const yearsList = await Inscripcione.findAll({
+            attributes: [
+              [Sequelize.fn('DISTINCT', Sequelize.fn('YEAR', Sequelize.col('fecha_insc'))), 'year']
+            ],
+            raw: true // Para obtener resultados como un objeto plano
+          });
+
+        const datos = await Promise.all(listaPromesas)
+
+
+        //obtenemos el numero total de usuarios
+        let objEnv = [
+            {years: yearsList}
+        ];
+        let i = 0;
+        datos.map(valor => {
+            objEnv.push({ mes: listaMesesNombres[i], cant: valor })
+            i = i + 1
+        })
+
+        response(res,200,200,objEnv)
+
+
+    } catch (err) {
         response(res, 500, 500, err);
     }
 }
@@ -256,18 +310,18 @@ export const deleteInsc = async (req, res) => {
 
         const { user, course } = req.params
 
-        const insc = await Inscripcione.findOne({where: {Id_User_FK: user, Id_Cur_FK: course}})
+        const insc = await Inscripcione.findOne({ where: { Id_User_FK: user, Id_Cur_FK: course } })
         if (insc) {
 
             //verify that evaluation dont has resources asociated
             const updated = await Inscripcione.update({ ESTADO_REGISTRO: 0 }, { where: { Id_User_FK: user, Id_Cur_FK: course } })
-            if(updated){
+            if (updated) {
                 response(res, 200);
-            }else{
+            } else {
                 response(res, 500, 500, "Error deleting inscription");
             }
 
-        }else{
+        } else {
             response(res, 404, 404, "inscription not found");
         }
 
