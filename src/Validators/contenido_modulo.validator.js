@@ -8,7 +8,7 @@ export const createValidation = [
         .isNumeric().withMessage('Tip_Cont must be a number')
         .isLength({ max: 50 }).withMessage('max length is 50'),
     check('Url_Cont')
-        .exists().withMessage('Url_Cont is required')
+        .optional()
         .not().isEmpty().withMessage('Url_Cont cannot be empty')
         .isString().withMessage('Url_Cont must be a string')
         .isLength({ max: 100 }).withMessage('max length is 100'),
@@ -22,10 +22,10 @@ export const createValidation = [
         .not().isEmpty().withMessage('Id_Mod_FK cannot be empty')
         .isString().withMessage('Id_Mod_FK must be a string')
         .isLength({ max: 100 }).withMessage('max length is 100'),
-    check('Duracion_Cont')
+    check('Duracion')
         .optional()
-        .not().isEmpty().withMessage('Duracion_Cont cannot be empty')
-        .isFloat().withMessage('Duracion_Cont must be a float number')
+        .not().isEmpty().withMessage('Duracion cannot be empty')
+        .isFloat().withMessage('Duracion must be a float number')
         .isLength({ max: 100 }).withMessage('max length is 100'),
         (req, res, next) => {
     validateResult(req, res, next)

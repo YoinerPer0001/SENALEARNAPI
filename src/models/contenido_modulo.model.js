@@ -18,7 +18,8 @@ export const Contenido_Modulos = sequelize.define('Contenido_Modulos',{
     },
     Url_Cont:{
         type:DataTypes.STRING,
-        allowNull:false
+        allowNull:true,
+        defaultValue:""
     },
     Porcentaje_Asig:{
         type:DataTypes.DECIMAL,
@@ -30,7 +31,7 @@ export const Contenido_Modulos = sequelize.define('Contenido_Modulos',{
         allowNull:false
     },
     Duracion_Cont:{
-        type:DataTypes.FLOAT,
+        type:DataTypes.DECIMAL(10,2),
         allowNull:false,
         defaultValue:1.00
     },

@@ -22,8 +22,8 @@ export const Cursos = sequelize.define('Cursos',{
     },
     Hor_Cont_Total:{
         type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: null
+        allowNull: false,
+        defaultValue: 0
     },
     Fech_Crea_Cur:{
         type: DataTypes.DATE,

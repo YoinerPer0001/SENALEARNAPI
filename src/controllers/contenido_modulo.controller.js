@@ -73,8 +73,8 @@ export const createContModu = async (req, res) => {
                 //actualizar duracion total del curso en la tabla de cursos hor_cont_total
                 const {Hor_Cont_Total} =await Cursos.findByPk(Id_Cur_FK);
                 
-                const cursoHorCont = await Cursos.update({Hor_Cont_Total: (Hor_Cont_Total+ datos.Duracion/60)}, {where: {Id_Cur : Id_Cur_FK}})
-                console.log(Hor_Cont_Total)
+                const cursoHorCont = await Cursos.update({Hor_Cont_Total: (parseFloat(Hor_Cont_Total) + (datos.Duracion/60))}, {where: {Id_Cur : Id_Cur_FK}})
+                console.log(((datos.Duracion/60)))
                 const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: datos.Id_Mod_FK } })
                 response(res, 200);
 
