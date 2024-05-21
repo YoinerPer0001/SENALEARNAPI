@@ -29,6 +29,11 @@ export const Contenido_Modulos = sequelize.define('Contenido_Modulos',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    Duracion_Cont:{
+        type:DataTypes.FLOAT,
+        allowNull:false,
+        defaultValue:1.00
+    },
     ESTADO_REGISTRO:{
         type: DataTypes.INTEGER,
         defaultValue:1,

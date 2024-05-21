@@ -22,9 +22,14 @@ export const createValidation = [
         .not().isEmpty().withMessage('Id_Mod_FK cannot be empty')
         .isString().withMessage('Id_Mod_FK must be a string')
         .isLength({ max: 100 }).withMessage('max length is 100'),
-    (req, res, next) => {
-        validateResult(req, res, next)
-    }
+    check('Duracion_Cont')
+        .optional()
+        .not().isEmpty().withMessage('Duracion_Cont cannot be empty')
+        .isFloat().withMessage('Duracion_Cont must be a float number')
+        .isLength({ max: 100 }).withMessage('max length is 100'),
+        (req, res, next) => {
+    validateResult(req, res, next)
+}
 ]
 
 export const UpdateValidation = [

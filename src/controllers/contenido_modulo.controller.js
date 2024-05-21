@@ -42,31 +42,42 @@ export const createContModu = async (req, res) => {
 
         const Id_Cont = uniqid();
 
-        const { Tip_Cont, Url_Cont, Tit_Cont, Id_Mod_FK } = req.body;
+        const datos = req.body;
 
-        let moduleCourseExist = await Modulocurso.findByPk(Id_Mod_FK);
-
+        let moduleCourseExist = await Modulocurso.findByPk(datos.Id_Mod_FK);
+        
         if (moduleCourseExist) {
 
             //create category
-            const datos = {
+            const datosEnv = {
                 Id_Cont: Id_Cont,
-                Tip_Cont: Tip_Cont,
-                Url_Cont: Url_Cont,
-                Tit_Cont: Tit_Cont,
-                Id_Mod_FK: Id_Mod_FK
+                Tip_Cont: datos.Tip_Cont,
+                Url_Cont: datos.Url_Cont,
+                Tit_Cont: datos.Tit_Cont,
+                Id_Mod_FK: datos.Id_Mod_FK,
+                Duracion_Cont:datos.Duracion
             }
+            
 
-            const newModule = await Contenido_Modulos.create(datos);
+            const newModule = await Contenido_Modulos.create(datosEnv);
             if (newModule) {
                 //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
-                const { Porcentaje_Asig } = await Modulocurso.findByPk(Id_Mod_FK)
-                const contenidoTotal = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: Id_Mod_FK } })
+                const { Porcentaje_Asig,Id_Cur_FK } = await Modulocurso.findByPk(datos.Id_Mod_FK)
+                const contenidoTotal = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: datos.Id_Mod_FK } })
                 const porcentaje = (Porcentaje_Asig / contenidoTotal.length);
-                console.log(Porcentaje_Asig)
 
-                const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: Id_Mod_FK } })
+                if(!datos.Duracion == null) {
+                    datos.Duracion = 1/60
+                }
+               
+                //actualizar duracion total del curso en la tabla de cursos hor_cont_total
+                const {Hor_Cont_Total} =await Cursos.findByPk(Id_Cur_FK);
+                
+                const cursoHorCont = await Cursos.update({Hor_Cont_Total: (Hor_Cont_Total+ datos.Duracion/60)}, {where: {Id_Cur : Id_Cur_FK}})
+                console.log(Hor_Cont_Total)
+                const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: datos.Id_Mod_FK } })
                 response(res, 200);
+
             } else {
                 response(res, 500, 500, "error creating content module");
             }

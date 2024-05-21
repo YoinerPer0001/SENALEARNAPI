@@ -30,8 +30,7 @@ export const GetContVistosXUsuario = async (req, res) => {
     } catch (err) {
         response(res, 500, 500, "Something went wrong");
     }
-
-
+    
 }
 
 
