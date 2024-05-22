@@ -8,13 +8,17 @@ export const Contenido_Modulos = sequelize.define('Contenido_Modulos',{
         primaryKey:true,
         allowNull:false
     },
+    Indice_Cont:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
     Tit_Cont:{
         type:DataTypes.STRING,
         allowNull:false
     },
     Tip_Cont:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        allowNull:true
     },
     Url_Cont:{
         type:DataTypes.STRING,

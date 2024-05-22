@@ -41,60 +41,55 @@ export const createContModu = async (req, res) => {
 
     try {
 
-     
-
         const Id_Cont = uniqid();
 
-        const datos = req.body;
+        const { Indice, Id_Mod_FK, Tit_Cont } = req.body;
 
-        let moduleCourseExist = await Modulocurso.findByPk(datos.Id_Mod_FK);
-        
+        let moduleCourseExist = await Modulocurso.findByPk(Id_Mod_FK);
+
         if (moduleCourseExist) {
 
-            //create category
-            const datosEnv = {
-                Id_Cont: Id_Cont,
-                Tip_Cont: datos.Tip_Cont,
-                Url_Cont: datos.Url_Cont,
-                Tit_Cont: datos.Tit_Cont,
-                Id_Mod_FK: datos.Id_Mod_FK,
-                Duracion_Cont:datos.Duracion
-            }
+            // verificamos que el induce no este repetido en el modulo 
+            const indiceExist = await Contenido_Modulos.findOne({ where: { Indice_Cont: Indice } })
 
-            trasaction = await sequelize.transaction();
-            
-
-            const newModule = await Contenido_Modulos.create(datosEnv,{transaction:trasaction});
-            if (newModule) {
-                //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
-                const { Porcentaje_Asig,Id_Cur_FK,Horas_Cont_Mod } = await Modulocurso.findByPk(datos.Id_Mod_FK, {transaction:trasaction})
-                const contenidoTotal = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: datos.Id_Mod_FK }, transaction: trasaction })
-                const porcentaje = (Porcentaje_Asig / contenidoTotal.length);
-
-                if(!datos.Duracion == null) {
-                    datos.Duracion = 1/60
+            if (!indiceExist) {
+                //create 
+                const datosEnv = {
+                    Id_Cont: Id_Cont,
+                    // Tip_Cont: Tip_Cont,
+                    // Url_Cont: datos.Url_Cont,
+                    Tit_Cont: Tit_Cont,
+                    Id_Mod_FK: Id_Mod_FK,
+                    // Duracion_Cont:datos.Duracion,
+                    Indice_Cont: Indice
                 }
-               
-                //actualizar duracion total del curso en la tabla de cursos hor_cont_total
-                const {Hor_Cont_Total} =await Cursos.findByPk(Id_Cur_FK);
-                const cursoHorCont = await Cursos.update({Hor_Cont_Total: (parseFloat(Hor_Cont_Total) + (datos.Duracion/60))}, {where: {Id_Cur : Id_Cur_FK}, transaction: trasaction})
-                
-                //actualizar porcentaje de cada contenido
-                const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: datos.Id_Mod_FK }, transaction: trasaction })
 
-                //actualizar horas del contenido del modulo
-                const moduleUpdt = await Modulocurso.update({Horas_Cont_Mod:(parseFloat(Horas_Cont_Mod) + (datos.Duracion/60) ) }, {where:{Id_Mod : datos.Id_Mod_FK}, transaction: trasaction})
+                trasaction = await sequelize.transaction();
 
-                await trasaction.commit();
-                response(res, 200);
 
-            } else {
-                response(res, 500, 500, "error creating content module");
+                const newModule = await Contenido_Modulos.create(datosEnv, { transaction: trasaction });
+                if (newModule) {
+                    //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
+                    const { Porcentaje_Asig } = await Modulocurso.findByPk(Id_Mod_FK, { transaction: trasaction })
+                    const contenidoTotal = await Contenido_Modulos.count({ where: { Id_Mod_FK: Id_Mod_FK }, transaction: trasaction })
+                    const porcentaje = (Porcentaje_Asig / contenidoTotal);
+
+                    //actualizar porcentaje de cada contenido
+                    const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: Id_Mod_FK }, transaction: trasaction })
+
+                    await trasaction.commit();
+                    response(res, 200, 200,{insertedId: datosEnv.Id_Cont} );
+
+                } else {
+                    response(res, 500, 500, "error creating content module");
+                }
+            }else{
+                response(res, 500, 500, "Indice already exist");
             }
 
         } else {
-           
-            response(res, 400, 103, "module don't exist");
+
+            response(res, 404, 404, "module don't exist");
         }
 
 
@@ -109,6 +104,8 @@ export const createContModu = async (req, res) => {
 
 //update mod cursos
 export const UpdateModCur = async (req, res) => {
+
+    let transaction;
 
     try {
 
@@ -140,6 +137,8 @@ export const UpdateModCur = async (req, res) => {
                         Tip_Cont: data.Tip_Cont || cont_mod.Tip_Cont,
                         Url_Cont: data.Url_Cont || cont_mod.Url_Cont,
                         Tit_Cont: data.Tit_Cont || cont_mod.Tit_Cont,
+                        Indice_Cont: data.Indice || cont_mod.Indice_Cont,
+                        Duracion_Cont: data.Duracion || cont_mod.Duracion_Cont,
                         Id_Mod_FK: data.Id_Mod_FK
 
                     }
@@ -155,17 +154,32 @@ export const UpdateModCur = async (req, res) => {
                     Tip_Cont: data.Tip_Cont || cont_mod.Tip_Cont,
                     Url_Cont: data.Url_Cont || cont_mod.Url_Cont,
                     Tit_Cont: data.Tit_Cont || cont_mod.Tit_Cont,
+                    Indice_Cont: data.Indice || cont_mod.Indice_Cont,
+                    Duracion_Cont: data.Duracion || cont_mod.Duracion_Cont,
                     Id_Mod_FK: cont_mod.Id_Mod_FK
 
                 }
 
             }
 
+            transaction = await sequelize.transaction();
 
-            const responses = await Contenido_Modulos.update(datos, { where: { Id_Cont: id } })
+            const responses = await Contenido_Modulos.update(datos, { where: { Id_Cont: id }, transaction: transaction })
             if (responses) {
+
+
+                //actualizar duracion total del curso en la tabla de cursos hor_cont_total
+                const { Id_Cur_FK, Horas_Cont_Mod } = await Modulocurso.findByPk(datos.Id_Mod_FK);
+                const { Hor_Cont_Total } = await Cursos.findByPk(Id_Cur_FK)
+                const cursoHorCont = await Cursos.update({ Hor_Cont_Total: (parseFloat(Hor_Cont_Total) + (datos.Duracion_Cont / 60)) }, { where: { Id_Cur: Id_Cur_FK }, transaction: transaction })
+
+
+                //actualizar horas del contenido del modulo
+                const moduleUpdt = await Modulocurso.update({ Horas_Cont_Mod: (parseFloat(Horas_Cont_Mod) + (datos.Duracion_Cont / 60)) }, { where: { Id_Mod: datos.Id_Mod_FK }, transaction: transaction })
+                await transaction.commit();
                 response(res, 200);
             } else {
+                await transaction.rollback()
                 response(res, 500, 500, "error updating content module");
             }
 
@@ -180,31 +194,31 @@ export const UpdateModCur = async (req, res) => {
 
 //delete cont module
 export const deleteCont = async (req, res) => {
-    try{
+    try {
 
-        const {id} = req.params
+        const { id } = req.params
 
         const contMod = await Contenido_Modulos.findByPk(id)
-        if(contMod){
-        //verify that content dont have users asociated
-        const usuariosCont = await Usuario_contenido.findAll({where:{Id_Cont_Mod_FK: id}})
-            
-        if(usuariosCont.length > 0){
-            response(res, 409, 409, "Content has users asociated");
-        }else{
-            const responses = await Contenido_Modulos.update({ESTADO_REGISTRO: 0},{where:{Id_Cont: id}})
-            if(responses){
-                response(res, 200);
-            }else{
-                response(res, 500, 500, "error deleting content");
-            }
-        }
+        if (contMod) {
+            //verify that content dont have users asociated
+            const usuariosCont = await Usuario_contenido.findAll({ where: { Id_Cont_Mod_FK: id } })
 
-        }else{
+            if (usuariosCont.length > 0) {
+                response(res, 409, 409, "Content has users asociated");
+            } else {
+                const responses = await Contenido_Modulos.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Cont: id } })
+                if (responses) {
+                    response(res, 200);
+                } else {
+                    response(res, 500, 500, "error deleting content");
+                }
+            }
+
+        } else {
             response(res, 404, 404, "Category not found");
         }
 
-    }catch (err) {
+    } catch (err) {
         response(res, 500, 500, err);
     }
 }
