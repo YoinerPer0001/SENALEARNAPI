@@ -79,7 +79,7 @@ export const createModules = async (req, res) => {
 
                 const update = await Modulocurso.update({ Porcentaje_Asig: porentajes }, { where: { Id_Cur_FK: Id_Cur } })
                 if (update) {
-                    response(res, 200);
+                    response(res, 200, 200, {insertedId: datos.Id_Mod});
                 } else {
                     response(res, 500, 500, "error creating module");
                 }
