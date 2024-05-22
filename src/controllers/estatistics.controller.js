@@ -39,8 +39,6 @@ export const statisticsPanel = async (req, res) => {
         const tasaAbandono = ((CantidadAbandonos * 100) / CantidadInsc).toFixed(2);
 
        
-       
-
         const data = {
             total_usuarios: total_users,
             tasaFinalizacion,
@@ -64,7 +62,7 @@ export const GetCoursesDest = async (req, res)=>{
             attributes: ['Id_Cur_FK', [sequelize.fn('COUNT', sequelize.col('Id_Cur_FK')), 'inscripciones']],
             group: ['Id_Cur_FK'],
             order: [[sequelize.literal('inscripciones'), 'DESC']],
-            limit: 6,
+            limit: 8,
             include: {
                 model: Cursos,
                 attributes: {
