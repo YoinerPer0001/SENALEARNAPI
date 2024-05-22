@@ -76,3 +76,6 @@ Inscripcione.belongsTo(Usuario,{foreignKey: 'Id_User_FK', targetKey: 'Id_User'})
 
 Usuario.hasMany(Resultados_Evaluacione, {foreignKey: 'Id_User_FK'})
 Resultados_Evaluacione.belongsTo(Usuario,{foreignKey:'Id_User_FK', targetKey:'Id_User'});
+
+Usuario.hasMany(Cursos, {foreignKey:'Id_Inst'})
+Cursos.belongsTo(Usuario,{foreignKey: 'Id_Inst',targetKey:'Id_User'})

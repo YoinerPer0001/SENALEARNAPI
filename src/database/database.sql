@@ -32,7 +32,17 @@ CREATE TABLE `categorias` (
 /*Data for the table `categorias` */
 
 insert  into `categorias`(`Id_Cat`,`Nom_Cat`,`ESTADO_REGISTRO`,`updatedAt`,`createdAt`) values 
-('1','Programación',1,NULL,NULL);
+('1','Programación',1,NULL,NULL),
+('A1B2C3D4','Programación',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('C3D4E5F6','Habilidades Blandas',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('E5F6G7H8','Desarrollo Web',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('G7H8I9J1','Gestión de Proyectos',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('I9J1K2L3','Ciencia de Datos',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('K2L3M4N5','Idiomas',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('M4N5O6P7','Inteligencia Artificial',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('Q8R9S1T2','Marketing Digital',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('U3V4W5X6','Diseño Gráfico',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('Y7Z8A1B2','Finanzas Personales',1,'2024-05-21 00:00:00','2024-05-21 00:00:00');
 
 /*Table structure for table `certificados` */
 
@@ -134,7 +144,17 @@ CREATE TABLE `cursos` (
 /*Data for the table `cursos` */
 
 insert  into `cursos`(`Id_Cur`,`Nom_Cur`,`Des_Cur`,`Hor_Cont_Total`,`Fech_Crea_Cur`,`Id_Cat_FK`,`Fot_Cur`,`Est_Cur`,`Id_Inst`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('erxyjd888lwgs1y5q','HTML, CSS Y JAVASCRIPT','Aprenderas todo acerca de la programacion web',2.59,'2024-05-21','1',NULL,1,'erxyjd1d8lvk7jiru',1,'2024-05-21 19:17:39','2024-05-21 20:05:57');
+('B2C3D4E5','Habilidades Blandas en el Trabajo','Curso sobre habilidades interpersonales',0.00,'2024-05-21','C3D4E5F6',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('C1A2B3C4','Introducción a la Programación','Curso básico sobre programación',0.00,'2024-05-21','A1B2C3D4',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('D5E6F7G8','HTML y CSS','Curso de desarrollo web con HTML y CSS',0.00,'2024-05-21','E5F6G7H8',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('erxyjd888lwgs1y5q','HTML, CSS Y JAVASCRIPT','Aprenderas todo acerca de la programacion web',2.59,'2024-05-21','1',NULL,1,'erxyjd1d8lvk7jiru',1,'2024-05-21 19:17:39','2024-05-21 20:05:57'),
+('F6G7H8I9','Gestión de Proyectos Ágiles','Curso sobre gestión de proyectos utilizando metodologías ágiles',0.00,'2024-05-21','G7H8I9J1',NULL,1,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('H9I1J2K3','Introducción a la Ciencia de Datos','Conceptos básicos de ciencia de datos',0.00,'2024-05-21','I9J1K2L3',NULL,1,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('J1K2L3M4','Curso de Inglés Básico','Curso para aprender inglés desde cero',0.00,'2024-05-21','K2L3M4N5',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('L4M5N6O7','Fundamentos de Inteligencia Artificial','Curso introductorio sobre IA',0.00,'2024-05-21','M4N5O6P7',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('P8Q9R1S2','Estrategias de Marketing Digital','Curso sobre marketing digital',0.00,'2024-05-21','Q8R9S1T2',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('T3U4V5W6','Diseño Gráfico Básico','Fundamentos de diseño gráfico',0.00,'2024-05-21','U3V4W5X6',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00'),
+('X7Y8Z9A1','Finanzas Personales para Principiantes','Curso sobre manejo de finanzas personales',0.00,'2024-05-21','Y7Z8A1B2',NULL,2,'erxyjd1d8lvk7jiru',1,'2024-05-21 00:00:00','2024-05-21 00:00:00');
 
 /*Table structure for table `evaluacions` */
 
@@ -179,6 +199,54 @@ CREATE TABLE `inscripciones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `inscripciones` */
+
+insert  into `inscripciones`(`Id_User_FK`,`Id_Cur_FK`,`Prog_Cur`,`fecha_insc`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('10oPqRs','C1A2B3C4',0.00,'2024-01-05',1,'2024-01-05 00:00:00','2024-01-05 00:00:00'),
+('10oPqRs','D5E6F7G8',0.00,'2023-05-20',1,'2023-05-20 00:00:00','2023-05-20 00:00:00'),
+('10oPqRs','L4M5N6O7',0.00,'2020-11-05',1,'2020-11-05 00:00:00','2020-11-05 00:00:00'),
+('10oPqRs','X7Y8Z9A1',0.00,'2022-02-05',1,'2022-02-05 00:00:00','2022-02-05 00:00:00'),
+('1aBcDe','J1K2L3M4',0.00,'2021-07-25',1,'2021-07-25 00:00:00','2021-07-25 00:00:00'),
+('1aBcDe','L4M5N6O7',0.00,'2020-04-05',1,'2020-04-05 00:00:00','2020-04-05 00:00:00'),
+('1aBcDe','P8Q9R1S2',0.00,'2022-10-05',1,'2022-10-05 00:00:00','2022-10-05 00:00:00'),
+('2dEfGh','B2C3D4E5',0.00,'2022-03-20',1,'2022-03-20 00:00:00','2022-03-20 00:00:00'),
+('2dEfGh','D5E6F7G8',0.00,'2020-12-20',1,'2020-12-20 00:00:00','2020-12-20 00:00:00'),
+('2dEfGh','H9I1J2K3',100.00,'2023-06-15',1,'2023-06-15 00:00:00','2023-06-15 00:00:00'),
+('3iJkLm','C1A2B3C4',0.00,'2021-08-10',1,'2021-08-10 00:00:00','2021-08-10 00:00:00'),
+('3iJkLm','P8Q9R1S2',0.00,'2020-05-25',1,'2020-05-25 00:00:00','2020-05-25 00:00:00'),
+('3iJkLm','T3U4V5W6',0.00,'2022-11-30',1,'2022-11-30 00:00:00','2022-11-30 00:00:00'),
+('4nOpQr','F6G7H8I9',0.00,'2022-04-15',1,'2022-04-15 00:00:00','2022-04-15 00:00:00'),
+('4nOpQr','H9I1J2K3',0.00,'2021-01-15',1,'2021-01-15 00:00:00','2021-01-15 00:00:00'),
+('4nOpQr','L4M5N6O7',0.00,'2023-07-10',1,'2023-07-10 00:00:00','2023-07-10 00:00:00'),
+('5sTuVw','D5E6F7G8',0.00,'2021-09-05',1,'2021-09-05 00:00:00','2021-09-05 00:00:00'),
+('5sTuVw','T3U4V5W6',0.00,'2020-06-30',1,'2020-06-30 00:00:00','2020-06-30 00:00:00'),
+('5sTuVw','X7Y8Z9A1',0.00,'2022-12-25',1,'2022-12-25 00:00:00','2022-12-25 00:00:00'),
+('6xYzAb','J1K2L3M4',0.00,'2022-05-10',1,'2022-05-10 00:00:00','2022-05-10 00:00:00'),
+('6xYzAb','L4M5N6O7',0.00,'2024-01-20',1,'2024-01-20 00:00:00','2024-01-20 00:00:00'),
+('6xYzAb','P8Q9R1S2',50.00,'2021-02-10',1,'2021-02-10 00:00:00','2021-02-10 00:00:00'),
+('7CdEfG','B2C3D4E5',0.00,'2023-01-20',1,'2023-01-20 00:00:00','2023-01-20 00:00:00'),
+('7CdEfG','H9I1J2K3',0.00,'2021-10-30',1,'2021-10-30 00:00:00','2021-10-30 00:00:00'),
+('7CdEfG','X7Y8Z9A1',0.00,'2020-07-15',1,'2020-07-15 00:00:00','2020-07-15 00:00:00'),
+('8HgHiJ','C1A2B3C4',0.00,'2022-06-25',1,'2022-06-25 00:00:00','2022-06-25 00:00:00'),
+('8HgHiJ','P8Q9R1S2',0.00,'2024-01-25',1,'2024-01-25 00:00:00','2024-01-25 00:00:00'),
+('8HgHiJ','T3U4V5W6',0.00,'2021-03-05',1,'2021-03-05 00:00:00','2021-03-05 00:00:00'),
+('9KlMnO','B2C3D4E5',0.00,'2020-08-20',1,'2020-08-20 00:00:00','2020-08-20 00:00:00'),
+('9KlMnO','F6G7H8I9',0.00,'2023-02-15',1,'2023-02-15 00:00:00','2023-02-15 00:00:00'),
+('9KlMnO','L4M5N6O7',0.00,'2021-11-20',1,'2021-11-20 00:00:00','2021-11-20 00:00:00'),
+('ahyv45gluc483jo','F6G7H8I9',0.00,'2020-09-25',1,'2020-09-25 00:00:00','2020-09-25 00:00:00'),
+('ahyv45gluc483jo','J1K2L3M4',0.00,'2023-03-05',1,'2023-03-05 00:00:00','2023-03-05 00:00:00'),
+('ahyv45gluc483jo','P8Q9R1S2',0.00,'2024-03-15',1,'2024-03-15 00:00:00','2024-03-15 00:00:00'),
+('ahyv8xwlu7cj900','C1A2B3C4',0.00,'2023-04-30',1,'2023-04-30 00:00:00','2023-04-30 00:00:00'),
+('ahyv8xwlu7cj900','J1K2L3M4',0.00,'2020-10-10',1,'2020-10-10 00:00:00','2020-10-10 00:00:00'),
+('ahyv8xwlu7cj900','T3U4V5W6',0.00,'2022-01-10',1,'2022-01-10 00:00:00','2022-01-10 00:00:00'),
+('erxyjd1d8lvk7jiru','C1A2B3C4',0.00,'2020-03-15',1,'2020-03-15 00:00:00','2020-03-15 00:00:00'),
+('erxyjd1d8lvk7jiru','D5E6F7G8',0.00,'2022-07-20',1,'2022-07-20 00:00:00','2022-07-20 00:00:00'),
+('erxyjd1d8lvk7jiru','X7Y8Z9A1',0.00,'2021-04-01',1,'2021-04-01 00:00:00','2021-04-01 00:00:00'),
+('erxyjd4wglurlw09c','B2C3D4E5',0.00,'2021-05-15',1,'2021-05-15 00:00:00','2021-05-15 00:00:00'),
+('erxyjd4wglurlw09c','D5E6F7G8',0.00,'2020-02-20',1,'2020-02-20 00:00:00','2020-02-20 00:00:00'),
+('erxyjd4wglurlw09c','H9I1J2K3',0.00,'2022-08-15',1,'2022-08-15 00:00:00','2022-08-15 00:00:00'),
+('user_001','F6G7H8I9',0.00,'2021-06-20',1,'2021-06-20 00:00:00','2021-06-20 00:00:00'),
+('user_001','H9I1J2K3',0.00,'2020-03-10',1,'2020-03-10 00:00:00','2020-03-10 00:00:00'),
+('user_001','L4M5N6O7',0.00,'2022-09-10',1,'2022-09-10 00:00:00','2022-09-10 00:00:00');
 
 /*Table structure for table `localizations` */
 
@@ -410,7 +478,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=444 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=445 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -540,7 +608,8 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (440,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDU3MjgsImV4cCI6MTcxNjMzMjEyOH0.7C1x5HmlkJ-NozpnKtsA0UVpllgf-P0OKEpm2AtURas','1716332128','erxyjd1d8lvk7jiru','2',1,'2024-05-20 22:55:28','2024-05-20 22:55:28'),
 (441,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDU3MzYsImV4cCI6MTcxNjMzMjEzNn0.7U2_hF6jToPCgDx3w3sPV5a8osE5UulykZmBGaf3Qw0','1716332136','erxyjd1d8lvk7jiru','2',1,'2024-05-20 22:55:36','2024-05-20 22:55:36'),
 (442,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYyNDg1OTYsImV4cCI6MTcxNjMzNDk5Nn0.VMBsrJtIwRlOLv6CI6F3x1ls9E0YsKdG5TASe0aSMPs','1716334996','erxyjd1d8lvk7jiru','2',1,'2024-05-20 23:43:16','2024-05-20 23:43:16'),
-(443,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYzMTgyNDEsImV4cCI6MTcxNjQwNDY0MX0.u1nNJnlBy_k-0cJdz2dDXVD3AEUPuNJvNGn8OzmAv_4','1716404641','erxyjd1d8lvk7jiru','2',1,'2024-05-21 19:04:01','2024-05-21 19:04:01');
+(443,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYzMTgyNDEsImV4cCI6MTcxNjQwNDY0MX0.u1nNJnlBy_k-0cJdz2dDXVD3AEUPuNJvNGn8OzmAv_4','1716404641','erxyjd1d8lvk7jiru','2',1,'2024-05-21 19:04:01','2024-05-21 19:04:01'),
+(444,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTYzMjM2MDcsImV4cCI6MTcxNjQxMDAwN30.WZrN7tHY50Zu-C8NL415y0Ip2wHLWa9uccRJ4-xryK0','1716410007','erxyjd1d8lvk7jiru','2',1,'2024-05-21 20:33:27','2024-05-21 20:33:27');
 
 /*Table structure for table `usuario_contenidos` */
 
@@ -600,7 +669,7 @@ insert  into `usuarios`(`Id_User`,`Nom_User`,`Ape_User`,`Tel_User`,`Ema_User`,`P
 ('9KlMnO','Diego','Díaz','+9998887776','diego@example.com','diego123',2,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-05-19 13:55:31','2024-05-19 13:55:31'),
 ('ahyv45gluc483jo','2313','pertuz','3012222222','yoinerpertuzx@gmail.com','$2b$10$MqGsaRb8ajQeWH88eTlD/utEzqu1TQxLAAeQkwl4Q.cJAPaR6AG76',2,NULL,1,1,'2024-03-29 03:40:06','2024-05-07 22:19:47'),
 ('ahyv8xwlu7cj900','Yonier','perez','3139839832','yoinerpertuyz@gmail.com','$2b$10$0TZRSwVDWhrvBBArqwp2w.YFj9q5CdEhDfTbEaNc2iAZ36/52Ad2y',2,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-03-25 19:33:52','2024-03-29 02:36:08'),
-('erxyjd1d8lvk7jiru','Wiro','perez','9856464','yoinerpertuz@gmail.com','$2b$10$PHSzQdyuhAuJFfRSBw1q2u19UvL5oRYQoEj1t01Beqbk6RXc/qWji',1,NULL,1,1,'2024-04-29 00:14:50','2024-04-29 00:44:07'),
+('erxyjd1d8lvk7jiru','Wiro','perez','9856464','yoinerpertuz@gmail.com','$2b$10$PHSzQdyuhAuJFfRSBw1q2u19UvL5oRYQoEj1t01Beqbk6RXc/qWji',1,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-04-29 00:14:50','2024-04-29 00:44:07'),
 ('erxyjd4wglurlw09c','Kilian','Mbbape','561456484','KilianEmbappe@gmail.com','$2b$10$sVSQ3Ha.YBPyKFkzJeFYD.EE123Zb.kXyp/zcvyUQJCJvcwyqBIma',1,NULL,1,1,'2024-04-08 23:51:08','2024-04-08 23:51:08'),
 ('user_001','John','Doe','1234567890','john.doe1@example.com','password123',1,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,0,'2024-05-18 16:20:30','2024-05-18 16:20:30');
 

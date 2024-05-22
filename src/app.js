@@ -18,6 +18,7 @@ import routesRespuestasEval from "./v1/routes/respuestasEval.routes.js";
 import routesUsuario_Cont from "./v1/routes/usuario_contenido.routes.js";
 import routesResult from "./v1/routes/resultadosEval.routes.js";
 import routesReqPrev from "./v1/routes/requisitos_previos.routes.js"
+import statRoutes from "./v1/routes/estatistics.routes.js";
 import cors from "cors"
 
 
@@ -50,6 +51,7 @@ app.use(routesRespuestasEval);
 app.use(routesUsuario_Cont);
 app.use(routesResult);
 app.use(routesReqPrev);
+app.use(statRoutes)
 
 app.listen(port,()=>{
     console.log("Server run in port: " + port);

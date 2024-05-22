@@ -5,6 +5,7 @@ import { Modulocurso } from "./modulos_cursos.model.js";
 import { Certificado } from "./cerificados.model.js";
 import { Inscripcione } from "./inscripciones.model.js";
 import { Requisitos_previo } from "./requisitos_previos.model.js";
+import { Usuario } from "./users.model.js";
 
 export const Cursos = sequelize.define('Cursos',{
     Id_Cur:{
@@ -68,3 +69,4 @@ Inscripcione.belongsTo(Cursos,{foreignKey: 'Id_Cur_FK',targetKey:'Id_Cur'});
 
 Cursos.hasMany(Requisitos_previo,{foreignKey: 'Id_Cur_FK'})
 Requisitos_previo.belongsTo(Cursos,{foreignKey: 'Id_Cur_FK',targetKey:'Id_Cur'})
+
