@@ -40,6 +40,7 @@ export const createContModu = async (req, res) => {
     let trasaction;
 
     try {
+        trasaction = await sequelize.transaction();
 
         const Id_Cont = uniqid();
 
@@ -50,7 +51,7 @@ export const createContModu = async (req, res) => {
         if (moduleCourseExist) {
 
             // verificamos que el induce no este repetido en el modulo 
-            const indiceExist = await Contenido_Modulos.findOne({ where: { Indice_Cont: Indice } })
+            const indiceExist = await Contenido_Modulos.findOne({ where: { Indice_Cont: Indice, Id_Mod_FK: Id_Mod_FK  } })
 
             if (!indiceExist) {
                 //create 
@@ -64,7 +65,7 @@ export const createContModu = async (req, res) => {
                     Indice_Cont: Indice
                 }
 
-                trasaction = await sequelize.transaction();
+                
 
 
                 const newModule = await Contenido_Modulos.create(datosEnv, { transaction: trasaction });
