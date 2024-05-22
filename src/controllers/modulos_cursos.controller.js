@@ -20,7 +20,7 @@ export const GetModulesxId = async (req, res) => {
 
         if (course) {
             const module = await Modulocurso.findAll({
-                 where: { Id_Cur_FK: id },
+                 where: { Id_Cur_FK: id, ESTADO_REGISTRO: 1 },
                  include:{
                     model: Contenido_Modulos,
                     attributes: {exclude:['createdAt', 'updatedAt']}
