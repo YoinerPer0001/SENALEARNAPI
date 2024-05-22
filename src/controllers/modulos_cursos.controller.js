@@ -20,10 +20,11 @@ export const GetModulesxId = async (req, res) => {
 
         if (course) {
             const module = await Modulocurso.findAll({
-                 where: { Id_Cur_FK: id, ESTADO_REGISTRO: 1 },
+                 where: { Id_Cur_FK: id},
                  include:{
                     model: Contenido_Modulos,
-                    attributes: {exclude:['createdAt', 'updatedAt']}
+                    attributes: {exclude:['createdAt', 'updatedAt']},
+                    where:{ESTADO_REGISTRO: 1}
                  }
                  })
             if (module) {
@@ -34,7 +35,7 @@ export const GetModulesxId = async (req, res) => {
 
 
         } else {
-            response(res, 500, 103, "Something went wrong");
+            response(res, 404, 404, "Course not found");
         }
 
 
