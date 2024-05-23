@@ -18,10 +18,14 @@ export const GetContModuloxModule = async (req, res) => {
         const modules = await Modulocurso.findByPk(id)
 
         if (modules) {
-            const content = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: id } })
+            const content = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: id }
+            })
             if (content) {
+
                 response(res, 200, 200, content)
+
             } else {
+
                 response(res, 404, 404, 'content not found');
             }
 
