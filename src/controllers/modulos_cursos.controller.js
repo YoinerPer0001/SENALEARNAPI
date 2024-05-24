@@ -17,18 +17,24 @@ export const GetModulesxId = async (req, res) => {
 
         //verificams que exista el curso
         const course = await Cursos.findByPk(id);
+        const moduleList = [];
 
         if (course) {
             const module = await Modulocurso.findAll({
-                 where: { Id_Cur_FK: id},
-                 include:{
+                where: { Id_Cur_FK: id },
+                include: {
                     model: Contenido_Modulos,
-                    attributes: {exclude:['createdAt', 'updatedAt']},
-                    where:{ESTADO_REGISTRO: 1}
-                 }
-                 })
+                    attributes: { exclude: ['createdAt', 'updatedAt'] },
+                }
+            })
+
+            module.map(module => {
+               if(module.toJSON().Contenido_Modulos.ESTADO_REGISTRO != 0){
+                moduleList.push(module.toJSON());
+               }
+            })
             if (module) {
-                response(res, 200, 200, module);
+                response(res, 200, 200, moduleList);
             } else {
                 response(res, 404, 404, 'Modules not Found');
             }
@@ -80,7 +86,7 @@ export const createModules = async (req, res) => {
 
                 const update = await Modulocurso.update({ Porcentaje_Asig: porentajes }, { where: { Id_Cur_FK: Id_Cur } })
                 if (update) {
-                    response(res, 200, 200, {insertedId: datos.Id_Mod});
+                    response(res, 200, 200, { insertedId: datos.Id_Mod });
                 } else {
                     response(res, 500, 500, "error creating module");
                 }
@@ -167,34 +173,34 @@ export const UpdateModules = async (req, res) => {
 
 //delete evaluation
 export const deleteMod = async (req, res) => {
-    try{
+    try {
 
-        const {id} = req.params
+        const { id } = req.params
 
         const modulo = await Modulocurso.findByPk(id)
-        if(modulo){
-        //verify that module dont has resources asociated
-        const contenido = await Contenido_Modulos.findAll({where:{Id_Mod_FK: id}})
-        const evaluaciones = await evaluacion.findAll({where:{Id_Mod_Cur_FK: id}})
-          
-        if(contenido.length > 0 || evaluaciones.length > 0){
-            response(res, 409, 409, "Modules has resources asociated");
+        if (modulo) {
+            //verify that module dont has resources asociated
+            const contenido = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: id } })
+            const evaluaciones = await evaluacion.findAll({ where: { Id_Mod_Cur_FK: id } })
 
-        }else{
-    
-            const responses = await Modulocurso.update({ESTADO_REGISTRO: 0},{where:{Id_Mod: id}})
-            if(responses){
-                response(res, 200);
-            }else{
-                response(res, 500, 500, "error deleting module");
+            if (contenido.length > 0 || evaluaciones.length > 0) {
+                response(res, 409, 409, "Modules has resources asociated");
+
+            } else {
+
+                const responses = await Modulocurso.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Mod: id } })
+                if (responses) {
+                    response(res, 200);
+                } else {
+                    response(res, 500, 500, "error deleting module");
+                }
             }
-        }
 
-        }else{
+        } else {
             response(res, 404, 404, "module not found");
         }
 
-    }catch (err) {
+    } catch (err) {
         response(res, 500, 500, err);
     }
 }
