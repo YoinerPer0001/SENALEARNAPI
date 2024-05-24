@@ -104,7 +104,19 @@ export const getUserStatistics = async (req, res) => {
             attributes: { exclude: ['Pass_User', 'createdAt', 'updatedAt'] }
         })
 
-        const certificados = await Certificado.findAll({ where: { Id_User_Fk: id } })
+        const certificados = await Certificado.findAll({
+             where: { Id_User_Fk: id },
+             include:{
+                model: Cursos,
+                as: 'Curso',
+                attributes: {
+                    exclude: ['Id_Cur', 'createdAt', 'updatedAt']
+                }
+             },
+             attributes: {
+                exclude: ['Id_Cur', 'createdAt', 'updatedAt']
+            }
+             })
 
 
         const Inscripciones = await Inscripcione.findAll({
