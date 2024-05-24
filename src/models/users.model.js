@@ -71,7 +71,7 @@ Usuario_contenido.belongsTo(Usuario,{foreignKey:'Id_User_FK', targetKey: 'Id_Use
 Usuario.hasMany(Certificado, {as: 'Usuario', foreignKey: 'Id_User_FK' });
 Certificado.belongsTo(Usuario, {foreignKey: 'Id_User_FK', targetKey: 'Id_User'});
 
-Usuario.hasMany(Inscripcione,{foreignKey: 'Id_User_FK'})
+Usuario.hasMany(Inscripcione,{ as: 'inscripciones' ,foreignKey: 'Id_User_FK'})
 Inscripcione.belongsTo(Usuario,{foreignKey: 'Id_User_FK', targetKey: 'Id_User'});
 
 Usuario.hasMany(Resultados_Evaluacione, {foreignKey: 'Id_User_FK'})

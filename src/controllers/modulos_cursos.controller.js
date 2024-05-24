@@ -53,7 +53,7 @@ export const createModules = async (req, res) => {
         const { Tit_Mod, Id_Cur } = req.body;
 
 
-        //cositas
+        //cositas   
         const Id_Mod = uniqid();
 
         const courseExists = await Cursos.findByPk(Id_Cur)
