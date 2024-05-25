@@ -8,11 +8,6 @@ export const createValidation = [
         .not().isEmpty().withMessage('Id_Cont cannot be empty')
         .isString().withMessage('Id_Cont must be a string')
         .isLength({ max: 100 }).withMessage('Id_Cont must be at most 100 characters long'),
-    check('Fech_Visualizacion')
-        .exists().withMessage('Fech_Visualizacion is required')
-        .not().isEmpty().withMessage('Fech_Visualizacion cannot be empty')
-        .isString().withMessage('Fech_Visualizacion must be a string')
-        .isLength({ max: 100 }).withMessage('Fech_Visualizacion must be at most 100 characters long'),
     (req, res, next) => {
         validateResult(req, res, next)
     }

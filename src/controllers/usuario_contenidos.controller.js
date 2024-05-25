@@ -30,61 +30,76 @@ export const GetContVistosXUsuario = async (req, res) => {
     } catch (err) {
         response(res, 500, 500, "Something went wrong");
     }
-    
+
 }
 
 
 export const createUsuario_Cont = async (req, res) => {
     try {
         const Id_Vista = uniqid();
-        const { Id_User } = data.user;
-        const { Id_Cont, Fech_Visualizacion } = req.body;
+        const { Id_User } = req.Tokendata.user;
 
-        const contExist = await Contenido_Modulos.findByPk(Id_Cont);
+        const { Id_Cont } = req.body;
+        const Fech_Visualizacion = Date.now();
+        let contExist = await Contenido_Modulos.findByPk(Id_Cont);
 
         if (!contExist) {
             response(res, 404, 404, 'content not found');
         } else {
+            const { Id_Mod_FK } = contExist.dataValues;
+            const { Id_Cur_FK } = await Modulocurso.findByPk(Id_Mod_FK)
+            //verificamos que el usuario este inscrito para poder guardar la vista
+            const inscripcion = await Inscripcione.findOne({ where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur_FK } })
 
-            //verificamos que el contenido no este registrado
-            const contenido = await Usuario_contenido.findOne({ where: { Id_Cont_Mod_FK: Id_Cont, Id_User_FK: Id_User } })
-
-            if (contenido) {
-                response(res, 401, 401, 'content already registered');
+            if (!inscripcion) {
+                return response(res, 401, 401, 'user not inscription');
             } else {
-                const datos = {
-                    Id_Cont_Mod_FK: Id_Cont,
-                    Id_User_FK: Id_User,
-                    Id_Vista: Id_Vista,
-                    Fech_Visualizacion: Fech_Visualizacion
-                }
-                const newContentView = await Usuario_contenido.create(datos);
 
-                if (newContentView) {
-                    //actualizo la tabla de inscripciones con el porcentaje de avance
-                    const { Id_Mod_FK, Porcentaje_Asig } = await Contenido_Modulos.findByPk(Id_Cont)
-                    const { Id_Cur_FK } = await Modulocurso.findByPk(Id_Mod_FK)
-                    const { Prog_Cur } = await Inscripcione.findOne({ where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur_FK } })
+                // verificamos que no haya visto el contenido antes
+                let contenido = await Usuario_contenido.findOne({ where: { Id_Cont_Mod_FK: Id_Cont, Id_User_FK: Id_User } })
+                if (contenido) {
+                    contenido = contenido.dataValues;
+                    //actualizamos el contenido
+                    const updateContent = await Usuario_contenido.update({Fech_Visualizacion: Fech_Visualizacion }, { where: {Id_Vista: contenido.Id_Vista  } })
 
-                    const progresoTotal = parseFloat(Porcentaje_Asig) + parseFloat(Prog_Cur);
+                    return response(res, 200);
+
+                } else {
+                    const datos = {
+                        Id_Cont_Mod_FK: Id_Cont,
+                        Id_User_FK: Id_User,
+                        Id_Vista: Id_Vista,
+                        Fech_Visualizacion: Fech_Visualizacion
+                    }
+                    const newContentView = await Usuario_contenido.create(datos);
+
+                    if (newContentView) {
+                        //actualizo la tabla de inscripciones con el porcentaje de avance
+                        const { Porcentaje_Asig } = await Contenido_Modulos.findByPk(Id_Cont)
+                        const { Prog_Cur } = await Inscripcione.findOne({ where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur_FK } })
+
+                        const progresoTotal = parseFloat(Porcentaje_Asig) + parseFloat(Prog_Cur);
 
 
-                    const updateInsc = await Inscripcione.update({ Prog_Cur: progresoTotal }, { where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur_FK } })
-                    if (updateInsc) {
-                        response(res, 200);
+                        const updateInsc = await Inscripcione.update({ Prog_Cur: progresoTotal }, { where: { Id_User_FK: Id_User, Id_Cur_FK: Id_Cur_FK } })
+                        if (updateInsc) {
+                            response(res, 200);
+                        } else {
+                            response(res, 500, 500, 'error creating progress view');
+                        }
+
                     } else {
                         response(res, 500, 500, 'error creating progress view');
                     }
 
-                } else {
-                    response(res, 500, 500, 'error creating progress view');
                 }
+
             }
 
         }
 
     } catch (err) {
-        response(res, 500, 500, "Something went wrong");
+        response(res, 500, 500, err);
     }
 
 
