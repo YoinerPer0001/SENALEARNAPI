@@ -7,6 +7,7 @@ import { Usuario_contenido } from "./usuario_contenidos.model.js";
 import { Certificado } from "./cerificados.model.js";
 import { Inscripcione } from "./inscripciones.model.js";
 import { Resultados_Evaluacione } from "./resultadosEval.model.js";
+import { notificaciones_usuarios } from "./notificaciones_usuarios.model.js";
 
 
 export const Usuario = sequelize.define('Usuario', {
@@ -79,3 +80,6 @@ Resultados_Evaluacione.belongsTo(Usuario,{foreignKey:'Id_User_FK', targetKey:'Id
 
 Usuario.hasMany(Cursos, {foreignKey:'Id_Inst'})
 Cursos.belongsTo(Usuario,{foreignKey: 'Id_Inst',targetKey:'Id_User'})
+
+Usuario.hasMany(notificaciones_usuarios,{foreignKey: 'Id_User_FK'})
+notificaciones_usuarios.belongsTo(Usuario, {foreignKey: 'Id_User_FK', targetKey:'Id_User'})

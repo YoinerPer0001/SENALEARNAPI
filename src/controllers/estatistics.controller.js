@@ -252,7 +252,7 @@ export const getPromContView = async (req, res) => {
                     ['Fech_Visualizacion', 'ASC']
                 ]
             })
-            console.log(FechViews)
+            
 
 
             const visualizacionesPorDia = FechViews.reduce((acc, curr) => {
@@ -361,8 +361,6 @@ export const getEstAvzCurso = async (req, res) => {
                     }
                 }
             })
-
-            console.log(CantVideos)
 
             //instructor info
             const CantCursosInst = await Cursos.count({

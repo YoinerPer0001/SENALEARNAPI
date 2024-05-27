@@ -3,7 +3,7 @@ import { validateResult } from "../utils/validateResult.js";
 
 
 export const createValidation = [
-   
+
     check('Id_User')
         .exists().withMessage('Id_User is required')
         .not().isEmpty().withMessage('Id_User cannot be empty')
@@ -27,7 +27,16 @@ export const UpdateValidation = [
     check('Fec_Caducidad')
         .optional().not().isEmpty().withMessage('Fec_Caducidad cannot be empty')
         .isString().withMessage('Fec_Caducidad must be a string')
-        .isLength({ max: 100 }).withMessage('Fec_Caducidad must be at most 100 characters long'),
+        .custom((value, { req }) => {
+            if (value) {
+                const valueSplit = value.split('-')
+                if (valueSplit.length != 3) {
+                    throw new Error('Date not valid');
+                } else {
+                    return true;
+                }
+            }
+        }),
     check('Id_User')
         .optional().not().isEmpty().withMessage('Id_User cannot be empty')
         .isString().withMessage('Id_User must be a string')

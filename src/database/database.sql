@@ -309,6 +309,66 @@ insert  into `modulocursos`(`Id_Mod`,`Indice_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK
 ('erxyjdbwlwm5sy4i',NULL,'Introduccion al curso',0,'erxyjd888lwgs1y5q',50.00,0.66,1,'2024-05-25 13:41:25','2024-05-25 21:17:21'),
 ('erxyjdbwlwm5wqw4',NULL,'Dinamismo JS',0,'erxyjd888lwgs1y5q',50.00,0.00,1,'2024-05-25 13:44:22','2024-05-25 13:44:22');
 
+/*Table structure for table `notificaciones` */
+
+DROP TABLE IF EXISTS `notificaciones`;
+
+CREATE TABLE `notificaciones` (
+  `Id_Not` varchar(100) NOT NULL,
+  `Not_Tit` varchar(255) NOT NULL,
+  `Not_Mens` text NOT NULL,
+  `Not_Fec_Cre` datetime NOT NULL,
+  `ESTADO_REGISTRO` int(1) NOT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL,
+  PRIMARY KEY (`Id_Not`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `notificaciones` */
+
+insert  into `notificaciones`(`Id_Not`,`Not_Tit`,`Not_Mens`,`Not_Fec_Cre`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('erxyjd24slwp77unv','welcome','prueba 2','2024-05-27 16:44:18',1,'2024-05-27 16:44:18','2024-05-27 16:44:18'),
+('erxyjda60lwp2366n','Hola','Tu instructor ha respondido a tu pregunta en el curso \'Fotografía Avanzada\'. Haz clic aquí para ver la respuesta','2024-05-27 14:20:42',1,'2024-05-27 14:20:42','2024-05-27 14:26:09');
+
+/*Table structure for table `notificaciones_usuarios` */
+
+DROP TABLE IF EXISTS `notificaciones_usuarios`;
+
+CREATE TABLE `notificaciones_usuarios` (
+  `Id_Not_Usu` varchar(100) NOT NULL,
+  `Id_Not_FK` varchar(100) NOT NULL,
+  `Id_User_FK` varchar(100) NOT NULL,
+  `leida` tinyint(1) NOT NULL,
+  `ESTADO_REGISTRO` int(1) DEFAULT NULL,
+  `createdAt` datetime DEFAULT NULL,
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`Id_Not_Usu`),
+  KEY `Id_User_FK` (`Id_User_FK`),
+  KEY `Id_Not_FK` (`Id_Not_FK`),
+  CONSTRAINT `notificaciones_usuarios_ibfk_1` FOREIGN KEY (`Id_User_FK`) REFERENCES `usuarios` (`Id_User`),
+  CONSTRAINT `notificaciones_usuarios_ibfk_2` FOREIGN KEY (`Id_Not_FK`) REFERENCES `notificaciones` (`Id_Not`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `notificaciones_usuarios` */
+
+insert  into `notificaciones_usuarios`(`Id_Not_Usu`,`Id_Not_FK`,`Id_User_FK`,`leida`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('erxyjd24slwp795lm','erxyjd24slwp77unv','erxyjd1d8lvk7jiru',1,1,'2024-05-27 16:45:19','2024-05-27 19:02:17'),
+('erxyjd7bglwp4lyoe','erxyjda60lwp2366n','erxyjd1d8lvk7jiru',1,1,'2024-05-27 15:31:18','2024-05-27 19:02:22'),
+('erxyjd7bglwp4lyoh','erxyjda60lwp2366n','erxyjd4wglurlw09c',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyoi','erxyjda60lwp2366n','user_001',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyoj','erxyjda60lwp2366n','1aBcDe',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyok','erxyjda60lwp2366n','3iJkLm',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyol','erxyjda60lwp2366n','5sTuVw',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyom','erxyjda60lwp2366n','7CdEfG',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyon','erxyjda60lwp2366n','9KlMnO',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyoo','erxyjda60lwp2366n','ahyv45gluc483jo',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyop','erxyjda60lwp2366n','ahyv8xwlu7cj900',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyoq','erxyjda60lwp2366n','10oPqRs',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyor','erxyjda60lwp2366n','2dEfGh',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyos','erxyjda60lwp2366n','4nOpQr',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyot','erxyjda60lwp2366n','6xYzAb',0,1,'2024-05-27 15:31:18','2024-05-27 15:31:18'),
+('erxyjd7bglwp4lyou','erxyjda60lwp2366n','8HgHiJ',1,1,'2024-05-27 15:31:18','2024-05-27 15:36:49');
+
 /*Table structure for table `objetivos_cursos` */
 
 DROP TABLE IF EXISTS `objetivos_cursos`;
@@ -485,7 +545,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=499 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=503 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -500,7 +560,11 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (495,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY2NDM5NjYsImV4cCI6MTcxNjczMDM2Nn0.qh8_QtsTcC1pbGL6gLi0WgKmrRx07w_zQ7pLQ76upoQ','1716730366','erxyjd1d8lvk7jiru','2',0,'2024-05-25 13:32:46','2024-05-25 15:13:25'),
 (496,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY2NDU3NDQsImV4cCI6MTcxNjczMjE0NH0.GYBQ3J1rKzKMHXdZm_yCwGzmIIJi_EHjK0qtFIHwAW0','1716732144','erxyjd1d8lvk7jiru','2',1,'2024-05-25 14:02:24','2024-05-25 14:02:24'),
 (497,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY2NTAwMDYsImV4cCI6MTcxNjczNjQwNn0.b46ywqKwV69UtgbDTtOEgb_J9pQwGxKvpbUab128uc8','1716736406','erxyjd1d8lvk7jiru','2',1,'2024-05-25 15:13:26','2024-05-25 15:13:26'),
-(498,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY2NjU2OTYsImV4cCI6MTcxNjc1MjA5Nn0.-Za2l29YCOTSyn-dEZ4HkE8QiM7KNA7uIdKcVchMBDE','1716752096','erxyjd1d8lvk7jiru','2',1,'2024-05-25 19:34:56','2024-05-25 19:34:56');
+(498,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY2NjU2OTYsImV4cCI6MTcxNjc1MjA5Nn0.-Za2l29YCOTSyn-dEZ4HkE8QiM7KNA7uIdKcVchMBDE','1716752096','erxyjd1d8lvk7jiru','2',1,'2024-05-25 19:34:56','2024-05-25 19:34:56'),
+(499,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY3NDkyNTMsImV4cCI6MTcxNjgzNTY1M30.qZ2SwepYfYFbe1pdtEp8NUYb8H3yP3RTlFCPQWNj1Xs','1716835653','erxyjd1d8lvk7jiru','2',1,'2024-05-26 18:47:33','2024-05-26 18:47:33'),
+(500,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY4MDgwMzQsImV4cCI6MTcxNjg5NDQzNH0.cqMn3yFyX3jp8w0F6mwjQ4J2pOi8GZXi--MHudPBSQQ','1716894434','erxyjd1d8lvk7jiru','2',1,'2024-05-27 11:07:14','2024-05-27 11:07:14'),
+(501,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY4MTk1MzEsImV4cCI6MTcxNjkwNTkzMX0.EuB5NxwPHJgOerCDBHxcp9qWXRy_8TN476UlSeq6NJQ','1716905931','erxyjd1d8lvk7jiru','2',1,'2024-05-27 14:18:51','2024-05-27 14:18:51'),
+(502,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTY4MjYwMDYsImV4cCI6MTcxNjkxMjQwNn0.Wnmz5IM7XvJlUGxuCfdMNvqAzZ6kE2nPnI7panA86eM','1716912406','erxyjd1d8lvk7jiru','2',1,'2024-05-27 16:06:46','2024-05-27 16:06:46');
 
 /*Table structure for table `usuario_contenidos` */
 
