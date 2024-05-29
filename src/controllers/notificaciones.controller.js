@@ -70,7 +70,7 @@ export const createNotification = async (req, res) => {
 
         const created = await notificaciones.create(datos);
         if (created) {
-            response(res, 200);
+            response(res, 200,200, {insertedId: Id_Not});
         } else {
             response(res, 500, 500, "error creating notification");
         }

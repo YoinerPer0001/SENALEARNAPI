@@ -3,6 +3,8 @@ import { response } from '../utils/responses.js';
 import { Usuario } from '../models/users.model.js'
 import { Cursos } from '../models/cursos.model.js'
 import { Sequelize } from 'sequelize';
+import { Categorias } from "../models/categorias.model.js"
+
 
 
 //obtener toda la lista de inscripciones
@@ -111,7 +113,14 @@ export const getInscxUser = async (req, res) => {
                 {
                     model: Cursos,
                     as: 'Curso',
-                    attributes: { exclude: ['Id_Cur', 'createdAt', 'updatedAt'] }
+                    attributes: { exclude: ['Id_Cur', 'createdAt', 'updatedAt'] },
+
+                    include:{
+                        model: Categorias,
+                        as: 'Categoria',
+                        attributes: { exclude: ['Id_Cat', 'createdAt', 'updatedAt'] }
+                        
+                    }
                 }],
                 where: { Id_User_FK: id }
             });
@@ -128,7 +137,7 @@ export const getInscxUser = async (req, res) => {
 
     } catch (err) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 
 
