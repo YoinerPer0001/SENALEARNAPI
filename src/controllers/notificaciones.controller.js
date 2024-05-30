@@ -73,11 +73,7 @@ export const createNotification = async (req, res) => {
 
         const created = await notificaciones.create(datos);
         if (created) {
-<<<<<<< HEAD
             response(res,200, 200, {insertedId: Id_Not});
-=======
-            response(res, 200,200, {insertedId: Id_Not});
->>>>>>> 2363876d04011abce40b93f410123efd320c93c9
         } else {
             response(res, 500, 500, "error creating notification");
         }
