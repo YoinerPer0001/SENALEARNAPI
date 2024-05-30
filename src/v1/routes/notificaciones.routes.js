@@ -19,4 +19,5 @@ routesNotificaciones.delete('/api/v1/notifications/delete/:id',verifyToken, admi
 
 
 
+
 export default routesNotificaciones;

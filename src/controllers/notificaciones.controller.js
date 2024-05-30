@@ -152,7 +152,7 @@ export const deleteNot = async (req, res) => {
             }
 
         } else {
-            response(res, 404, 404, "Category not found");
+            response(res, 404, 404, "notification not found");
         }
 
     } catch (err) {
