@@ -68,7 +68,7 @@ export const GetCoursesDest = async (req, res) => {
             attributes: ['Id_Cur_FK', [sequelize.fn('COUNT', sequelize.col('Id_Cur_FK')), 'inscripciones']],
             group: ['Id_Cur_FK'],
             order: [[sequelize.literal('inscripciones'), 'DESC']],
-            limit: 5,
+            limit: 8,
             include: {
                 model: Cursos,
                 attributes: {

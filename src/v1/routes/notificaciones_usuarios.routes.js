@@ -14,7 +14,7 @@ routesNotUsu.post('/api/v1/notifications/user',createxUserValidation, verifyToke
 
 routesNotUsu.post('/api/v1/notifications/course',createxCourseValidation, verifyToken, AdminInstPermissions, createxCourse)
 
-routesNotUsu.post('/api/v1/notifications/all/users',createxAllUsers, verifyToken, adminPermiso, createAllUsers)
+routesNotUsu.post('/api/v1/notifications/all',createxAllUsers, verifyToken, adminPermiso, createAllUsers)
 
 routesNotUsu.put('/api/v1/notifications/user/update/:id', verifyToken, updateLecNot)
 export default routesNotUsu;
