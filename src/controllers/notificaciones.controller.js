@@ -4,6 +4,7 @@ import { response } from "../utils/responses.js";
 import { notificaciones } from '../models/notificaciones.model.js';
 import { Cursos } from '../models/cursos.model.js';
 import { DATE } from 'sequelize';
+import { notificaciones_usuarios } from '../models/notificaciones_usuarios.model.js';
 
 
 //get all notifications
@@ -35,7 +36,9 @@ export const GetNotificationsxId = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const notifications = await notificaciones.findByPk(id, { attributes: { exclude: ['updatedAt', 'createdAt'] } })
+        const notifications = await notificaciones.findByPk(id, {
+             attributes: { exclude: ['updatedAt', 'createdAt'] }
+            })
 
         if (notifications) {
             response(res, 200, 200, notifications);
@@ -70,7 +73,7 @@ export const createNotification = async (req, res) => {
 
         const created = await notificaciones.create(datos);
         if (created) {
-            response(res, 200);
+            response(res,200, 200, {insertedId: Id_Not});
         } else {
             response(res, 500, 500, "error creating notification");
         }
@@ -127,33 +130,33 @@ export const UpdateNotification = async (req, res) => {
 
 }
 
-// export const deleteCat = async (req, res) => {
-//     try {
+export const deleteNot = async (req, res) => {
+    try {
 
-//         const { id } = req.params
+        const { id } = req.params
 
-//         const notification = await notificaciones.findByPk(id)
-//         if (category) {
-//             //verify that notification dont have users asociated
-//             const users = await Cursos.findAll({ where: { Id_Cat_FK: id } })
+        const notification = await notificaciones.findByPk(id)
+        if (notification) {
+            //verify that notification dont have users asociated
+            const users = await notificaciones_usuarios.findAll({ where: { Id_Not_FK: id } })
     
-//             if (courses.length > 0) {
-//                 response(res, 409, 409, "category has courses asociated");
-//             } else {
-//                 const responses = await Categorias.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Cat: id } })
-//                 if (responses) {
-//                     response(res, 200);
-//                 } else {
-//                     response(res, 500, 500, "error deleting category");
-//                 }
-//             }
+            if (users.length > 0) {
+                response(res, 401, 401, "notification has users asociated");
+            } else {
+                const responses = await notificaciones.destroy({ where: { Id_Not: id } })
+                if (responses) {
+                    response(res, 200);
+                } else {
+                    response(res, 500, 500, "error deleting notification");
+                }
+            }
 
-//         } else {
-//             response(res, 404, 404, "Category not found");
-//         }
+        } else {
+            response(res, 404, 404, "Category not found");
+        }
 
-//     } catch (err) {
-//         response(res, 500, 500, err);
-//     }
-// }
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
 

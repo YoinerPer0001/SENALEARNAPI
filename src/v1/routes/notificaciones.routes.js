@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetNotifications, GetNotificationsxId, createNotification, UpdateNotification } from '../../controllers/notificaciones.controller.js';
+import { GetNotifications, GetNotificationsxId, createNotification, UpdateNotification, deleteNot } from '../../controllers/notificaciones.controller.js';
 import { verifyToken } from '../../middlewares/verifyToken.js';
 import { AdminInstPermissions, InstPermissions, adminPermiso } from '../../middlewares/managePermissions.js';
 import { createValidation, UpdateValidation } from '../../Validators/notificaciones.validator.js';
@@ -13,7 +13,7 @@ routesNotificaciones.post('/api/v1/notifications/create',createValidation,verify
 
 routesNotificaciones.put('/api/v1/notifications/update/:id',UpdateValidation,verifyToken, adminPermiso, UpdateNotification);
 
-
+routesNotificaciones.delete('/api/v1/notifications/delete/:id',verifyToken, adminPermiso, deleteNot)
 
 
 

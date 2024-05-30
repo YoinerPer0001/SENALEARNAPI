@@ -80,9 +80,9 @@ export const createxCourse = async (req, res) => {
 
 
 
-            const response = await Promise.all(PromisesList)
+            const responses = await Promise.all(PromisesList)
 
-            if (response.length > 0) {
+            if (responses.length > 0) {
                 response(res, 200, 200)
             } else {
                 response(res, 500, 500, "Error creating assignment")
