@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyToken } from "../../middlewares/verifyToken.js";
-import { AsigOptRol, getAllOptionsxRol, updateOptionsRoles } from '../../controllers/opciones_roles.controller.js';
+import { AsigOptRol, getAllOptionsxRol, updateOptionsRoles, deleteOptRol } from '../../controllers/opciones_roles.controller.js';
 import { createValidation, UpdateValidation } from '../../Validators/opciones_roles.validator.js';
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 
@@ -17,5 +17,7 @@ routesOptionsRoles.get('/api/v1/opciones_roles/rol/:id',verifyToken, getAllOptio
 //actualizar asignaciones de opciones a roles
 
 routesOptionsRoles.put('/api/v1/opciones_roles/update/:id',UpdateValidation, verifyToken,adminPermiso, updateOptionsRoles)
+
+routesOptionsRoles.delete('/api/v1/opciones_roles/delete/:option/:rol',verifyToken,adminPermiso,deleteOptRol)
 
 export default routesOptionsRoles;

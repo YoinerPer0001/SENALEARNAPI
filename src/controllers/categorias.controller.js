@@ -143,7 +143,7 @@ export const deleteCat = async (req, res) => {
         if(category){
         //verify that category dont have courses asociated
         const courses = await Cursos.findAll({where:{Id_Cat_FK: id}})
-            console.log(courses)
+          
         if(courses.length > 0){
             response(res, 409, 409, "category has courses asociated");
         }else{

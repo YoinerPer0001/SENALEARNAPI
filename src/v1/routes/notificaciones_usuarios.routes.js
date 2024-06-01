@@ -1,6 +1,6 @@
 import express from 'express'
 import { verifyToken } from "../../middlewares/verifyToken.js";
-import { createxCourse, create, createAllUsers, updateLecNot, getNotUser } from '../../controllers/notificaciones_usuarios.controller.js';
+import { createxCourse, create, createAllUsers, updateLecNot, getNotUser, deleteNotUser } from '../../controllers/notificaciones_usuarios.controller.js';
 import { createxCourseValidation, createxUserValidation, createxAllUsers } from '../../Validators/notificaciones_usuarios.validator.js';
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 
@@ -17,4 +17,6 @@ routesNotUsu.post('/api/v1/notifications/course',createxCourseValidation, verify
 routesNotUsu.post('/api/v1/notifications/all/users',createxAllUsers, verifyToken, adminPermiso, createAllUsers)
 
 routesNotUsu.put('/api/v1/notifications/user/update/:id', verifyToken, updateLecNot)
+
+routesNotUsu.delete('/api/v1/notifications/user/delete/:id', verifyToken, deleteNotUser)
 export default routesNotUsu;

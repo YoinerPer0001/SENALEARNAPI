@@ -185,3 +185,27 @@ export const editContentView = async (req, res) => {
 
 }
 
+
+export const deleteUserCont = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const asignacion = await Usuario_contenido.findByPk(id)
+        if(asignacion){
+    
+            const responses = await Usuario_contenido.update({ESTADO_REGISTRO: 0},{where:{Id_Vista: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting view");
+            }
+
+        }else{
+            response(res, 404, 404, "view not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
+}

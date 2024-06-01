@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetAllOptions, GetOptionsById, createOptions, UpdateOptions } from '../../controllers/opciones.controller.js';
+import { GetAllOptions, GetOptionsById, createOptions, UpdateOptions, deleteOpt } from '../../controllers/opciones.controller.js';
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { createValidation, UpdateValidation } from '../../Validators/opciones.validator.js';
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
@@ -18,4 +18,6 @@ routesOptions.post('/api/v1/options/create',createValidation,verifyToken, create
 //actualizar opciones
 
 routesOptions.put('/api/v1/options/update/:id',UpdateValidation, verifyToken, UpdateOptions)
+
+routesOptions.delete('/api/v1/options/delete/:id',verifyToken,adminPermiso,deleteOpt)
 export default routesOptions;

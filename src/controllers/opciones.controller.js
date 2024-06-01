@@ -1,6 +1,9 @@
 import { Opcione } from '../models/opciones.model.js'
 import 'dotenv/config'
 import { response } from '../utils/responses.js';
+import { Roles_Opcione } from '../models/opciones_roles.model.js';
+import { Role } from '../models/roles.model.js';
+
 
 
 
@@ -133,5 +136,36 @@ export const UpdateOptions = async (req, res) => {
 
         response(res, 500, 500, "something went wrong");
 
+    }
+}
+
+
+export const deleteOpt = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const opcion = await Opcione.findByPk(id)
+        if(opcion) {
+        
+        const assignation = await Roles_Opcione.findAll({where:{id_opcion_fk: id}})
+          
+        if(assignation.length > 0){
+            response(res, 403, 403, "option has roles asociated");
+        }else{
+            const responses = await Opcione.update({ESTADO_REGISTRO: 0},{where:{id_opcion: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting option");
+            }
+        }
+
+        }else{
+            response(res, 404, 404, "Option  not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
     }
 }

@@ -134,3 +134,27 @@ export const UpdateReq = async (req, res) => {
 }
 
 
+
+export const deleteReqPrev = async (req, res) => {
+    try {
+
+        const { id } = req.params
+
+        const requisito = await Requisitos_previo.findByPk(id)
+        if (requisito) {
+
+            const responses = await Requisitos_previo.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Req: id } })
+            if (responses) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error deleting category");
+            }
+        } else {
+            response(res, 404, 404, "Category not found");
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+

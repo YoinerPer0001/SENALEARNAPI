@@ -15,4 +15,5 @@ routesObjCourses.post("/api/v1/obj_cursos/create",createValidation, verifyToken,
 routesObjCourses.put("/api/v1/obj_cursos/update/:id",UpdateValidation, verifyToken,AdminInstPermissions,UpdateObjetivesCour)
 
 routesObjCourses.delete('/api/v1/obj_cursos/delete/:id', verifyToken,adminPermiso, deleteObj)
+
 export default routesObjCourses;

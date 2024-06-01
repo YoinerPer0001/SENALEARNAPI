@@ -153,7 +153,7 @@ export const deleteRol = async (req, res) => {
             //verificamos que no tenga usuarios asociados
             const usuarios = await Usuario.findAll({ where: { Id_Rol_FK: id } })
 
-            if (usuarios) {
+            if (usuarios.length > 0) {
                 return response(res, 403, 403, "You cannot delete this rol, because has users associated")
             } else {
 

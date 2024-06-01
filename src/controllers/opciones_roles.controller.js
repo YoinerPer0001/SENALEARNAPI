@@ -121,7 +121,7 @@ export const updateOptionsRoles = async (req, res) => {
                 const Newasignation = await Roles_Opcione.findOne({ where: { Id_Rol_fk: id, id_opcion_fk: New_Opcion } })
 
                 if (Newasignation) {
-                    response(res, 500, 103, "option is already assigned");
+                    response(res, 403, 403, "option is already assigned");
                 } else {
                     //actualizamos
                     const updatedAsignation = await Roles_Opcione.update({ id_opcion_fk: New_Opcion }, { where: { Id_Rol_fk: id, id_opcion_fk: Id_Opcion } })
@@ -146,4 +146,29 @@ export const updateOptionsRoles = async (req, res) => {
         response(res, 500, 105, "Something went wrong");
     }
 
+}
+
+
+export const deleteOptRol = async (req, res) => {
+    try{
+
+        const {option, rol} = req.params
+
+        const asignacion = await Roles_Opcione.findOne({where: {Id_Rol_fk: rol, id_opcion_fk: option}})
+        if(asignacion){
+    
+            const responses = await Roles_Opcione.update({ESTADO_REGISTRO: 0},{where:{Id_Rol_fk: rol, id_opcion_fk: option}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting assignation");
+            }
+
+        }else{
+            response(res, 404, 404, "assignation not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
 }

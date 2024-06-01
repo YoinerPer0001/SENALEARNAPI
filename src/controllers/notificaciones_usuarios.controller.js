@@ -143,7 +143,7 @@ export const updateLecNot = async (req, res) => {
 
         //verificamos que exista
         let notificacion = await notificaciones_usuarios.findByPk(id)
-            console.log(notificacion)
+          
         if (!notificacion) {
             response(res, 404, 404, "Notificacion not found")
         }else{
@@ -175,7 +175,7 @@ export const getNotUser = async (req, res) => {
             response(res, 404, 404, "User not found")
         } else {
             const notificacion = await notificaciones_usuarios.findAll({
-                where: {Id_User_FK: id, leida: false},
+                where: {Id_User_FK: id, leida: false, ESTADO_REGISTRO : 1},
                 include:[
                     {
                         model: notificaciones,
@@ -192,4 +192,28 @@ export const getNotUser = async (req, res) => {
         return response(res, 500, err);
     }
 
+}
+
+export const deleteNotUser = async (req, res) => {
+    try{
+
+        const {id} = req.params
+
+        const asignacion = await notificaciones_usuarios.findByPk(id)
+        if(asignacion){
+    
+            const responses = await notificaciones_usuarios.update({ESTADO_REGISTRO: 0},{where:{Id_Not_Usu: id}})
+            if(responses){
+                response(res, 200);
+            }else{
+                response(res, 500, 500, "error deleting assignation");
+            }
+
+        }else{
+            response(res, 404, 404, "assignation not found");
+        }
+
+    }catch (err) {
+        response(res, 500, 500, err);
+    }
 }

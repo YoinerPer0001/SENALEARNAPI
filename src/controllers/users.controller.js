@@ -536,8 +536,8 @@ export const deleteUser = async (req, res,) => {
             const tokens = await Token.findAll({ where: { User_Id_FK: id, ESTADO_REGISTRO: 1 } })
             //verificamos que no tenga localizaciones asociadas
             const locations = await Localization.findAll({ where: { Id_User_FK: id, ESTADO_REGISTRO: 1 } })
-
-            if (!tokens && !locations) {
+            
+            if (tokens.length < 1 && locations.length < 1) {
                 const deleted = await Usuario.update({ ESTADO_REGISTRO: 0 }, { where: { Id_User: id } })
 
                 if (deleted) {
