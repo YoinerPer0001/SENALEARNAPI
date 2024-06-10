@@ -27,7 +27,7 @@ userRoutes.post('/api/v1/email_validate', CodeValidationEmail, ValidateEmail);
 userRoutes.post('/api/v1/ip_validation', CodeValidationIp, ValidateCod);
 
 //update user data
-userRoutes.put('/api/v1/users/update/:id',UpdateValidation, verifyToken, adminPermiso, UpdateUserData)
+userRoutes.put('/api/v1/users/update/:id',UpdateValidation, verifyToken, UpdateUserData)
 
 //delete user
 
