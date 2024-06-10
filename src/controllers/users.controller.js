@@ -448,7 +448,7 @@ export const ValidateCod = async (req, res) => {
 
                     // Insertar la nueva IP
                     const location = await Localization.create(datosLoc)
-                    console.log(location)
+
                     if (location) {
                         response(res, 200, 200);
                     } else {
@@ -579,7 +579,7 @@ export const genCodPassRestart = async (req, res) => {
 
             response(res, 200);
 
-        }else{
+        } else {
             response(res, 404, 404, 'User not found');
         }
 
@@ -592,14 +592,14 @@ export const passRestart = async (req, res) => {
 
     try {
 
-        const { Ema_User, codigo, newPass } = req.body;
+        const { Ema_User, codigo } = req.body;
 
         // verificamos que exista el usuario
-        let user = await Usuario.findOne({where:{Ema_User: Ema_User}})
+        let user = await Usuario.findOne({ where: { Ema_User: Ema_User } })
 
         if (user) {
             user = user.dataValues;
-           
+
             //verificamos que el token coincida
             const datos = {
                 User_Id_FK: user.Id_User,
@@ -612,7 +612,7 @@ export const passRestart = async (req, res) => {
 
             if (token) {
                 token = token.dataValues;
-      
+
                 const fechaActual = Math.floor(Date.now() / 1000);
                 const fechaExp = token.Fec_Caducidad;
 
@@ -621,22 +621,11 @@ export const passRestart = async (req, res) => {
                     response(res, 401, 401, "Expired token");
                 } else {
 
-                    let newPassc = await bcrypt.hash(newPass, 10)
-                   
+                    //damos de baja al token
+                    const deleted = await Token.update({ ESTADO_REGISTRO: false }, { where: { Id_Token: token.Id_Token } })
+                    if (deleted) {
 
-
-                    // actualizamos la pass
-                    const updated = await Usuario.update({Pass_User: newPassc}, {where:{Ema_User: Ema_User }})
-      
-                    if (updated) {
-                        //damos de baja al token
-                        const deleted = await Token.update({ ESTADO_REGISTRO: false }, { where: { Id_Token: token.Id_Token } })
-                        if (deleted) {
-                            console.log(deleted)
-                            response(res, 200, 200);
-                        } else {
-                            response(res, 500, 500, "Error");
-                        }
+                        response(res, 200, 200);
                     } else {
                         response(res, 500, 500, "Error");
                     }
@@ -644,7 +633,7 @@ export const passRestart = async (req, res) => {
                 }
 
             } else {
-                response(res, 404, 404, 'Token not valido');
+                response(res, 404, 404, 'Invalid Token');
             }
 
 
@@ -653,9 +642,6 @@ export const passRestart = async (req, res) => {
 
             response(res, 404, 404, "Token not found");
         }
-
-
-
 
     } catch (err) {
         if (err.errno) {
@@ -666,6 +652,40 @@ export const passRestart = async (req, res) => {
             response(res, 500, 500, "something went wrong");
 
         }
+    }
+}
+
+export const passChange = async (req, res) => {
+
+    try {
+
+        const { Ema_User, newPass } = req.body;
+
+        // verificamos que exista el usuario
+        let user = await Usuario.findOne({ where: { Ema_User: Ema_User } })
+
+        if (user) {
+            user = user.dataValues;
+
+            let newPassc = await bcrypt.hash(newPass, 10)
+
+            // actualizamos la pass
+            const updated = await Usuario.update({ Pass_User: newPassc }, { where: { Ema_User: Ema_User } })
+
+            if (updated) {
+                await SendCode(user.Ema_User,user.Nom_User,0,4)
+                response(res, 200, 200);
+            } else {
+                response(res, 500, 500, "Error");
+            }
+
+
+        } else {
+            response(res, 404, 404, 'Invalid Token');
+        }
+
+    } catch (err) {
+            response(res, 500, 500, "something went wrong");
     }
 }
 

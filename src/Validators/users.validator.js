@@ -21,7 +21,7 @@ export const createValidation = [
         .exists().withMessage('Pass_User is required')
         .not().isEmpty().withMessage('Pass_User cannot be empty')
         .isString().withMessage('Pass_User must be a string')
-        .isLength({min:8, max: 100 }).withMessage('Pass_User must be at most 8 characters long'),
+        .isLength({ min: 8, max: 100 }).withMessage('Pass_User must be at most 8 characters long'),
     check('Dir_Ip')
         .exists().withMessage('Dir_Ip is required')
         .not().isEmpty().withMessage('Dir_Ip cannot be empty')
@@ -130,7 +130,7 @@ export const UpdateValidation = [
     check('Tel_User')
         .optional().not().isEmpty().withMessage('Tel_User cannot be empty')
         .isString().withMessage('Tel_User must be a string')
-        .isLength({min:10, max: 10 }).withMessage('Tel_User must be at most 10 characters long'),
+        .isLength({ min: 10, max: 10 }).withMessage('Tel_User must be at most 10 characters long'),
     check('Ema_User')
         .optional().not().isEmpty().withMessage('Ema_User cannot be empty')
         .isEmail().withMessage('Ema_User must be a valid email address')
@@ -153,6 +153,39 @@ export const UpdateValidation = [
                 }
             }
         }),
+    (res, req, next) => {
+        validateResult(res, req, next)
+    }
+]
+
+
+export const PassRestart = [
+    check('Ema_User')
+        .exists().withMessage('Ema_User is required')
+        .not().isEmpty().withMessage('Ema_User cannot be empty')
+        .isEmail().withMessage('Ema_User must be a valid email address')
+        .isLength({ max: 100 }).withMessage('Ema_User must be at most 100 characters long'),
+    check('codigo')
+        .exists().withMessage('Codigo is required')
+        .not().isEmpty().withMessage('Codigo cannot be empty')
+        .isString().withMessage('Codigo must be a string')
+        .isLength({ min: 6, max: 6 }).withMessage('max length must be at least 6 characters'),
+    (res, req, next) => {
+        validateResult(res, req, next)
+    }
+]
+
+export const PassChangeValidation = [
+    check('Ema_User')
+        .exists().withMessage('Ema_User is required')
+        .not().isEmpty().withMessage('Ema_User cannot be empty')
+        .isEmail().withMessage('Ema_User must be a valid email address')
+        .isLength({ max: 100 }).withMessage('Ema_User must be at most 100 characters long'),
+    check('newPass')
+        .exists().withMessage('newPass is required')
+        .not().isEmpty().withMessage('newPass cannot be empty')
+        .isString().withMessage('newPass must be a string')
+        .isLength({ min: 8, max: 100 }).withMessage('newPass must be at most 8 characters long'),
     (res, req, next) => {
         validateResult(res, req, next)
     }

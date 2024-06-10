@@ -172,6 +172,7 @@ export const UpdateCourse = async (req, res) => {
                 Des_Cur: InfoCur.Des_Cur || curso.Des_Cur,
                 Hor_Cont_Total: InfoCur.Hor_Cont_Total || curso.Hor_Cont_Total,
                 Fech_Crea_Cur: InfoCur.Fech_Crea_Cur || curso.Fech_Crea_Cur,
+                Est_Cur:InfoCur.Est_Cur || curso.Est_Cur,
                 Id_Cat_FK: InfoCur.Id_Cat_FK || curso.Id_Cat_FK,
                 Fot_Cur: InfoCur.Fot_Cur || curso.Fot_Cur
             }

@@ -33,8 +33,31 @@ export const SendCode = async (email, nombre, codigo, flag) => {
         El Equipo de SENALEARN</p>
     </div>`, // html body
     });
-  } else {
+  } else if (flag == 4) {
 
+    const info = await transporter.sendMail({
+      from: '"Confirmacion de cambio de contraseña" <senalearns@gmail.com>', // sender address
+      to: `${email}`, // list of receivers
+      subject: `Hola ${nombre} ✔`, // Subject line
+      text: "correo enviado desde node js", // plain text body
+      html: `<div class="container-sm ">
+          
+          <p>
+            <strong> Se ha restablecido su contraseña</strong>
+          </p>
+          
+           
+          <p>Asegúrate de mantener segura tu contraseña y no compartirla con nadie. Si olvidas tu contraseña en el futuro, puedes utilizar la opción "Olvidé mi contraseña" en la página de inicio de sesión para restablecerla.</p>
+      
+          <p>¡Gracias por unirte a SENALEARN! Esperamos que disfrutes de tu experiencia en nuestra plataforma.
+      
+            Atentamente,
+            
+            El Equipo de SENALEARN</p>
+        </div>`, // html body
+    });
+
+  } else {
     const info = await transporter.sendMail({
       from: '"Verificacion de email SENALEARN" <senalearns@gmail.com>', // sender address
       to: `${email}`, // list of receivers
@@ -65,7 +88,6 @@ export const SendCode = async (email, nombre, codigo, flag) => {
             El Equipo de SENALEARN</p>
         </div>`, // html body
     });
-
   }
 
 
