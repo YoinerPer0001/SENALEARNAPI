@@ -10,6 +10,7 @@ import 'dotenv/config'
 import { Token } from "../models/tokens.model.js";
 import { Localization } from "../models/localizacion.model.js";
 import { Role } from '../models/roles.model.js';
+import { SendCode } from "../utils/Emailmessages/SendCodVerification.js";
 
 const jwt = jsonwebtoken;
 
@@ -536,7 +537,7 @@ export const deleteUser = async (req, res,) => {
             const tokens = await Token.findAll({ where: { User_Id_FK: id, ESTADO_REGISTRO: 1 } })
             //verificamos que no tenga localizaciones asociadas
             const locations = await Localization.findAll({ where: { Id_User_FK: id, ESTADO_REGISTRO: 1 } })
-            
+
             if (tokens.length < 1 && locations.length < 1) {
                 const deleted = await Usuario.update({ ESTADO_REGISTRO: 0 }, { where: { Id_User: id } })
 
@@ -555,6 +556,117 @@ export const deleteUser = async (req, res,) => {
     }
 
 }
+
+export const genCodPassRestart = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const user = await Usuario.findOne({ where: { Ema_User: email, ESTADO_REGISTRO: 1 } });
+
+        if (user) {
+            const { Id_User, Nom_User } = user.dataValues;
+            const { codigo, exp } = GenCodigosTemp(600);
+            await SendCode(email, Nom_User, codigo, 3)
+
+            const objTok = {
+                Token: codigo,
+                Fec_Caducidad: exp,
+                User_Id_FK: Id_User,
+                Tipo_token: 3
+            }
+            const token = await Token.create(objTok)
+
+            response(res, 200);
+
+        }else{
+            response(res, 404, 404, 'User not found');
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+
+export const passRestart = async (req, res) => {
+
+    try {
+
+        const { Ema_User, codigo, newPass } = req.body;
+
+        // verificamos que exista el usuario
+        let user = await Usuario.findOne({where:{Ema_User: Ema_User}})
+
+        if (user) {
+            user = user.dataValues;
+           
+            //verificamos que el token coincida
+            const datos = {
+                User_Id_FK: user.Id_User,
+                token: codigo,
+                Tipo_token: "3",
+                ESTADO_REGISTRO: 1
+            }
+
+            let token = await Token.findOne({ where: datos })
+
+            if (token) {
+                token = token.dataValues;
+      
+                const fechaActual = Math.floor(Date.now() / 1000);
+                const fechaExp = token.Fec_Caducidad;
+
+                // verificamos que no este expirado el codigo
+                if (fechaActual > fechaExp) {
+                    response(res, 401, 401, "Expired token");
+                } else {
+
+                    let newPassc = await bcrypt.hash(newPass, 10)
+                   
+
+
+                    // actualizamos la pass
+                    const updated = await Usuario.update({Pass_User: newPassc}, {where:{Ema_User: Ema_User }})
+      
+                    if (updated) {
+                        //damos de baja al token
+                        const deleted = await Token.update({ ESTADO_REGISTRO: false }, { where: { Id_Token: token.Id_Token } })
+                        if (deleted) {
+                            console.log(deleted)
+                            response(res, 200, 200);
+                        } else {
+                            response(res, 500, 500, "Error");
+                        }
+                    } else {
+                        response(res, 500, 500, "Error");
+                    }
+
+                }
+
+            } else {
+                response(res, 404, 404, 'Token not valido');
+            }
+
+
+
+        } else {
+
+            response(res, 404, 404, "Token not found");
+        }
+
+
+
+
+    } catch (err) {
+        if (err.errno) {
+
+            response(res, 400, err.errno, err.code);
+
+        } else {
+            response(res, 500, 500, "something went wrong");
+
+        }
+    }
+}
+
 
 
 
