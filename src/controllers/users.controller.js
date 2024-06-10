@@ -320,6 +320,8 @@ export const loginUser = async (req, res) => {
                     Nom_User: user.Nom_User,
                     Ape_User: user.Ape_User,
                     Ema_User: user.Ema_User,
+                    Fot_User: user.Fot_User,
+                    Est_Email_User: user.Est_Email_User,
                     Id_Rol_FK: user.Id_Rol_FK,
 
                 }

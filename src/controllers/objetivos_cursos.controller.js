@@ -105,24 +105,24 @@ export const UpdateObjetivesCour = async (req, res) => {
 
 
                 } else {
-
-                    datos = {
-                        Desc_Objetivo: datosRec.Desc_Objetivo,
-                        Id_Cur_FK: datosRec.Id_Cur || objetive.Id_Cur_FK
-                    }
-
-                }
-
-
-                const responses = await Objetivos_Cursos.update(datos, { where: { Id_Objetivo: id } })
-                if (responses) {
-                    response(res, 200);
-                } else {
-                    response(res, 500, 500, "Error updating objetive");
+                    response(res, 404, 404, "course don't exist");
                 }
 
             } else {
-                response(res, 404, 404, "course don't exist");
+
+                datos = {
+                    Desc_Objetivo: datosRec.Desc_Objetivo,
+                    Id_Cur_FK: datosRec.Id_Cur || objetive.Id_Cur_FK
+                }
+
+            }
+
+
+            const responses = await Objetivos_Cursos.update(datos, { where: { Id_Objetivo: id } })
+            if (responses) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "Error updating objetive");
             }
         }
 

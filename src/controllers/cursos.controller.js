@@ -11,12 +11,22 @@ import { Inscripcione } from '../models/inscripciones.model.js';
 import { Requisitos_previo } from '../models/requisitos_previos.model.js';
 import { Modulocurso } from '../models/modulos_cursos.model.js';
 import { Objetivos_Cursos } from '../models/objetivos_cursos.model.js';
+import { Contenido_Modulos } from '../models/contenido_modulo.model.js';
 
 const atrInst = ['Id_User', 'Nom_User', 'Ape_User', 'Ema_User', 'Fot_User'];
 
 const objInclude = [
     { model: Usuario, as: 'Instructor', attributes: atrInst },
-    { model: Categorias, as: 'Categoria', attributes: ['Id_Cat', 'Nom_Cat'] }
+    { model: Categorias, as: 'Categoria', attributes: ['Id_Cat', 'Nom_Cat'] },
+    {
+        model: Modulocurso,
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        include:{
+            model:  Contenido_Modulos,
+            attributes: { exclude: ['createdAt', 'updatedAt'] }
+        }
+
+    }
 ]
 
 // get all courses published
@@ -72,7 +82,10 @@ export const getCursoId = async (req, res) => {
 
         const { id } = req.params;
 
-        const course = await Cursos.findOne({ where: { Id_Cur: id }, include: objInclude })
+        const course = await Cursos.findOne({
+            where: { Id_Cur: id },
+            include: objInclude
+        })
 
         if (course) {
             response(res, 200, 200, course);
@@ -121,7 +134,7 @@ export const CreateCourse = async (req, res) => {
             const resp = await Cursos.create(datosCurso);
 
             if (resp) {
-                response(res, 200,200, {InsertedId:Id_Cur});
+                response(res, 200, 200, { InsertedId: Id_Cur });
             } else {
                 response(res, 500, 500, "error creating course");
             }
@@ -180,35 +193,35 @@ export const UpdateCourse = async (req, res) => {
 }
 
 export const deleteCur = async (req, res) => {
-    try{
+    try {
 
-        const {id} = req.params
+        const { id } = req.params
 
         const course = await Cursos.findByPk(id)
-        if(course){
-        //verify that course dont has asociated
-        const certificado = await Certificado.findAll({where:{Id_Cur_FK: id}})
-        const inscription = await Inscripcione.findAll({where:{Id_Cur_FK: id}})
-        const reqPrev = await Requisitos_previo.findAll({where:{Id_Cur_FK: id}})
-        const modules = await Modulocurso.findAll({where:{Id_Cur_FK: id}})
-        const objetivos = await Objetivos_Cursos.findAll({where:{Id_Cur_FK: id}})
-    
-        if(certificado.length > 0 || inscription.length > 0 || reqPrev.length > 0 || modules.length > 0 || objetivos.length > 0){
-            response(res, 409, 409, "curse has resources asociated");
-        }else{
-            const responses = await Cursos.update({ESTADO_REGISTRO: 0},{where:{Id_Cur: id}})
-            if(responses){
-                response(res, 200);
-            }else{
-                response(res, 500, 500, "error deleting course");
-            }
-        }
+        if (course) {
+            //verify that course dont has asociated
+            const certificado = await Certificado.findAll({ where: { Id_Cur_FK: id } })
+            const inscription = await Inscripcione.findAll({ where: { Id_Cur_FK: id } })
+            const reqPrev = await Requisitos_previo.findAll({ where: { Id_Cur_FK: id } })
+            const modules = await Modulocurso.findAll({ where: { Id_Cur_FK: id } })
+            const objetivos = await Objetivos_Cursos.findAll({ where: { Id_Cur_FK: id } })
 
-        }else{
+            if (certificado.length > 0 || inscription.length > 0 || reqPrev.length > 0 || modules.length > 0 || objetivos.length > 0) {
+                response(res, 409, 409, "curse has resources asociated");
+            } else {
+                const responses = await Cursos.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Cur: id } })
+                if (responses) {
+                    response(res, 200);
+                } else {
+                    response(res, 500, 500, "error deleting course");
+                }
+            }
+
+        } else {
             response(res, 404, 404, "course not found");
         }
 
-    }catch (err) {
+    } catch (err) {
         response(res, 500, 500, err);
     }
 }
