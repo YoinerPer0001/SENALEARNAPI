@@ -10,7 +10,7 @@ const userRoutes = express();
 
 userRoutes.get('/api/v1/users', verifyToken, adminPermiso,getUsers);
 
-userRoutes.get('/api/v1/users/:id', verifyToken, adminPermiso, getUserxId);
+userRoutes.get('/api/v1/users/:id', verifyToken, AdminInstPermissions, getUserxId);
 
 //login user
 userRoutes.post('/api/v1/login',LoginValidation, loginUser);
