@@ -15,6 +15,6 @@ routesModCur.post('/api/v1/modulo_curso/create',createValidation,verifyToken,Adm
 
 routesModCur.put('/api/v1/modulo_curso/update/:id',UpdateValidation,verifyToken,AdminInstPermissions, UpdateModules)
 
-routesModCur.delete('/api/v1/modulo_curso/delete/:id',verifyToken,adminPermiso, deleteMod)
+routesModCur.delete('/api/v1/modulo_curso/delete/:id',verifyToken,AdminInstPermissions, deleteMod)
 
 export default routesModCur;

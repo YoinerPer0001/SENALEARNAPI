@@ -203,15 +203,30 @@ export const deleteCont = async (req, res) => {
 
         const { id } = req.params
 
-        const contMod = await Contenido_Modulos.findByPk(id)
+        let contMod = await Contenido_Modulos.findOne({where: {Id_Cont: id, ESTADO_REGISTRO: 1}})
         if (contMod) {
+            contMod = contMod.dataValues;
             //verify that content dont have users asociated
             const usuariosCont = await Usuario_contenido.findAll({ where: { Id_Cont_Mod_FK: id } })
 
             if (usuariosCont.length > 0) {
                 response(res, 409, 409, "Content has users asociated");
             } else {
-                const responses = await Contenido_Modulos.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Cont: id } })
+                const minutosRestar = parseFloat(contMod.Duracion_Cont)/60;
+                
+                let modulo  = await Modulocurso.findByPk(contMod.Id_Mod_FK)
+                const {Id_Cur_FK,Horas_Cont_Mod} = modulo.dataValues;
+            
+                //restamos el porcentage al modulo que pertenece
+                const restMod = await Modulocurso.update({Porcentaje_Asig: parseFloat(Horas_Cont_Mod)-minutosRestar},{where:{Id_Mod:contMod.Id_Mod_FK }} )
+                //restamos horas cont a curso
+                
+                let curso = await Cursos.findByPk(Id_Cur_FK)
+                
+                const {Hor_Cont_Total} = curso.dataValues;
+                const restCurso = await Cursos.update({Hor_Cont_Total: parseFloat(Hor_Cont_Total) -minutosRestar},{where:{Id_Cur:Id_Cur_FK}} )
+                //eliminamos el contenido
+                const responses = await Contenido_Modulos.update({ ESTADO_REGISTRO: 0, Porcentaje_Asig: 0 }, { where: { Id_Cont: id } })
                 if (responses) {
                     response(res, 200);
                 } else {
@@ -220,7 +235,7 @@ export const deleteCont = async (req, res) => {
             }
 
         } else {
-            response(res, 404, 404, "Category not found");
+            response(res, 404, 404, "Content not found");
         }
 
     } catch (err) {

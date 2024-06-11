@@ -17,6 +17,6 @@ RoutesCursos.put("/api/v1/courses/update/:id",UpdateValidation,verifyToken,Admin
 
 RoutesCursos.get("/api/v1/courses/:id",getCursoId);
 
-RoutesCursos.delete('/api/v1/courses/delete/:id', verifyToken, adminPermiso, deleteCur)
+RoutesCursos.delete('/api/v1/courses/delete/:id', verifyToken, AdminInstPermissions, deleteCur)
 
 export default RoutesCursos;

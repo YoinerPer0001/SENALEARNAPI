@@ -25,6 +25,7 @@ export const GetModulesxId = async (req, res) => {
                 include: {
                     model: Contenido_Modulos,
                     attributes: { exclude: ['createdAt', 'updatedAt'] },
+                    where: {ESTADO_REGISTRO: 1}
                 }
             })
 

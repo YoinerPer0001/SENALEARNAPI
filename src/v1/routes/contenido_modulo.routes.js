@@ -13,6 +13,6 @@ contModRoutes.post('/api/v1/cont_mod/create',createValidation, verifyToken,Admin
 
 contModRoutes.put('/api/v1/cont_mod/update/:id',UpdateValidation, verifyToken,AdminInstPermissions, UpdateModCur);
 
-contModRoutes.delete('/api/v1/cont_mod/delete/:id',verifyToken, adminPermiso, deleteCont)
+contModRoutes.delete('/api/v1/cont_mod/delete/:id',verifyToken, AdminInstPermissions, deleteCont)
 
 export default contModRoutes;
