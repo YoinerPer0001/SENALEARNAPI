@@ -77,6 +77,30 @@ export const getCuCat = async (req, res) => {
 
 }
 
+
+export const getCuxInst = async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const instructor = await Usuario.findByPk(id)
+
+        if (instructor) {
+            const courses = await Cursos.findAll({ where: { Id_Inst: id}, include: objInclude })
+            response(res, 200, 200, courses);
+        } else {
+            response(res, 404, 404, 'Instructor not found');
+        }
+
+
+    } catch (err) {
+
+        response(res, 500, 500, err);
+    }
+
+}
+
 // get course by id
 export const getCursoId = async (req, res) => {
 

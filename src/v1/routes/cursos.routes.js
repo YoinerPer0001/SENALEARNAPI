@@ -1,5 +1,5 @@
 import express from "express";
-import { getCursos, getCuCat,CreateCourse, UpdateCourse, getCursoId, deleteCur} from "../../controllers/cursos.controller.js";
+import { getCursos, getCuCat,CreateCourse, UpdateCourse, getCursoId, deleteCur, getCuxInst} from "../../controllers/cursos.controller.js";
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { createValidation, UpdateValidation } from "../../Validators/cursos.validator.js";
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
@@ -18,5 +18,8 @@ RoutesCursos.put("/api/v1/courses/update/:id",UpdateValidation,verifyToken,Admin
 RoutesCursos.get("/api/v1/courses/:id",getCursoId);
 
 RoutesCursos.delete('/api/v1/courses/delete/:id', verifyToken, AdminInstPermissions, deleteCur)
+
+RoutesCursos.get('/api/v1/courses/inst/:id', verifyToken, getCuxInst)
+
 
 export default RoutesCursos;
