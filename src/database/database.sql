@@ -173,11 +173,9 @@ CREATE TABLE `evaluacions` (
   `Tit_Eva` varchar(255) DEFAULT NULL,
   `Des_Eva` text DEFAULT NULL,
   `Fec_Crea` date DEFAULT NULL,
-  `Fec_Cer` date DEFAULT NULL,
   `Id_Mod_Cur_FK` varchar(100) DEFAULT NULL,
   `Not_Min_Apr_Eva` decimal(5,2) DEFAULT NULL,
   `Estado_Eval` int(1) DEFAULT NULL COMMENT '0:programada, 1: Cerrada',
-  `Intentos_Eval` int(11) DEFAULT NULL,
   `ESTADO_REGISTRO` int(1) DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
@@ -187,6 +185,9 @@ CREATE TABLE `evaluacions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `evaluacions` */
+
+insert  into `evaluacions`(`Id_Eva`,`Tit_Eva`,`Des_Eva`,`Fec_Crea`,`Id_Mod_Cur_FK`,`Not_Min_Apr_Eva`,`Estado_Eval`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('erxyjd1twlxj8fjcf','prueba eval 1','prueba','2024-06-17','erxyjdbwlwm5sy4i',3.50,0,1,'2024-06-17 17:11:22','2024-06-17 17:11:22');
 
 /*Table structure for table `inscripciones` */
 
@@ -532,7 +533,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=510 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=512 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -558,7 +559,9 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (506,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwMDk3NTgsImV4cCI6MTcxNzA5NjE1OH0.uR9T9xJccBeUQVQHek58SbgrQCDeayfjN0r4PCG-Ut4','1717096158','erxyjd1d8lvk7jiru','2',1,'2024-05-29 19:09:18','2024-05-29 19:09:18'),
 (507,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwMTM3NTksImV4cCI6MTcxNzEwMDE1OX0.whNtasR91DEm72Jgf1W3iBWRbGguq1zFterKw8iKZIs','1717100159','erxyjd1d8lvk7jiru','2',1,'2024-05-29 20:15:59','2024-05-29 20:15:59'),
 (508,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwMzY0MjAsImV4cCI6MTcxNzEyMjgyMH0.lsRJv1tJj5FHy2-h5-HKJ1v7-QMVE5HEyRonOdKifc4','1717122820','erxyjd1d8lvk7jiru','2',1,'2024-05-30 02:33:40','2024-05-30 02:33:40'),
-(509,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwNDExMTEsImV4cCI6MTcxNzEyNzUxMX0.QwRfdSJCMM9MF5VNRyhVEGYlBSZSrch24ySossTa3iA','1717127511','erxyjd1d8lvk7jiru','2',1,'2024-05-30 03:51:51','2024-05-30 03:51:51');
+(509,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwNDExMTEsImV4cCI6MTcxNzEyNzUxMX0.QwRfdSJCMM9MF5VNRyhVEGYlBSZSrch24ySossTa3iA','1717127511','erxyjd1d8lvk7jiru','2',1,'2024-05-30 03:51:51','2024-05-30 03:51:51'),
+(510,'396464','1718644813','erxyjd1d8lvk7jiru','3',1,'2024-06-17 17:10:15','2024-06-17 17:10:15'),
+(511,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjQ0MjQyLCJleHAiOjE3MTg3MzA2NDJ9.snyBxcAiuLxNoCwKL3qh8ySkLCRL3sjRHJ_K35I5wX8','1718730642','erxyjd1d8lvk7jiru','2',1,'2024-06-17 17:10:42','2024-06-17 17:10:42');
 
 /*Table structure for table `usuario_contenidos` */
 
@@ -628,7 +631,7 @@ insert  into `usuarios`(`Id_User`,`Nom_User`,`Ape_User`,`Tel_User`,`Ema_User`,`P
 ('9KlMnO','Diego','Díaz','+9998887776','diego@example.com','diego123',2,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-05-19 13:55:31','2024-05-19 13:55:31'),
 ('ahyv45gluc483jo','2313','pertuz','3012222222','yoinerpertuzx@gmail.com','$2b$10$MqGsaRb8ajQeWH88eTlD/utEzqu1TQxLAAeQkwl4Q.cJAPaR6AG76',2,NULL,1,1,'2024-03-29 03:40:06','2024-05-07 22:19:47'),
 ('ahyv8xwlu7cj900','Yonier','perez','3139839832','yoinerpertuyz@gmail.com','$2b$10$0TZRSwVDWhrvBBArqwp2w.YFj9q5CdEhDfTbEaNc2iAZ36/52Ad2y',2,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-03-25 19:33:52','2024-03-29 02:36:08'),
-('erxyjd1d8lvk7jiru','Wiro','perez','9856464','yoinerpertuz@gmail.com','$2b$10$PHSzQdyuhAuJFfRSBw1q2u19UvL5oRYQoEj1t01Beqbk6RXc/qWji',1,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-04-29 00:14:50','2024-04-29 00:44:07'),
+('erxyjd1d8lvk7jiru','Wiro','perez','9856464','yoinerpertuz@gmail.com','$2b$10$X6aX6xxpN/NWp5WPETM79OgiaTUm67A7Yxl/CB4fg82vQSTdH.djC',1,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,1,'2024-04-29 00:14:50','2024-06-17 17:10:30'),
 ('erxyjd4wglurlw09c','Kilian','Mbbape','561456484','KilianEmbappe@gmail.com','$2b$10$sVSQ3Ha.YBPyKFkzJeFYD.EE123Zb.kXyp/zcvyUQJCJvcwyqBIma',1,NULL,1,1,'2024-04-08 23:51:08','2024-04-08 23:51:08'),
 ('user_001','John','Doe','1234567890','john.doe1@example.com','password123',1,'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80',1,0,'2024-05-18 16:20:30','2024-05-18 16:20:30');
 
