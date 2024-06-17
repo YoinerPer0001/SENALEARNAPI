@@ -2,7 +2,7 @@ import express from 'express'
 import {GetQuestionsxId, createQuestion, UpdateQuestions} from '../../controllers/preguntasEval.controller.js'
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
-import {createValidation, UpdateValidation} from "../../Validators/respuestasEval.validator.js";
+import {createValidation, UpdateValidation} from "../../Validators/preguntasEval.validator.js";
 
 const routesPreguntasEval = express()
 

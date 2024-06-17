@@ -92,9 +92,6 @@ export const GetQuestionsxId = async (req, res) => {
 export const createQuestion = async (req, res) => {
 
     try {
-
-        const { Id_Rol_FK } = data.user;
-
         const Id_Preg_Eval = uniqid();
 
         const { Text_Preg_Eval, Id_Eval } = req.body;
@@ -114,7 +111,7 @@ export const createQuestion = async (req, res) => {
 
             const newRol = await preguntaseval.create(datos);
             if (newRol) {
-                response(res, 200);
+                response(res, 200, 200, {insertedId: Id_Preg_Eval});
             } else {
                 response(res, 500, 500, "error creating rol");
             }
@@ -125,7 +122,7 @@ export const createQuestion = async (req, res) => {
 
     } catch (err) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 }
 

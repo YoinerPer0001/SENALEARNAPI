@@ -5,14 +5,30 @@ import { evaluacion } from "../models/evaluacion.model.js";
 import { Modulocurso } from "../models/modulos_cursos.model.js";
 import { Resultados_Evaluacione } from '../models/resultadosEval.model.js';
 import { preguntaseval } from '../models/preguntasEval.model.js';
+import { respuestaseval } from '../models/respuestasEval.model.js';
 
+const objInclude = [
+    {
+        model: preguntaseval,
+        attributes: { exclude: ['createdAt','updatedAt']},
+        include: [
+            {
+                model: respuestaseval,
+                as: 'Respuestas',
+                attributes: { exclude: ['createdAt','updatedAt']},
+            }
+        ]
+    }
+]
 
 //get all evaluations
 export const GetEvaluaciones = async (req, res) => {
 
     try {
 
-        const Evaluaciones = await evaluacion.findAll();
+        const Evaluaciones = await evaluacion.findAll({
+            include: objInclude
+        });
 
         if (Evaluaciones) {
             response(res, 200, 200, Evaluaciones);
@@ -32,7 +48,10 @@ export const GetEvalxId = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const Evaluation = await evaluacion.findByPk(id)
+        const Evaluation = await evaluacion.findByPk(id, {
+            attributes: { exclude: ['createdAt','updatedAt']},
+            include: objInclude
+        })
 
         if (Evaluation) {
             response(res, 200, 200, Evaluation);
@@ -42,7 +61,7 @@ export const GetEvalxId = async (req, res) => {
 
     } catch (err) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 }
 
@@ -53,7 +72,12 @@ export const GetEvalxState = async (req, res) => {
     try {
         const { status } = req.params;
 
-        const Evaluation = await evaluacion.findAll({ where: { Estado_Eval: status } })
+        const Evaluation = await evaluacion.findAll(
+            {
+                where: { Estado_Eval: status },
+                include: objInclude,
+                attributes: { exclude: ['createdAt','updatedAt']},
+            })
 
         if (Evaluation) {
             response(res, 200, 200, Evaluation);
@@ -80,7 +104,11 @@ export const GetEvalxModule = async (req, res) => {
             response(res, 404, 404, "module doesn't exist");
         } else {
 
-            const Evaluation = await evaluacion.findAll({ where: { Id_Mod_Cur_FK: module } })
+            const Evaluation = await evaluacion.findAll({
+                 where: { Id_Mod_Cur_FK: module },
+                 include: objInclude,
+                 attributes: { exclude: ['createdAt','updatedAt']},
+                 })
 
             if (Evaluation) {
                 response(res, 200, 200, Evaluation);
@@ -124,7 +152,7 @@ export const createEvaluation = async (req, res) => {
 
             const newEvaluation = await evaluacion.create(datos);
             if (newEvaluation) {
-                response(res, 200, 200, {insertedId: Id_Eva});
+                response(res, 200, 200, { insertedId: Id_Eva });
             } else {
                 response(res, 500, 500, "error creating category");
             }
@@ -183,32 +211,32 @@ export const UpdateEvaluations = async (req, res) => {
 
 //delete evaluation
 export const deleteEval = async (req, res) => {
-    try{
+    try {
 
-        const {id} = req.params
+        const { id } = req.params
 
         const evaluacions = await evaluacion.findByPk(id)
-        if(evaluacions){
-        //verify that evaluation dont has resources asociated
-        const preguntas = await preguntaseval.findAll({where:{Id_Eval_FK: id}})
-        const resultados = await Resultados_Evaluacione.findAll({where:{Id_Eval_FK: id}})
-          
-        if(preguntas.length > 0 || resultados.length > 0){
-            response(res, 409, 409, "evaluations has resources asociated");
-        }else{
-            const responses = await evaluacion.update({ESTADO_REGISTRO: 0},{where:{Id_Eva: id}})
-            if(responses){
-                response(res, 200);
-            }else{
-                response(res, 500, 500, "error deleting evaluation");
-            }
-        }
+        if (evaluacions) {
+            //verify that evaluation dont has resources asociated
+            const preguntas = await preguntaseval.findAll({ where: { Id_Eval_FK: id } })
+            const resultados = await Resultados_Evaluacione.findAll({ where: { Id_Eval_FK: id } })
 
-        }else{
+            if (preguntas.length > 0 || resultados.length > 0) {
+                response(res, 409, 409, "evaluations has resources asociated");
+            } else {
+                const responses = await evaluacion.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Eva: id } })
+                if (responses) {
+                    response(res, 200);
+                } else {
+                    response(res, 500, 500, "error deleting evaluation");
+                }
+            }
+
+        } else {
             response(res, 404, 404, "evaluation not found");
         }
 
-    }catch (err) {
+    } catch (err) {
         response(res, 500, 500, err);
     }
 }

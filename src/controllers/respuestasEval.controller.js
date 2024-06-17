@@ -4,6 +4,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import uniqid from 'uniqid'
 import 'dotenv/config'
 import { preguntaseval } from "../models/preguntasEval.model.js";
+import { sequelize } from "../database/db.js";
 
 
 
@@ -40,9 +41,11 @@ export const createAnswer = async (req, res) => {
 
     try {
 
-        const Id_Res_Eval = uniqid();
 
-        const { Text_Resp_Eval, Resp_Correcta_Eval, Id_Preg_Eval } = req.body;
+
+        //const { Text_Resp_Eval, Resp_Correcta_Eval, Id_Preg_Eval } = req.body;
+
+        const { Respuestas, Id_Preg_Eval } = req.body;
 
         const question = await preguntaseval.findByPk(Id_Preg_Eval);
 
@@ -50,26 +53,31 @@ export const createAnswer = async (req, res) => {
             response(res, 404, 404, "question not found");
         } else {
 
-            //create a rol
-            const datos = {
-                Id_Res_Eval: Id_Res_Eval,
-                Text_Resp_Eval: Text_Resp_Eval,
-                Resp_Correcta_Eval: Resp_Correcta_Eval,
-                Id_Preg_Eval_FK: Id_Preg_Eval
-            }
+            let promesasList = [];
 
-            const newRes = await respuestaseval.create(datos);
-            if (newRes) {
-                response(res, 200);
-            } else {
-                response(res, 500, 500, "error creating rol");
-            }
+            Respuestas.forEach(respuesta => {
+                const Id_Res_Eval = uniqid();
+
+                const datos = {
+                    Id_Res_Eval: Id_Res_Eval,
+                    Text_Resp_Eval: respuesta.Text_Resp_Eval,
+                    Resp_Correcta_Eval: respuesta.Resp_Correcta_Eval,
+                    Id_Preg_Eval_FK: Id_Preg_Eval
+                }
+
+                promesasList.push(respuestaseval.create(datos))
+
+            });
+
+            const responses = await Promise.all(promesasList)
+
+            response(res, 200);
 
         }
 
     } catch (err) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 }
 

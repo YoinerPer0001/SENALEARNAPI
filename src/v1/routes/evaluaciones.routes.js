@@ -9,9 +9,9 @@ const routesEvaluaciones = express();
 
 routesEvaluaciones.get('/api/v1/evaluations', verifyToken,adminPermiso, GetEvaluaciones)
 
-routesEvaluaciones.get('/api/v1/evaluations/:id', verifyToken,adminPermiso, GetEvalxId)
+routesEvaluaciones.get('/api/v1/evaluations/:id', verifyToken,AdminInstPermissions, GetEvalxId)
 
-routesEvaluaciones.get('/api/v1/evaluations/status/:status', verifyToken, adminPermiso, GetEvalxState)
+routesEvaluaciones.get('/api/v1/evaluations/status/:status', verifyToken, AdminInstPermissions, GetEvalxState)
 
 routesEvaluaciones.get('/api/v1/evaluations/module/:module', verifyToken,AdminInstPermissions, GetEvalxModule)
 
