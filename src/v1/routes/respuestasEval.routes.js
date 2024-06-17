@@ -10,7 +10,7 @@ const routesRespuestasEval =  express();
 
 routesRespuestasEval.get('/api/v1/respuestasEval/:id', verifyToken, GetAnswersxId)
 
-routesRespuestasEval.post('/api/v1/respuestasEval/create', verifyToken,AdminInstPermissions, createAnswer)
+routesRespuestasEval.post('/api/v1/respuestasEval/create', createValidation, verifyToken,AdminInstPermissions, createAnswer)
 
 routesRespuestasEval.put('/api/v1/respuestasEval/update/:id', verifyToken,AdminInstPermissions, UpdateAnswers)
 
