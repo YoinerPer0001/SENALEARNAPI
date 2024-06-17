@@ -124,7 +124,7 @@ export const createEvaluation = async (req, res) => {
 
             const newEvaluation = await evaluacion.create(datos);
             if (newEvaluation) {
-                response(res, 200);
+                response(res, 200, 200, {insertedId: Id_Eva});
             } else {
                 response(res, 500, 500, "error creating category");
             }
