@@ -12,6 +12,7 @@ import { Requisitos_previo } from '../models/requisitos_previos.model.js';
 import { Modulocurso } from '../models/modulos_cursos.model.js';
 import { Objetivos_Cursos } from '../models/objetivos_cursos.model.js';
 import { Contenido_Modulos } from '../models/contenido_modulo.model.js';
+import { evaluacion } from '../models/evaluacion.model.js';
 
 const atrInst = ['Id_User', 'Nom_User', 'Ape_User', 'Ema_User', 'Fot_User'];
 
@@ -21,12 +22,19 @@ const objInclude = [
     {
         model: Modulocurso,
         attributes: { exclude: ['createdAt', 'updatedAt'] },
-        include:{
-            model:  Contenido_Modulos,
-            attributes: { exclude: ['createdAt', 'updatedAt'] },
-            where: {ESTADO_REGISTRO: 1}
-
-        }
+        include:[
+            {
+                model:  Contenido_Modulos,
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                where: {ESTADO_REGISTRO: 1}
+    
+            },
+            {
+                model:  evaluacion,
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+                where: {ESTADO_REGISTRO: 1}
+            }
+        ]
 
     }
 ]
