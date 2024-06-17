@@ -21,10 +21,6 @@ export const evaluacion = sequelize.define('evaluacion',{
         type:DataTypes.DATE,
         allowNull:false
     },
-    Fec_Cer:{
-        type:DataTypes.DATE,
-        allowNull:false
-    },
     Id_Mod_Cur_FK:{
         type:DataTypes.STRING,
         allowNull:false
@@ -34,11 +30,6 @@ export const evaluacion = sequelize.define('evaluacion',{
         allowNull:false
     },
     Estado_Eval:{
-        type:DataTypes.INTEGER,
-        allowNull:false,
-        defaultValue:0
-    },
-    Intentos_Eval:{
         type:DataTypes.INTEGER,
         allowNull:false,
         defaultValue:0

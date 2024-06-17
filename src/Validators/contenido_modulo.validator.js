@@ -5,8 +5,7 @@ export const createValidation = [
     check('Tit_Cont')
         .exists().withMessage('Tit_Cont is required')
         .not().isEmpty().withMessage('Tit_Cont cannot be empty')
-        .isString().withMessage('Tit_Cont must be text')
-        .isLength({ max: 100 }).withMessage('max length is 100'),
+        .isString().withMessage('Tit_Cont must be text'),
     check('Id_Mod_FK')
         .exists().withMessage('Id_Mod_FK is required')
         .not().isEmpty().withMessage('Id_Mod_FK cannot be empty')
@@ -29,8 +28,7 @@ export const UpdateValidation = [
         .isLength({ max: 50 }).withMessage('max length is 50'),
     check('Url_Cont')
         .optional().not().isEmpty().withMessage('Url_Cont cannot be empty')
-        .isString().withMessage('Url_Cont must be a string')
-        .isLength({ max: 100 }).withMessage('max length is 100'),
+        .isString().withMessage('Url_Cont must be a string'),
     check('Tit_Cont')
         .optional().not().isEmpty().withMessage('Tit_Cont cannot be empty')
         .isNumeric().withMessage('Tit_Cont must be a number')

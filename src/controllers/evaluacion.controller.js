@@ -104,7 +104,7 @@ export const createEvaluation = async (req, res) => {
 
         const Id_Eva = uniqid();
 
-        const { Tit_Eva, Des_Eva, Fec_Cer, Id_Module_Cur, Nota_Min_Apro, Intentos_Eval } = req.body;
+        const { Tit_Eva, Des_Eva, Id_Module_Cur, Nota_Min_Apro } = req.body;
 
         const module = await Modulocurso.findByPk(Id_Module_Cur)
 
@@ -118,10 +118,8 @@ export const createEvaluation = async (req, res) => {
                 Tit_Eva: Tit_Eva.toLowerCase(),
                 Des_Eva: Des_Eva.toLowerCase(),
                 Fec_Crea: Date.now(),
-                Fec_Cer: Fec_Cer,
                 Id_Mod_Cur_FK: Id_Module_Cur,
-                Not_Min_Apr_Eva: Nota_Min_Apro,
-                Intentos_Eval: Intentos_Eval
+                Not_Min_Apr_Eva: Nota_Min_Apro
             }
 
             const newEvaluation = await evaluacion.create(datos);
@@ -163,10 +161,8 @@ export const UpdateEvaluations = async (req, res) => {
                 Tit_Eva: datos.Tit_Eva.toLowerCase() || dataEval.Tit_Eva,
                 Des_Eva: datos.Des_Eva.toLowerCase() || dataEval.Des_Eva,
                 Fec_Crea: datos.Fec_Crea || dataEval.Fec_Crea,
-                Fec_Cer: datos.Fec_Cer || dataEval.Fec_Cer,
                 Id_Mod_Cur_FK: datos.Id_Module_Cur || dataEval.Id_Mod_Cur,
-                Not_Min_Apr_Eva: datos.Nota_Min_Apro || dataEval.Nota_Min_Apr,
-                Intentos_Eval: datos.Intentos_Eval || dataEval.Intentos_Eval
+                Not_Min_Apr_Eva: datos.Nota_Min_Apro || dataEval.Nota_Min_Apr
             }
 
             const responses = await evaluacion.update(datosEnv, { where: { Id_Eva: id } })
