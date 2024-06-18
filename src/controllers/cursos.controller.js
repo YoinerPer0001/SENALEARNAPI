@@ -21,17 +21,14 @@ const objInclude = [
     { model: Categorias, as: 'Categoria', attributes: ['Id_Cat', 'Nom_Cat'] },
     {
         model: Modulocurso,
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
         include:[
             {
                 model:  Contenido_Modulos,
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
                 where: {ESTADO_REGISTRO: 1}
     
             },
             {
                 model:  evaluacion,
-                attributes: { exclude: ['createdAt', 'updatedAt'] },
                 where: {ESTADO_REGISTRO: 1},
                 required: false
             }

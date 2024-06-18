@@ -24,7 +24,6 @@ export const GetModulesxId = async (req, res) => {
                 where: { Id_Cur_FK: id },
                 include: {
                     model: Contenido_Modulos,
-                    attributes: { exclude: ['createdAt', 'updatedAt'] },
                     where: {ESTADO_REGISTRO: 1}
                 }
             })
@@ -67,7 +66,6 @@ export const GetModulesxIdAdmin = async (req, res) => {
                 where: { Id_Cur_FK: id },
                 include: {
                     model: Contenido_Modulos,
-                    attributes: { exclude: ['createdAt', 'updatedAt'] }
                 }
             })
 
