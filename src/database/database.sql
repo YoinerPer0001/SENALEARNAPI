@@ -187,7 +187,8 @@ CREATE TABLE `evaluacions` (
 /*Data for the table `evaluacions` */
 
 insert  into `evaluacions`(`Id_Eva`,`Tit_Eva`,`Des_Eva`,`Fec_Crea`,`Id_Mod_Cur_FK`,`Not_Min_Apr_Eva`,`Estado_Eval`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('erxyjd1twlxj8fjcf','prueba eval 1','prueba','2024-06-17','erxyjdbwlwm5sy4i',3.50,0,1,'2024-06-17 17:11:22','2024-06-17 17:11:22');
+('erxyjd1twlxj8fjcf','prueba eval 1','prueba','2024-06-17','erxyjdbwlwm5sy4i',3.50,0,1,'2024-06-17 17:11:22','2024-06-17 17:11:22'),
+('erxyjd3wwlxj8tbrz','prueba eval 2','prueba','2024-06-17','erxyjdbwlwm5sy4i',3.50,0,1,'2024-06-17 17:22:05','2024-06-17 17:22:05');
 
 /*Table structure for table `inscripciones` */
 
@@ -307,6 +308,7 @@ CREATE TABLE `modulocursos` (
 /*Data for the table `modulocursos` */
 
 insert  into `modulocursos`(`Id_Mod`,`Indice_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Porcentaje_Asig`,`Horas_Cont_Mod`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('3',NULL,'prueba mod',0,'erxyjd888lwgs1y5q',0.00,0.00,1,'2024-06-18 13:59:34','2024-06-18 13:59:36'),
 ('erxyjdbwlwm5sy4i',NULL,'Introduccion al curso',0,'erxyjd888lwgs1y5q',50.00,0.66,1,'2024-05-25 13:41:25','2024-05-25 21:17:21'),
 ('erxyjdbwlwm5wqw4',NULL,'Dinamismo JS',0,'erxyjd888lwgs1y5q',50.00,0.00,1,'2024-05-25 13:44:22','2024-05-25 13:44:22');
 
@@ -405,6 +407,7 @@ CREATE TABLE `preguntasevals` (
   `Id_Preg_Eval` varchar(100) NOT NULL,
   `Text_Preg_Eval` varchar(255) DEFAULT NULL,
   `Id_Eval_FK` varchar(100) DEFAULT NULL,
+  `ESTADO_REGISTRO` int(1) DEFAULT NULL,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`Id_Preg_Eval`),
@@ -413,6 +416,9 @@ CREATE TABLE `preguntasevals` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `preguntasevals` */
+
+insert  into `preguntasevals`(`Id_Preg_Eval`,`Text_Preg_Eval`,`Id_Eval_FK`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('erxyjd7b0lxjd21bv','una hebra de cabello adorna mi cuerpo','erxyjd1twlxj8fjcf',1,'2024-06-17 19:20:50','2024-06-17 19:20:50');
 
 /*Table structure for table `requisitos_previos` */
 
@@ -450,6 +456,12 @@ CREATE TABLE `respuestasevals` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `respuestasevals` */
+
+insert  into `respuestasevals`(`Id_Res_Eval`,`Text_Resp_Eval`,`Resp_Correcta_Eval`,`Id_Preg_Eval_FK`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('erxyjd69clxjfcg0p','prueba 1 array',1,'erxyjd7b0lxjd21bv',1,'2024-06-17 20:24:55','2024-06-17 20:24:55'),
+('erxyjd69clxjfcg0q','prueba 2 array',0,'erxyjd7b0lxjd21bv',1,'2024-06-17 20:24:55','2024-06-17 20:24:55'),
+('erxyjd7nklxjfacs1','prueba 1 array',1,'erxyjd7b0lxjd21bv',1,'2024-06-17 20:23:17','2024-06-17 20:23:17'),
+('erxyjd7nklxjfacs2','prueba 2 array',0,'erxyjd7b0lxjd21bv',0,'2024-06-17 20:23:17','2024-06-17 21:11:17');
 
 /*Table structure for table `resultados_evaluaciones` */
 
@@ -533,7 +545,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=512 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=514 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -561,7 +573,9 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (508,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwMzY0MjAsImV4cCI6MTcxNzEyMjgyMH0.lsRJv1tJj5FHy2-h5-HKJ1v7-QMVE5HEyRonOdKifc4','1717122820','erxyjd1d8lvk7jiru','2',1,'2024-05-30 02:33:40','2024-05-30 02:33:40'),
 (509,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJJZF9Sb2xfRksiOjF9LCJpYXQiOjE3MTcwNDExMTEsImV4cCI6MTcxNzEyNzUxMX0.QwRfdSJCMM9MF5VNRyhVEGYlBSZSrch24ySossTa3iA','1717127511','erxyjd1d8lvk7jiru','2',1,'2024-05-30 03:51:51','2024-05-30 03:51:51'),
 (510,'396464','1718644813','erxyjd1d8lvk7jiru','3',1,'2024-06-17 17:10:15','2024-06-17 17:10:15'),
-(511,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjQ0MjQyLCJleHAiOjE3MTg3MzA2NDJ9.snyBxcAiuLxNoCwKL3qh8ySkLCRL3sjRHJ_K35I5wX8','1718730642','erxyjd1d8lvk7jiru','2',1,'2024-06-17 17:10:42','2024-06-17 17:10:42');
+(511,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjQ0MjQyLCJleHAiOjE3MTg3MzA2NDJ9.snyBxcAiuLxNoCwKL3qh8ySkLCRL3sjRHJ_K35I5wX8','1718730642','erxyjd1d8lvk7jiru','2',1,'2024-06-17 17:10:42','2024-06-17 17:10:42'),
+(512,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjUxOTU3LCJleHAiOjE3MTg3MzgzNTd9.EgcGfV3iRvdJsdwwFx3yrjdqTz2YBJucV4nJpqDuI-k','1718738357','erxyjd1d8lvk7jiru','2',1,'2024-06-17 19:19:17','2024-06-17 19:19:17'),
+(513,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjUyMzE1LCJleHAiOjE3MTg3Mzg3MTV9.qg0j0X45cWRwIDB5iewF104OxAwL344FsS3ryiLqZWM','1718738715','erxyjd1d8lvk7jiru','2',1,'2024-06-17 19:25:15','2024-06-17 19:25:15');
 
 /*Table structure for table `usuario_contenidos` */
 

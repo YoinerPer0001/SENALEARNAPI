@@ -138,3 +138,30 @@ export const UpdateAnswers = async (req, res) => {
         response(res, 500, 500, err);
     }
 }
+
+export const deleteAnswer = async (req, res) => {
+    try {
+
+        const { id } = req.params
+
+        const resp = await respuestaseval.findByPk(id)
+        if (resp) {
+
+            const responses = await respuestaseval.update({ ESTADO_REGISTRO: 0 }, { where: { Id_Res_Eval: id } })
+            if (responses) {
+                response(res, 200);
+            } else {
+                response(res, 500, 500, "error deleting answer");
+            }
+
+
+        } else {
+            response(res, 404, 404, "Answer not found");
+        }
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+}
+
+

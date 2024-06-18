@@ -180,3 +180,29 @@ export const UpdateQuestions = async (req, res) => {
         response(res, 500, 500, err);
     }
 }
+
+export const deleteQuestions = async (req, res)=>{
+    try{
+        const {id} = req.params;
+
+        //we verify thats exist
+        const question = await preguntaseval.findByPk(id)
+
+        if (!question) {
+            return response(res, 404,404, 'Question not found')
+        }else{
+            //we verify that it doesn't related whith Answers
+            const exist = await respuestaseval.findOne({where: {Id_Preg_Eval_FK: id}})
+
+            if(!exist){
+                const updated = await preguntaseval.update({ESTADO_REGISTRO: 0}, {where: {Id_Preg_Eval: id} })
+                response(res, 200)
+            }else{  
+                response(res, 500,500, "Error deleting, this question has related answers")
+            }
+        }
+
+    }catch(err){
+        response(res, 500,500, err)
+    }
+}

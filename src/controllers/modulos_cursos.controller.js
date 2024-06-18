@@ -7,12 +7,12 @@ import { Cursos } from "../models/cursos.model.js";
 import { Contenido_Modulos } from "../models/contenido_modulo.model.js";
 import { evaluacion } from "../models/evaluacion.model.js";
 
-const jwt = jsonwebtoken;
 
-//get  modules by course's id -- OK
+//get  modules by course's id -- OK Users
 export const GetModulesxId = async (req, res) => {
 
     try {
+
         const { id } = req.params;
 
         //verificams que exista el curso
@@ -51,6 +51,49 @@ export const GetModulesxId = async (req, res) => {
     }
 
 }
+
+export const GetModulesxIdAdmin = async (req, res) => {
+
+    try {
+  
+        const { id } = req.params;
+
+        //verificams que exista el curso
+        const course = await Cursos.findByPk(id);
+        const moduleList = [];
+
+        if (course) {
+            const module = await Modulocurso.findAll({
+                where: { Id_Cur_FK: id },
+                include: {
+                    model: Contenido_Modulos,
+                    attributes: { exclude: ['createdAt', 'updatedAt'] }
+                }
+            })
+
+            module.map(module => {
+               if(module.toJSON().Contenido_Modulos.ESTADO_REGISTRO != 0){
+                moduleList.push(module.toJSON());
+               }
+            })
+            if (module) {
+                response(res, 200, 200, moduleList);
+            } else {
+                response(res, 404, 404, 'Modules not Found');
+            }
+
+
+        } else {
+            response(res, 404, 404, "Course not found");
+        }
+
+
+    } catch (err) {
+        response(res, 500, 500, err);
+    }
+
+}
+
 
 // create new modules
 export const createModules = async (req, res) => {

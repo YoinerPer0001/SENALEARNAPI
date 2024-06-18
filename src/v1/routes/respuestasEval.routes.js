@@ -1,5 +1,5 @@
 import express from 'express'
-import {GetAnswersxId, createAnswer, UpdateAnswers} from '../../controllers/respuestasEval.controller.js'
+import {GetAnswersxId, createAnswer, UpdateAnswers, deleteAnswer} from '../../controllers/respuestasEval.controller.js'
 import { verifyToken } from "../../middlewares/verifyToken.js";
 import { adminPermiso, AdminInstPermissions } from "../../middlewares/managePermissions.js";
 
@@ -12,6 +12,8 @@ routesRespuestasEval.get('/api/v1/respuestasEval/:id', verifyToken, GetAnswersxI
 
 routesRespuestasEval.post('/api/v1/respuestasEval/create', createValidation, verifyToken,AdminInstPermissions, createAnswer)
 
-routesRespuestasEval.put('/api/v1/respuestasEval/update/:id', verifyToken,AdminInstPermissions, UpdateAnswers)
+routesRespuestasEval.put('/api/v1/respuestasEval/update/:id',UpdateValidation, verifyToken,AdminInstPermissions, UpdateAnswers)
+
+routesRespuestasEval.delete('/api/v1/respuestasEval/delete/:id', verifyToken, AdminInstPermissions,deleteAnswer)
 
 export default routesRespuestasEval;
