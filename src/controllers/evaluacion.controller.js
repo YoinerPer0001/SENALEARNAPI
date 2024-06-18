@@ -15,7 +15,9 @@ const objInclude = [
             {
                 model: respuestaseval,
                 as: 'Respuestas',
-                attributes: { exclude: ['createdAt','updatedAt']},
+                attributes: { exclude: ['createdAt','updatedAt','Resp_Correcta_Eval']},
+                where: {ESTADO_REGISTRO : 1},
+                required: false
             }
         ]
     }
