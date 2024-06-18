@@ -32,7 +32,8 @@ const objInclude = [
             {
                 model:  evaluacion,
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
-                where: {ESTADO_REGISTRO: 1}
+                where: {ESTADO_REGISTRO: 1},
+                required: false
             }
         ]
 
