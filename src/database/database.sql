@@ -98,7 +98,6 @@ DROP TABLE IF EXISTS `contenido_modulos`;
 
 CREATE TABLE `contenido_modulos` (
   `Id_Cont` varchar(100) NOT NULL,
-  `Indice_Cont` int(100) DEFAULT NULL,
   `Tip_Cont` int(50) DEFAULT NULL COMMENT '1:audio, 2:video, 3: texto, 4:documento',
   `Url_Cont` varchar(255) DEFAULT NULL,
   `Tit_Cont` varchar(255) DEFAULT NULL,
@@ -115,15 +114,15 @@ CREATE TABLE `contenido_modulos` (
 
 /*Data for the table `contenido_modulos` */
 
-insert  into `contenido_modulos`(`Id_Cont`,`Indice_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Porcentaje_Asig`,`Id_Mod_FK`,`Duracion_Cont`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('erxyjd9iwlwm8ihme',1,2,'url','Requisitos previos',12.50,'erxyjdbwlwm5sy4i',20.00,1,'2024-05-25 14:57:16','2024-05-25 21:17:21'),
-('erxyjd9iwlwm8jdhr',2,2,'','Instalaciones requeridas',12.50,'erxyjdbwlwm5sy4i',1.00,1,'2024-05-25 14:57:57','2024-05-25 14:58:47'),
-('erxyjd9iwlwm8jtvj',3,2,'','Hola mundo HTML',12.50,'erxyjdbwlwm5sy4i',1.00,1,'2024-05-25 14:58:18','2024-05-25 14:58:47'),
-('erxyjd9iwlwm8kg6b',4,2,'','Etiquetas',12.50,'erxyjdbwlwm5sy4i',1.00,1,'2024-05-25 14:58:47','2024-05-25 14:58:47'),
-('erxyjd9iwlwm8l8fu',1,2,'','Tipos de datos',12.50,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 14:59:24','2024-05-25 15:00:33'),
-('erxyjd9iwlwm8m22p',2,2,'','variables, condicionales, ciclos',12.50,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 15:00:02','2024-05-25 15:00:33'),
-('erxyjd9iwlwm8mkgr',3,2,'','arrays, objetos',12.50,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 15:00:26','2024-05-25 15:00:33'),
-('erxyjd9iwlwm8mq33',4,2,'','Eventos',12.50,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 15:00:33','2024-05-25 15:00:33');
+insert  into `contenido_modulos`(`Id_Cont`,`Tip_Cont`,`Url_Cont`,`Tit_Cont`,`Porcentaje_Asig`,`Id_Mod_FK`,`Duracion_Cont`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('erxyjd9iwlwm8ihme',2,'url','Requisitos previos',12.50,'erxyjdbwlwm5sy4i',20.00,1,'2024-05-25 14:57:16','2024-05-25 21:17:21'),
+('erxyjd9iwlwm8jdhr',2,'','Instalaciones requeridas',12.50,'erxyjdbwlwm5sy4i',1.00,1,'2024-05-25 14:57:57','2024-05-25 14:58:47'),
+('erxyjd9iwlwm8jtvj',2,'','Hola mundo HTML',12.50,'erxyjdbwlwm5sy4i',1.00,1,'2024-05-25 14:58:18','2024-05-25 14:58:47'),
+('erxyjd9iwlwm8kg6b',2,'','Etiquetas',12.50,'erxyjdbwlwm5sy4i',1.00,1,'2024-05-25 14:58:47','2024-05-25 14:58:47'),
+('erxyjd9iwlwm8l8fu',2,'','Tipos de datos',10.00,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 14:59:24','2024-06-19 16:31:50'),
+('erxyjd9iwlwm8m22p',2,'','variables, condicionales, ciclos',10.00,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 15:00:02','2024-06-19 16:31:50'),
+('erxyjd9iwlwm8mkgr',2,'','arrays, objetos',10.00,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 15:00:26','2024-06-19 16:31:50'),
+('erxyjd9iwlwm8mq33',2,'','Eventos',10.00,'erxyjdbwlwm5wqw4',1.00,1,'2024-05-25 15:00:33','2024-06-19 16:31:50');
 
 /*Table structure for table `cursos` */
 
@@ -291,7 +290,6 @@ DROP TABLE IF EXISTS `modulocursos`;
 
 CREATE TABLE `modulocursos` (
   `Id_Mod` varchar(100) NOT NULL,
-  `Indice_Mod` int(255) DEFAULT NULL,
   `Tit_Mod` varchar(255) DEFAULT NULL,
   `Est_Mod` int(1) DEFAULT NULL COMMENT '0: creado, 1:activo, 2: bloqueado',
   `Id_Cur_FK` varchar(100) DEFAULT NULL,
@@ -307,10 +305,10 @@ CREATE TABLE `modulocursos` (
 
 /*Data for the table `modulocursos` */
 
-insert  into `modulocursos`(`Id_Mod`,`Indice_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Porcentaje_Asig`,`Horas_Cont_Mod`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
-('3',NULL,'prueba mod',0,'erxyjd888lwgs1y5q',0.00,0.00,1,'2024-06-18 13:59:34','2024-06-18 13:59:36'),
-('erxyjdbwlwm5sy4i',NULL,'Introduccion al curso',0,'erxyjd888lwgs1y5q',50.00,0.66,1,'2024-05-25 13:41:25','2024-05-25 21:17:21'),
-('erxyjdbwlwm5wqw4',NULL,'Dinamismo JS',0,'erxyjd888lwgs1y5q',50.00,0.00,1,'2024-05-25 13:44:22','2024-05-25 13:44:22');
+insert  into `modulocursos`(`Id_Mod`,`Tit_Mod`,`Est_Mod`,`Id_Cur_FK`,`Porcentaje_Asig`,`Horas_Cont_Mod`,`ESTADO_REGISTRO`,`createdAt`,`updatedAt`) values 
+('3','prueba mod',0,'erxyjd888lwgs1y5q',0.00,0.00,1,'2024-06-18 13:59:34','2024-06-18 13:59:36'),
+('erxyjdbwlwm5sy4i','Introduccion al curso',0,'erxyjd888lwgs1y5q',50.00,0.66,1,'2024-05-25 13:41:25','2024-05-25 21:17:21'),
+('erxyjdbwlwm5wqw4','Dinamismo JS',0,'erxyjd888lwgs1y5q',50.00,0.00,1,'2024-05-25 13:44:22','2024-05-25 13:44:22');
 
 /*Table structure for table `notificaciones` */
 
@@ -545,7 +543,7 @@ CREATE TABLE `tokens` (
   PRIMARY KEY (`Id_Token`),
   KEY `Usuario_Id` (`User_Id_FK`),
   CONSTRAINT `tokens_ibfk_1` FOREIGN KEY (`User_Id_FK`) REFERENCES `usuarios` (`Id_User`)
-) ENGINE=InnoDB AUTO_INCREMENT=514 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=517 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tokens` */
 
@@ -575,7 +573,10 @@ insert  into `tokens`(`Id_Token`,`Token`,`Fec_Caducidad`,`User_Id_FK`,`Tipo_toke
 (510,'396464','1718644813','erxyjd1d8lvk7jiru','3',1,'2024-06-17 17:10:15','2024-06-17 17:10:15'),
 (511,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjQ0MjQyLCJleHAiOjE3MTg3MzA2NDJ9.snyBxcAiuLxNoCwKL3qh8ySkLCRL3sjRHJ_K35I5wX8','1718730642','erxyjd1d8lvk7jiru','2',1,'2024-06-17 17:10:42','2024-06-17 17:10:42'),
 (512,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjUxOTU3LCJleHAiOjE3MTg3MzgzNTd9.EgcGfV3iRvdJsdwwFx3yrjdqTz2YBJucV4nJpqDuI-k','1718738357','erxyjd1d8lvk7jiru','2',1,'2024-06-17 19:19:17','2024-06-17 19:19:17'),
-(513,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjUyMzE1LCJleHAiOjE3MTg3Mzg3MTV9.qg0j0X45cWRwIDB5iewF104OxAwL344FsS3ryiLqZWM','1718738715','erxyjd1d8lvk7jiru','2',1,'2024-06-17 19:25:15','2024-06-17 19:25:15');
+(513,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NjUyMzE1LCJleHAiOjE3MTg3Mzg3MTV9.qg0j0X45cWRwIDB5iewF104OxAwL344FsS3ryiLqZWM','1718738715','erxyjd1d8lvk7jiru','2',1,'2024-06-17 19:25:15','2024-06-17 19:25:15'),
+(514,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NzQwMDgxLCJleHAiOjE3MTg4MjY0ODF9.FCKl_6OcQ3Xd0Xk0BX8rk6-cXHWaf6psD2oUzgl-vKI','1718826481','erxyjd1d8lvk7jiru','2',1,'2024-06-18 19:48:01','2024-06-18 19:48:01'),
+(515,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4NzQwODU4LCJleHAiOjE3MTg4MjcyNTh9.mWpMIHrqZagz2X4fOHg3LGsnDCnPvuPltMkyUQjxAaA','1718827258','erxyjd1d8lvk7jiru','2',1,'2024-06-18 20:00:58','2024-06-18 20:00:58'),
+(516,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7IklkX1VzZXIiOiJlcnh5amQxZDhsdms3amlydSIsIk5vbV9Vc2VyIjoiV2lybyIsIkFwZV9Vc2VyIjoicGVyZXoiLCJFbWFfVXNlciI6InlvaW5lcnBlcnR1ekBnbWFpbC5jb20iLCJGb3RfVXNlciI6Imh0dHBzOi8vaW1hZ2VzLnVuc3BsYXNoLmNvbS9waG90by0xNTQyOTA5MTY4LTgyYzNlN2ZkY2E1Yz9peGxpYj1yYi00LjAuMyZpeGlkPU1ud3hNakEzZkRCOE1IeHdhRzkwYnkxd1lXZGxmSHg4ZkdWdWZEQjhmSHg4JmF1dG89Zm9ybWF0JmZpdD1jcm9wJnc9MTI4JnE9ODAiLCJFc3RfRW1haWxfVXNlciI6MSwiSWRfUm9sX0ZLIjoxfSwiaWF0IjoxNzE4ODE0NjM3LCJleHAiOjE3MTg5MDEwMzd9.POq7GBKB9-kVZKsLy2ev-BYPxSuqABdOyZVUFe77UuM','1718901037','erxyjd1d8lvk7jiru','2',1,'2024-06-19 16:30:37','2024-06-19 16:30:37');
 
 /*Table structure for table `usuario_contenidos` */
 

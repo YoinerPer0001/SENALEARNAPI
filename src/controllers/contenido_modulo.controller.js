@@ -18,7 +18,8 @@ export const GetContModuloxModule = async (req, res) => {
         const modules = await Modulocurso.findByPk(id)
 
         if (modules) {
-            const content = await Contenido_Modulos.findAll({ where: { Id_Mod_FK: id }
+            const content = await Contenido_Modulos.findAll({
+                where: { Id_Mod_FK: id }
             })
             if (content) {
 
@@ -48,48 +49,38 @@ export const createContModu = async (req, res) => {
 
         const Id_Cont = uniqid();
 
-        const { Indice, Id_Mod_FK, Tit_Cont } = req.body;
+        const { Id_Mod_FK, Tit_Cont } = req.body;
 
         let moduleCourseExist = await Modulocurso.findByPk(Id_Mod_FK);
 
         if (moduleCourseExist) {
 
-            // verificamos que el induce no este repetido en el modulo 
-            const indiceExist = await Contenido_Modulos.findOne({ where: { Indice_Cont: Indice, Id_Mod_FK: Id_Mod_FK  } })
 
-            if (!indiceExist) {
-                //create 
-                const datosEnv = {
-                    Id_Cont: Id_Cont,
-                    // Tip_Cont: Tip_Cont,
-                    // Url_Cont: datos.Url_Cont,
-                    Tit_Cont: Tit_Cont,
-                    Id_Mod_FK: Id_Mod_FK,
-                    // Duracion_Cont:datos.Duracion,
-                    Indice_Cont: Indice
-                }
+            //create 
+            const datosEnv = {
+                Id_Cont: Id_Cont,
+                // Tip_Cont: Tip_Cont,
+                // Url_Cont: datos.Url_Cont,
+                Tit_Cont: Tit_Cont,
+                Id_Mod_FK: Id_Mod_FK,
+                // Duracion_Cont:datos.Duracion,
+            }
 
-                
+            const newModule = await Contenido_Modulos.create(datosEnv, { transaction: trasaction });
+            if (newModule) {
+                //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
+                const { Porcentaje_Asig } = await Modulocurso.findByPk(Id_Mod_FK, { transaction: trasaction })
+                const contenidoTotal = await Contenido_Modulos.count({ where: { Id_Mod_FK: Id_Mod_FK }, transaction: trasaction })
+                const porcentaje = (Porcentaje_Asig / contenidoTotal);
 
+                //actualizar porcentaje de cada contenido
+                const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: Id_Mod_FK }, transaction: trasaction })
 
-                const newModule = await Contenido_Modulos.create(datosEnv, { transaction: trasaction });
-                if (newModule) {
-                    //verificamos el porcentaje del modulo y lo dividimos entre la cantidad de contenido del modulo
-                    const { Porcentaje_Asig } = await Modulocurso.findByPk(Id_Mod_FK, { transaction: trasaction })
-                    const contenidoTotal = await Contenido_Modulos.count({ where: { Id_Mod_FK: Id_Mod_FK }, transaction: trasaction })
-                    const porcentaje = (Porcentaje_Asig / contenidoTotal);
+                await trasaction.commit();
+                response(res, 200, 200, { insertedId: datosEnv.Id_Cont });
 
-                    //actualizar porcentaje de cada contenido
-                    const updatePor = await Contenido_Modulos.update({ Porcentaje_Asig: porcentaje }, { where: { Id_Mod_FK: Id_Mod_FK }, transaction: trasaction })
-
-                    await trasaction.commit();
-                    response(res, 200, 200,{insertedId: datosEnv.Id_Cont} );
-
-                } else {
-                    response(res, 500, 500, "error creating content module");
-                }
-            }else{
-                response(res, 500, 500, "Indice already exist");
+            } else {
+                response(res, 500, 500, "error creating content module");
             }
 
         } else {
@@ -142,7 +133,6 @@ export const UpdateModCur = async (req, res) => {
                         Tip_Cont: data.Tip_Cont || cont_mod.Tip_Cont,
                         Url_Cont: data.Url_Cont || cont_mod.Url_Cont,
                         Tit_Cont: data.Tit_Cont || cont_mod.Tit_Cont,
-                        Indice_Cont: data.Indice || cont_mod.Indice_Cont,
                         Duracion_Cont: data.Duracion || cont_mod.Duracion_Cont,
                         Id_Mod_FK: data.Id_Mod_FK
 
@@ -159,7 +149,6 @@ export const UpdateModCur = async (req, res) => {
                     Tip_Cont: data.Tip_Cont || cont_mod.Tip_Cont,
                     Url_Cont: data.Url_Cont || cont_mod.Url_Cont,
                     Tit_Cont: data.Tit_Cont || cont_mod.Tit_Cont,
-                    Indice_Cont: data.Indice || cont_mod.Indice_Cont,
                     Duracion_Cont: data.Duracion || cont_mod.Duracion_Cont,
                     Id_Mod_FK: cont_mod.Id_Mod_FK
 
@@ -203,7 +192,7 @@ export const deleteCont = async (req, res) => {
 
         const { id } = req.params
 
-        let contMod = await Contenido_Modulos.findOne({where: {Id_Cont: id, ESTADO_REGISTRO: 1}})
+        let contMod = await Contenido_Modulos.findOne({ where: { Id_Cont: id, ESTADO_REGISTRO: 1 } })
         if (contMod) {
             contMod = contMod.dataValues;
             //verify that content dont have users asociated
@@ -212,19 +201,19 @@ export const deleteCont = async (req, res) => {
             if (usuariosCont.length > 0) {
                 response(res, 409, 409, "Content has users asociated");
             } else {
-                const minutosRestar = parseFloat(contMod.Duracion_Cont)/60;
-                
-                let modulo  = await Modulocurso.findByPk(contMod.Id_Mod_FK)
-                const {Id_Cur_FK,Horas_Cont_Mod} = modulo.dataValues;
-            
+                const minutosRestar = parseFloat(contMod.Duracion_Cont) / 60;
+
+                let modulo = await Modulocurso.findByPk(contMod.Id_Mod_FK)
+                const { Id_Cur_FK, Horas_Cont_Mod } = modulo.dataValues;
+
                 //restamos el porcentage al modulo que pertenece
-                const restMod = await Modulocurso.update({Porcentaje_Asig: parseFloat(Horas_Cont_Mod)-minutosRestar},{where:{Id_Mod:contMod.Id_Mod_FK }} )
+                const restMod = await Modulocurso.update({ Porcentaje_Asig: parseFloat(Horas_Cont_Mod) - minutosRestar }, { where: { Id_Mod: contMod.Id_Mod_FK } })
                 //restamos horas cont a curso
-                
+
                 let curso = await Cursos.findByPk(Id_Cur_FK)
-                
-                const {Hor_Cont_Total} = curso.dataValues;
-                const restCurso = await Cursos.update({Hor_Cont_Total: parseFloat(Hor_Cont_Total) -minutosRestar},{where:{Id_Cur:Id_Cur_FK}} )
+
+                const { Hor_Cont_Total } = curso.dataValues;
+                const restCurso = await Cursos.update({ Hor_Cont_Total: parseFloat(Hor_Cont_Total) - minutosRestar }, { where: { Id_Cur: Id_Cur_FK } })
                 //eliminamos el contenido
                 const responses = await Contenido_Modulos.update({ ESTADO_REGISTRO: 0, Porcentaje_Asig: 0 }, { where: { Id_Cont: id } })
                 if (responses) {
