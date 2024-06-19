@@ -13,6 +13,8 @@ import { Modulocurso } from '../models/modulos_cursos.model.js';
 import { Objetivos_Cursos } from '../models/objetivos_cursos.model.js';
 import { Contenido_Modulos } from '../models/contenido_modulo.model.js';
 import { evaluacion } from '../models/evaluacion.model.js';
+import { preguntaseval } from '../models/preguntasEval.model.js';
+import { respuestaseval } from '../models/respuestasEval.model.js';
 
 const atrInst = ['Id_User', 'Nom_User', 'Ape_User', 'Ema_User', 'Fot_User'];
 
@@ -21,16 +23,32 @@ const objInclude = [
     { model: Categorias, as: 'Categoria', attributes: ['Id_Cat', 'Nom_Cat'] },
     {
         model: Modulocurso,
-        include:[
+        include: [
             {
-                model:  Contenido_Modulos,
-                where: {ESTADO_REGISTRO: 1}
-    
+                model: Contenido_Modulos,
+                where: { ESTADO_REGISTRO: 1 }
+
             },
             {
-                model:  evaluacion,
-                where: {ESTADO_REGISTRO: 1},
-                required: false
+                model: evaluacion,
+                where: { ESTADO_REGISTRO: 1 },
+                required: false,
+                include: [
+                    {
+                        model: preguntaseval,
+                        where: { ESTADO_REGISTRO: 1 },
+                        required: false,
+                        include: [
+                            {
+                                model: respuestaseval,
+                                as: 'Respuestas',
+                                where: { ESTADO_REGISTRO: 1 },
+                                required: false,
+                            }
+                        ]
+                    }
+                ]
+
             }
         ]
 
@@ -93,7 +111,7 @@ export const getCuxInst = async (req, res) => {
         const instructor = await Usuario.findByPk(id)
 
         if (instructor) {
-            const courses = await Cursos.findAll({ where: { Id_Inst: id}, include: objInclude })
+            const courses = await Cursos.findAll({ where: { Id_Inst: id }, include: objInclude })
             response(res, 200, 200, courses);
         } else {
             response(res, 404, 404, 'Instructor not found');
@@ -128,7 +146,7 @@ export const getCursoId = async (req, res) => {
 
     } catch (err) {
 
-        response(res, 500, 500, "something went wrong");
+        response(res, 500, 500, err);
     }
 
 }
@@ -204,7 +222,7 @@ export const UpdateCourse = async (req, res) => {
                 Des_Cur: InfoCur.Des_Cur || curso.Des_Cur,
                 Hor_Cont_Total: InfoCur.Hor_Cont_Total || curso.Hor_Cont_Total,
                 Fech_Crea_Cur: InfoCur.Fech_Crea_Cur || curso.Fech_Crea_Cur,
-                Est_Cur:InfoCur.Est_Cur || curso.Est_Cur,
+                Est_Cur: InfoCur.Est_Cur || curso.Est_Cur,
                 Id_Cat_FK: InfoCur.Id_Cat_FK || curso.Id_Cat_FK,
                 Fot_Cur: InfoCur.Fot_Cur || curso.Fot_Cur
             }
